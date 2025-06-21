@@ -1,0 +1,79 @@
+.orbit-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.center-dot {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-color: yellowgreen;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.orbit {
+    position: absolute;
+    border: 4px solid transparent;
+    border-top-color: green;
+    border-radius: 50%;
+    animation: spin linear infinite;
+}
+
+.orbit1 {
+    width: 120px;
+    height: 120px;
+    animation-duration: 2.5s;
+}
+
+.orbit2 {
+    width: 160px;
+    height: 160px;
+    animation-duration: 5s;
+    border-top-color: red;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
