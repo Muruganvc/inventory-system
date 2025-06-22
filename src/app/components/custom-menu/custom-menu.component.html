@@ -1,1 +1,17 @@
-<p>custom-menu works!</p>
+<div class="sidenav-container">
+    <!-- Fixed Header -->
+    <div class="sidenav-header ">
+        <img width="100" height="100" class="double-border" src="img/TheeranChinnamalai.jfif" />
+        <div class="header-text">
+            <h2>{{fullName}}</h2>
+            <p>Admin</p>
+        </div>
+    </div>
+
+    <!-- Scrollable Menu -->
+    <mat-nav-list class="scrollable-menu">
+        @for (item of menuItems(); track item.label) {
+        <app-menu-item [item]="item"></app-menu-item>
+        }
+    </mat-nav-list>
+</div>

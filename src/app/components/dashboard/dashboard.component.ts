@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { SpinnerComponent } from "./shared/components/spinner/spinner.component";
 import { HttpClient } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
+import { Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    imports: [CommonModule, NgSelectModule,RouterOutlet, ReactiveFormsModule, CommonModule, FormsModule, SpinnerComponent],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+  selector: 'app-dashboard',
+  standalone: true,
+ imports: [CommonModule, NgSelectModule, ReactiveFormsModule, CommonModule, FormsModule],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss'
 })
-export class AppComponent {
-    private http = inject(HttpClient);
+export class DashboardComponent {
+ private http = inject(HttpClient);
     private toastr = inject(ToastrService);
     cities = [
         { id: 1, name: 'Vilnius' },

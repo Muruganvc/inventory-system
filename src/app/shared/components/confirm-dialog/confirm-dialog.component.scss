@@ -1,0 +1,71 @@
+.dialog-container {
+  padding: 1.5rem;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    padding: 1rem;
+  }
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .icon {
+    color: #f44336;
+    font-size: 2rem;
+  }
+}
+
+.dialog-content {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  button {
+    min-width: 100px;
+  }
+}
+
+
+/* confirm-dialog.component.scss */
+
+.custom-cancel-btn {
+  color: #6c757d;
+  border-color: #6c757d;
+
+  &:hover {
+    background-color: #e2e6ea;
+    border-color: #5a6268;
+  }
+}
+
+.custom-confirm-btn {
+  background-color: #28a745; /* green */
+  color: #fff;
+
+  &:hover {
+    background-color: #218838;
+  }
+}
+
+
+i.fa-circle-question {
+  color: rgba(0, 0, 0, 0.6); // similar to Material icon opacity
+  font-size: 20px;
+  vertical-align: middle;
+}
+

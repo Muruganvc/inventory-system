@@ -1,1 +1,6 @@
-<p>product-list works!</p>
+<div class="product-table-wrapper">
+  <app-reusable-table [columns]="tableColumns" [dataSource]="products" rowKey="id" (update)="onUpdate($event)"
+    (delete)="onDelete($event)">
+  </app-reusable-table>
+
+</div>
