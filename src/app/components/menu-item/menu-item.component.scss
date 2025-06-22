@@ -1,0 +1,35 @@
+// Active route style
+.active-route {
+    color:black !important;
+    font-weight: 600;
+    // background: linear-gradient(to right, #81c784, #ef9a9a);
+    background-color: lightgrey;
+}
+
+// Optional: icon/text coloring for active
+.active-route mat-icon,
+.active-route span {
+    color:black !important;
+}
+
+
+.selected-menu-item {
+    border-left: 5px solid;
+    border-left-color: red;
+    border-right: 5px solid;
+    border-right-color: green;
+}
+
+
+.indented {
+    --mat-list-list-item-leading-icon-start-space: 40px;
+}
+
+.menu-icon {
+  font-size: 15px;
+// background: linear-gradient(to right, #81c784, #ef9a9a); 
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+//   background-clip: text;
+// -webkit-background-clip: text;
+}

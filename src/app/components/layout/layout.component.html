@@ -1,1 +1,27 @@
-<p>layout works!</p>
+<mat-toolbar color="primary" class="top-toolbar custom-shadow">
+    <button mat-icon-button (click)="sidenav.toggle()">
+        <i class="fas fa-bars"></i>  
+    </button>
+
+    <span class="toolbar-title">My App</span>
+    <span class="spacer"></span>
+
+<button mat-icon-button  matTooltip="Sign Out" (click)="logout()" aria-label="input">
+    <i class="fas fa-sign-out-alt"></i>
+</button>
+     
+</mat-toolbar>
+
+<mat-sidenav-container class="main-container">
+    <mat-sidenav #sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" class="sidenav">
+        <app-custom-menu></app-custom-menu>
+    </mat-sidenav>
+    <mat-sidenav-content class="content">
+        <router-outlet />
+    </mat-sidenav-content>
+</mat-sidenav-container>
+<!-- Footer -->
+<footer class="footer">
+    &copy; 2025 Your Company
+</footer>
+ 

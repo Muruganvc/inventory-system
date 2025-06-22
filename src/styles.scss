@@ -1,1 +1,196 @@
-@import "@ng-select/ng-select/themes/default.theme.css";
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the theme object.
+$stock-maintenance-system-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+$compact-density: -5;
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes($stock-maintenance-system-theme);
+  @include mat.form-field-density($compact-density);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($stock-maintenance-system-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($stock-maintenance-system-theme);
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent window scrollbars */
+  //  zoom: 0.9; /* 80% zoom */
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;zoom: 1; }
+
+// @font-face {
+//   font-family: 'Material Icons';
+//   font-style: normal;
+//   font-weight: 400;
+//   src: url('assets/fonts/MaterialIcons-Regular.woff2') format('woff2'),
+//        url('assets/fonts/MaterialIcons-Regular.woff') format('woff'),
+//        url('assets/fonts/MaterialIcons-Regular.ttf') format('truetype'),
+//        url('assets/fonts/MaterialIcons-Regular.eot'); // optional
+// }
+// .material-icons {
+//   font-family: 'Material Icons' !important;
+//   font-style: normal;
+//   font-weight: normal;
+//   font-size: 24px;
+//   line-height: 1;
+//   display: inline-block;
+//   white-space: nowrap;
+//   direction: ltr;
+//   -webkit-font-feature-settings: 'liga';
+//   font-feature-settings: "liga" 1;
+//   -webkit-font-smoothing: antialiased;
+// }
+
+i{
+  cursor: pointer;
+}
+
+ .grid-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 16px;
+  row-gap: 3px; /* 🔽 Reduce this to control space between rows */
+  padding: 16px;
+}
+/* Full width utility */
+.full-width {
+  width: 100%;
+}
+
+/* Default column spans (mobile-first) */
+[class*="col-"] {
+  grid-column: span 12;
+}
+
+/* Breakpoints */
+@media (min-width: 576px) {
+  .col-sm-1 {
+    grid-column: span 1;
+  }
+
+  .col-sm-2 {
+    grid-column: span 2;
+  }
+
+  .col-sm-3 {
+    grid-column: span 3;
+  }
+
+  .col-sm-4 {
+    grid-column: span 4;
+  }
+
+  .col-sm-5 {
+    grid-column: span 5;
+  }
+
+  .col-sm-6 {
+    grid-column: span 6;
+  }
+
+  .col-sm-7 {
+    grid-column: span 7;
+  }
+
+  .col-sm-8 {
+    grid-column: span 8;
+  }
+
+  .col-sm-9 {
+    grid-column: span 9;
+  }
+
+  .col-sm-10 {
+    grid-column: span 10;
+  }
+
+  .col-sm-11 {
+    grid-column: span 11;
+  }
+
+  .col-sm-12 {
+    grid-column: span 12;
+  }
+}
+
+@media (min-width: 768px) {
+  .col-1 {
+    grid-column: span 1;
+  }
+
+  .col-2 {
+    grid-column: span 2;
+  }
+
+  .col-3 {
+    grid-column: span 3;
+  }
+
+  .col-4 {
+    grid-column: span 4;
+  }
+
+  .col-5 {
+    grid-column: span 5;
+  }
+
+  .col-6 {
+    grid-column: span 6;
+  }
+
+  .col-7 {
+    grid-column: span 7;
+  }
+
+  .col-8 {
+    grid-column: span 8;
+  }
+
+  .col-9 {
+    grid-column: span 9;
+  }
+
+  .col-10 {
+    grid-column: span 10;
+  }
+
+  .col-11 {
+    grid-column: span 11;
+  }
+
+  .col-12 {
+    grid-column: span 12;
+  }
+ 
+}
+

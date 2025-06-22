@@ -1,0 +1,106 @@
+.sidenav-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidenav-header {
+    flex-shrink: 0;
+    padding: 1rem;
+    text-align: center;
+
+    >img {
+        border-radius: 100%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+
+    .header-text {
+        >h2 {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+
+        >p {
+            margin: 0;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+.scrollable-menu {
+    flex-grow: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+    // Webkit-based browsers (Chrome, Edge, Safari)
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(100, 100, 100, 0.3);
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(100, 100, 100, 0.5);
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    // Firefox
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 100, 100, 0.3) transparent;
+}
+
+::ng-deep .mat-mdc-list-item {
+    border-radius: 0 !important;
+}
+
+::ng-deep .mat-mdc-list-item:hover {
+    border-radius: 0 !important;
+    background-color: lightgray;
+    // background: linear-gradient(to left, #81c784, #ef9a9a);
+}
+
+// General hover style
+.mat-mdc-list-item:hover {
+    background-color: rgba(0, 0, 0, 0.04); // light grey hover
+    border-radius: 0; // remove roundness if any
+    cursor: pointer;
+}
+
+// Active route style
+.active-route {
+    background-color: red !important; // primary blue (or use theme color)
+    color: red !important;
+    font-weight: 600;
+
+}
+
+// Optional: icon/text coloring for active
+.active-route mat-icon,
+.active-route span {
+    color: red !important;
+    background-color: green !important;
+}
+
+
+.selected-menu-item {
+    border-left: 5px solid;
+    border-left-color: red;
+}
+
+.double-border {
+    position: relative;
+    padding: 5px;
+    border-radius: 16px;
+    background: white;
+    z-index: 1;
+    background: linear-gradient(to right, #81c784, #ef9a9a);
+}

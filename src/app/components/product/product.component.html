@@ -1,1 +1,5 @@
-<p>product works!</p>
+<app-reusable-table
+  [columns]="tableColumns"
+  [dataSource]="tableData"
+  (delete)="onDelete($event)">
+</app-reusable-table>
