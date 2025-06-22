@@ -1,4 +1,4 @@
- <label>Your first ng-select</label>
+<label>Your first ng-select</label>
 <ng-select [items]="cities" bindLabel="name" placeholder="Select city" [(ngModel)]="selectedCity">
 </ng-select>
 <p>
@@ -9,7 +9,20 @@
 <i class="fas fa-user"></i>
 <i class="fab fa-angular"></i>
 <i class="fas fa-sign-out-alt"></i>
- 
+
 <button (click)="fetchData()">Fetch Data</button>
-<pre>{{ data() | json }}</pre> 
- 
+<pre>{{ data() | json }}</pre>
+
+<div class="ng-select-wrapper">
+    <div [formGroup]="form">
+        <ng-select [items]="items" bindLabel="name" bindValue="id" placeholder="Select item"
+            formControlName="selectedItem" [class.ng-invalid]="isInvalid('selectedItem')"
+            [class.ng-touched]="form.get('selectedItem')?.touched">
+        </ng-select>
+
+        <div class="mat-error force-error-style"
+            *ngIf="form.get('selectedItem')?.hasError('required') && form.get('selectedItem')?.touched">
+            This field is required
+        </div>
+    </div>
+</div>

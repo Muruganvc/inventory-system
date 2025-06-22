@@ -1,5 +1,2 @@
-<app-reusable-table
-  [columns]="tableColumns"
-  [dataSource]="tableData"
-  (delete)="onDelete($event)">
-</app-reusable-table>
+<app-dynamic-form [formGroup]="formGroup" [submitBtntitle]='submitBtntitle' [fields]="fields"
+    (submitEvent)="handleSubmit($event)" (cancelEvent)='cancel()' (selectionChange)="dropdownChange($event.controlName,$event.selectedOption)"  [title]="'New Product'"></app-dynamic-form>

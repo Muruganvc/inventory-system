@@ -1,1 +1,50 @@
-<button (click)="login()">Login</button>
+<div class="login-container">
+    <mat-card class="login-card">
+        <mat-card-header class="center-header">
+            <mat-card-title class="enter-title">
+                Vennila Electricals - Login
+            </mat-card-title>
+        </mat-card-header>
+
+        <hr class="double-color-hr" />
+
+        <mat-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                <!-- Username Field -->
+                <div class="form-row">
+                    <label class="form-label">User Name :</label>
+                    <mat-form-field appearance="outline" class="form-input multi-border">
+                        <input matInput formControlName="username" autocomplete="off" />
+                        <mat-icon matSuffix>person</mat-icon>
+                        <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+                            Username is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-row">
+                    <label class="form-label">Password :</label>
+                    <mat-form-field appearance="outline" class="form-input multi-border">
+                        <input matInput type="password" formControlName="password" autocomplete="off" />
+                        <mat-icon matSuffix>lock</mat-icon>
+                        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                            Password is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <!-- Submit Button -->
+                <button [disabled]="loginForm.invalid" mat-raised-button type="submit"
+                    class="login-btn full-width custom-button no-theme-btn">
+                    Login
+                    <mat-icon class="right-icon">login</mat-icon>
+                </button>
+
+            </form>
+        </mat-card-content>
+
+        <hr class="double-color-hr-1" />
+    </mat-card>
+</div>

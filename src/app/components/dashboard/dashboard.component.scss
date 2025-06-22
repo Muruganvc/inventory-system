@@ -1,0 +1,23 @@
+
+
+// Force same style as mat-error inside mat-form-field
+.force-error-style {
+  font-size: 12px;
+  color: #f44336;
+  margin: 4px 0 8px 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 1.25;
+  padding-left: 0.25rem;
+}
+
+// Optional: tighter spacing between ng-select and error
+.ng-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  
+}
+
+::ng-deep ng-select.ng-invalid.ng-touched .ng-select-container {
+  border-color: #f44336 !important; /* red border */
+  box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.2) !important; /* soft red glow */
+}
