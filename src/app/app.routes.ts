@@ -8,6 +8,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { PasswordChangeComponent } from './components/settings/password-change/password-change.component';
 import { UserPermissionComponent } from './components/settings/user-permission/user-permission.component';
 import { NewUserComponent } from './components/settings/new-user/new-user.component';
+import { SalesComponent } from './components/sales/sales.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'product-list', component: ProductListComponent },
             { path: 'product', component: ProductComponent },
+            { path: 'sales', component: SalesComponent },
             {
                 path: 'settings', component: SettingsComponent,
                 children: [

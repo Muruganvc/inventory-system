@@ -1,9 +1,3 @@
-
-<button (click)="new()">New Product</button>
-
-<div class="product-table-wrapper">
-  <app-reusable-table [columns]="tableColumns" [dataSource]="products" rowKey="id" (update)="onUpdate($event)"
-    (delete)="onDelete($event)">
-  </app-reusable-table>
-
-</div>
+<app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="'Add Product'" [columns]="columns"
+  [showActions]="true" (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
+</app-custom-table>

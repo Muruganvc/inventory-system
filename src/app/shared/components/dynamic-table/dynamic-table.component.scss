@@ -1,0 +1,85 @@
+.table-container {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
+.toolbar {
+  padding: 10px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+}
+
+.toolbar input {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #eee;
+  z-index: 1;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+.custom-table th {
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pagination {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  background: #fafafa;
+}
+
+@media screen and (max-width: 768px) {
+  .custom-table th,
+  .custom-table td {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .toolbar input {
+    font-size: 13px;
+  }
+}
+
+input.custom-input, select.custom-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+input.custom-input:focus, select.custom-select:focus {
+  border-color: #3f51b5; /* Material primary color */
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+}

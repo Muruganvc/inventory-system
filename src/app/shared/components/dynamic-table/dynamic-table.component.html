@@ -1,0 +1,71 @@
+<div class="table-container">
+    <div class="toolbar">
+        <input [(ngModel)]="filterText" placeholder="Filter..." />
+    </div>
+
+    <div class="table-scroll">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th *ngFor="let col of columns" [style.text-align]="col.align || 'left'" [style.width]="col.width"
+                        (click)="col.sortable ? sortBy(col.field) : null">
+                        {{ col.header }}
+                        <span *ngIf="sortField === col.field">
+                            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of filteredData; trackBy: trackByIndex" (click)="onRowClick(row)">
+                    <td *ngFor="let col of columns" [style.text-align]="col.align || 'left'">
+                         <ng-container [ngSwitch]="col.type">
+
+                        <ng-container *ngSwitchCase="'input'">
+                            <input *ngIf="col.editable" [(ngModel)]="row[col.field]" class="custom-input"
+                                [placeholder]="'Test'" />
+                            <span *ngIf="!col.editable">{{ row[col.field] }}</span>
+                        </ng-container>
+                        
+
+                        <ng-container *ngSwitchCase="'select'">
+                            <select *ngIf="col.editable" [(ngModel)]="row[col.field]" class="custom-select">
+                                <option *ngFor="let opt of col.options" [value]="opt.value">{{ opt.label }}</option>
+                            </select>
+                            <span *ngIf="!col.editable">
+                                {{ getCellLabel(col, row) }}
+                            </span>
+                        </ng-container>
+
+
+
+                        <ng-container *ngSwitchCase="'checkbox'">
+                            <input type="checkbox" [(ngModel)]="row[col.field]" [disabled]="!col.editable" />
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'date'">
+                            <input type="date" *ngIf="col.editable" [(ngModel)]="row[col.field]" />
+                            <span *ngIf="!col.editable">{{ row[col.field] }}</span>
+                        </ng-container>
+
+                        <ng-container *ngSwitchCase="'actions'">
+                            <button (click)="edit.emit(row); $event.stopPropagation()">✏️</button>
+                            <button (click)="delete.emit(row); $event.stopPropagation()">🗑️</button>
+                        </ng-container>
+
+                        <ng-container *ngSwitchDefault>
+                            {{ row[col.field] }}
+                        </ng-container>
+                        </ng-container>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">Prev</button>
+        <span>Page {{ currentPage }} / {{ totalPages }}</span>
+        <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+</div>

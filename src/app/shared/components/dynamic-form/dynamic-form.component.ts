@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -11,13 +11,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Observable, startWith, map } from 'rxjs';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { ActionButtons } from '../../common/ActionButton';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-    imports: [FormsModule,
+  imports: [FormsModule,
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -37,91 +37,42 @@ import { NgSelectModule } from '@ng-select/ng-select';
   encapsulation: ViewEncapsulation.None
 })
 export class DynamicFormComponent {
- @Input() formGroup!: FormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
-  @Output() cancelEvent = new EventEmitter();
   @Input({ required: true }) title!: string;
-  @Output() submitEvent = new EventEmitter<FormGroup>();
-  @Output() selectionChange = new EventEmitter<{
-    controlName: string, selectedOption: {
-      label: string;
-      value: any;
-    } | undefined
-  }>();
-  @Input({ required: true }) submitBtntitle!: string;
-
-  filteredOptions: { [key: string]: Observable<any[]> } = {};
-
-  constructor(private cdr: ChangeDetectorRef) { }
-
-  getValue(key: string): any {
-    return this.formGroup.get(key)?.value;
-  }
-
-  // ngOnInit(): void {
-  //   this.fields.forEach(field => {
-  //     const defaultValue = this.getDefaultFieldValue(field); // Get default value before adding control
-  //     this.formGroup.addControl(field.name, new FormControl(defaultValue));
-
-  //     if (field.type === 'autocomplete' && Array.isArray(field.options)) {
-  //       const control = this.formGroup.get(field.name) as FormControl;
-  //       this.filteredOptions[field.name] = control.valueChanges.pipe(
-  //         startWith(''),
-  //         map(value => this._filter(value, field.options))
-  //       );
-  //     }
-  //   });
-  // }
+  @Input({ required: true }) buttons: ActionButtons[] = [];
+  isMobileView: boolean = false;
+  constructor(private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .subscribe(result => {
+        this.isMobileView = result.matches;
+        console.log('Mobile View:', this.isMobileView);
+      });
+
     this.fields.forEach(field => {
-      // Only add the control if it's not already in the formGroup
       if (!this.formGroup.get(field.name)) {
         this.formGroup.addControl(field.name, new FormControl(null));
-      }
-
-      // Setup filtered options for searchable selects or autocomplete
-      if (['autocomplete', 'searchable-select'].includes(field.type) && Array.isArray(field.options)) {
-        const control = this.formGroup.get(field.name) as FormControl;
-        this.filteredOptions[field.name] = control.valueChanges.pipe(
-          startWith(control.value || ''),
-          map(value => this._filter(value, field.options))
-        );
       }
     });
   }
 
-
-
-  private getDefaultFieldValue(field: any): any {
-    if (!field.defaultValue) return null;
-    if (['autocomplete', 'searchable-select'].includes(field.type)) {
-      return field.options?.find((opt: any) => opt.value === field.defaultValue) ?? null;
+  onClick(btn: ActionButtons): void {
+    const form: FormGroup = btn.params?.form;
+    if (btn.validate && form?.invalid) {
+      this.markFormGroupTouched(form);
+      return;
     }
-    return field.defaultValue;
+    btn.callback?.(btn.params);
   }
-
-  private _filter(value: string | any, options: any[]): any[] {
-    if (!value || !options?.length) return [];
-    const filterValue = typeof value === 'string' ? value.toLowerCase() : value.label?.toLowerCase() || '';
-    return options.filter(opt => opt.label?.toLowerCase().includes(filterValue));
-  }
-
-  displayFn(value: any): string {
-    return typeof value === 'object' ? value.label ?? '' : '';
-  }
-
-  submitForm() {
-    if (this.formGroup.valid) {
-      this.submitEvent.emit(this.formGroup);
-    }
-  }
-
-  cancel() {
-    this.cancelEvent.emit();
-  }
-
-  matSelectionChange(controlName: string, selectedOption: any) {
-    this.selectionChange.emit({ controlName: controlName, selectedOption: selectedOption });
+  markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if ((control as FormGroup).controls) {
+        this.markFormGroupTouched(control as FormGroup);
+      }
+    });
   }
 }

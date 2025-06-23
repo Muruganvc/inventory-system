@@ -1,5 +1,18 @@
 <form [formGroup]="formGroup">
-    <h2 class="form-title">{{ title }}</h2>
+    <div class="header-row">
+        <h2 class="form-title">{{ title }}</h2>
+
+        <div *ngIf="!isMobileView" class="button-group">
+            <ng-container *ngFor="let btn of buttons">
+                <button type="button" *ngIf="!btn.isHidden" mat-flat-button [disabled]="btn.disabled"
+                    [ngClass]="btn.class" (click)="onClick(btn)">
+                    <i style="padding: 10px !important;" class="menu-icon" [ngClass]="btn.icon"></i>
+                    {{ btn.label }}
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
     <div class="form-grid">
         <ng-container *ngFor="let field of fields">
             <ng-container *ngIf="!field.isHidden">
@@ -8,8 +21,8 @@
                         <!-- Input -->
                         <mat-form-field *ngSwitchCase="'input'" appearance="outline">
                             <mat-label>{{ field.label }}</mat-label>
-                            <input appAppSentenceCase [readonly]="field.isReadOnly"
-                                [attr.maxlength]="field.maxLength || null" matInput [formControlName]="field.name" />
+                            <input matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
+                                [attr.maxlength]="field.maxLength || null" appAppSentenceCase />
                             <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                                 {{ field.label }} is required
                             </mat-error>
@@ -32,33 +45,81 @@
                         </mat-form-field>
 
                         <!-- Searchable Select -->
+                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
+                            <div class="ng-select-wrapper">
+                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
+                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
+                                    [class.ng-touched]="formGroup.get(field.name)?.touched"
+                                    [addTag]="field.addTag"
+                                    (add)="field.add"
+                                    (clear)="field.clear"
+                                    placeholder="Select {{ field.label }}"></ng-select>
+                                <div class="mat-error force-error-style"
+                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
+                                    {{ field.label }} is required
+                                </div>
+                            </div>
+                        </ng-container> -->
+                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
+                            <div class="ng-select-wrapper">
+                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
+                                    bindValue="value" [addTag]="field.addTag ? field.add : false"
+                                    (add)="field.add && field.add($event)" (clear)="field.clear && field.clear()"
+                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
+                                    [class.ng-touched]="formGroup.get(field.name)?.touched"
+                                    placeholder="Select {{ field.label }}">
+                                </ng-select>
+
+                                <div class="mat-error force-error-style"
+                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
+                                    {{ field.label }} is required
+                                </div>
+                            </div>
+                        </ng-container> -->
+
+
+                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
+                            <div class="ng-select-wrapper">
+                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key" [addTag]="field.addTag"
+                                    (add)="field.add($event)" (clear)="field.clear && field.clear()"
+                                    placeholder="Select {{ field.label }}" [class.ng-invalid]="formGroup.get(field.name)?.invalid"
+                                    [class.ng-touched]="formGroup.get(field.name)?.touched"></ng-select>
+                        
+                                <div class="mat-error force-error-style"
+                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
+                                    {{ field.label }} is required
+                                </div>
+                            </div>
+                        </ng-container> -->
+
 
                         <ng-container *ngSwitchCase="'searchable-select'">
                             <div class="ng-select-wrapper">
-                                <ng-select [formControlName]="field.name"
+                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
+                                    [addTag]="field.addTag" 
+                                    (clear)="field.clear?.()"
+                                    placeholder="Select {{ field.label }}"
                                     [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                    [class.ng-touched]="formGroup.get(field.name)?.touched" [items]="field.options"
-                                    bindLabel="key" placeholder="Select {{ field.label }}">
+                                    [class.ng-touched]="formGroup.get(field.name)?.touched">
                                 </ng-select>
+
                                 <div class="mat-error force-error-style"
                                     *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
-                                    This field is required
+                                    {{ field.label }} is required
                                 </div>
                             </div>
                         </ng-container>
 
-                    
                         <!-- Select -->
                         <mat-form-field *ngSwitchCase="'select'" appearance="outline">
                             <mat-label>{{ field.label }}</mat-label>
                             <mat-select [formControlName]="field.name">
-                                <mat-option *ngFor="let opt of field.options" [value]="opt.value">
-                                    {{ opt.label }}
-                                </mat-option>
+                                <mat-option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label
+                                    }}</mat-option>
                             </mat-select>
                         </mat-form-field>
 
-                        <!-- Date -->
+                        <!-- Date Picker -->
                         <mat-form-field *ngSwitchCase="'date'" appearance="outline">
                             <mat-label>{{ field.label }}</mat-label>
                             <input matInput [matDatepicker]="picker" [formControlName]="field.name" />
@@ -72,13 +133,12 @@
                             <mat-checkbox [formControlName]="field.name"></mat-checkbox>
                         </div>
 
-                        <!-- Radio -->
+                        <!-- Radio Group -->
                         <div *ngSwitchCase="'radio'" class="form-control-wrapper">
                             <label class="form-label">{{ field.label }}</label>
                             <mat-radio-group [formControlName]="field.name">
-                                <mat-radio-button *ngFor="let opt of field.options" [value]="opt.value">
-                                    {{ opt.label }}
-                                </mat-radio-button>
+                                <mat-radio-button *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label
+                                    }}</mat-radio-button>
                             </mat-radio-group>
                         </div>
 
@@ -88,12 +148,12 @@
                             <mat-slide-toggle [formControlName]="field.name"></mat-slide-toggle>
                         </div>
 
-                        <mat-form-field color="accent" *ngSwitchCase="'textarea'" appearance="outline">
+                        <!-- Textarea -->
+                        <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" color="accent">
                             <mat-label>{{ field.label }}</mat-label>
-                            <textarea matInput [formControlName]="field.name" class="no-resize"
-                                [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null"
-                                [rows]="field.rows || 4" appAppSentenceCase
-                                [placeholder]="field.placeholder || ''"></textarea>
+                            <textarea matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
+                                [attr.maxlength]="field.maxLength || null" [rows]="field.rows || 4"
+                                [placeholder]="field.placeholder || ''" class="no-resize" appAppSentenceCase></textarea>
                         </mat-form-field>
 
                     </ng-container>
@@ -102,13 +162,14 @@
         </ng-container>
     </div>
 
-    <div class="button-group">
-        <button mat-flat-button (click)="submitForm()" class="btn-submit">
-            <i class="material-icons">check_circle</i> &nbsp; {{ submitBtntitle }}
-        </button>
-
-        <button mat-flat-button (click)="cancel()" class="btn-cancel">
-            <i class="material-icons">cancel</i> &nbsp; Cancel
-        </button>
+    <!-- Button Group -->
+    <div *ngIf="isMobileView" class="button-group">
+        <ng-container *ngFor="let btn of buttons">
+            <button type="button" *ngIf="!btn.isHidden" mat-flat-button [disabled]="btn.disabled" [ngClass]="btn.class"
+                (click)="onClick(btn)">
+                <i style="padding: 10px !important;" class="menu-icon" [ngClass]="btn.icon"></i>
+                {{ btn.label }}
+            </button>
+        </ng-container>
     </div>
 </form>
