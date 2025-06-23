@@ -5,7 +5,7 @@ export interface ProductEntry  extends TableRow{
   productName: string;
   mrp: number;
   taxPercent: number;
-  salesPrice: number;
+  price: number;
   quantity: number;
   totalAmount: number;
 }

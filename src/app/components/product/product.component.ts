@@ -8,7 +8,7 @@ import { UpdateProductRequest } from '../../models/UpdateProductRequest';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
-import { filter } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-product',
@@ -36,13 +36,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.patchForm(this.productResponse);
       this.pageHeader = 'Update Product';
     }
-
     this.initFields();
     this.loadAllCompanies();
     this.bindCompanyChange();
     this.bindCategoryChange();
     this.bindProductChange();
     this.initActionButtons();
+    this.bindQuantityChange();
   }
 
   ngOnDestroy(): void { }
@@ -155,11 +155,11 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.formGroup.patchValue({
       company: { value: product.companyId, key: product.companyName },
       category: { value: product.categoryId, key: product.categoryName },
-      product: { value: product.productCategoryId, key: product.productCategoryName },
+      product: { value: product.productId, key: product.productName },
       mrp: product.mrp,
       salesPrice: product.salesPrice,
       quantity: product.quantity,
-      availableQuantity: 100,
+      availableQuantity: product.quantity,
       taxPercent: product.taxPercent,
       taxType: product.taxType,
       barCode: product.barcode,
@@ -225,6 +225,25 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
 
+  private bindQuantityChange(): void {
+    const quantityControl = this.formGroup.get('quantity');
+    const availableControl = this.formGroup.get('availableQuantity');
+    availableControl?.setValue(0, { emitEvent: false });
+    quantityControl?.valueChanges.pipe(
+      startWith(''),
+      map(val => Number(val) || 0),   // convert to number, treat empty as 0
+      pairwise(),                     // gives [previous, current]
+      map(([prev, curr]) => {
+        const diff = curr - prev;
+        return diff;
+      })
+    ).subscribe(diff => {
+      const current = Number(availableControl?.value) || 0;
+      const updated = current + diff;
+      availableControl?.setValue(updated, { emitEvent: false });
+    });
+  }
+
 
   /** -------------------- ACTION HANDLERS -------------------- */
 
@@ -241,7 +260,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   private handleUpdate(params: any): void {
     const request = this.buildUpdateProductRequest(params.form.value);
-    this.productService.updateProduct(params.form.value.product.value, request).subscribe({
+    this.productService.updateProduct(request.productId, request).subscribe({
       next: () => {
         alert('Product updated.');
         this.resetForm();
@@ -270,7 +289,8 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   private buildProductRequest(value: any): ProductRequest {
     const { company, category, product } = value;
-    const productName = [company?.key, category?.key, product?.key].filter(Boolean).join(' '); 
+    // const productName = [company?.key, category?.key, product?.key].filter(Boolean).join(' ');
+    const productName = [product?.key].filter(Boolean).join(' ');
     return {
       barCode: value.barCode,
       brandName: value.brandName,
@@ -280,7 +300,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       description: value.description,
       mrp: value.mrp,
       productName,
-      totalQuantity: value.availableQuantity,
+      totalQuantity: value.quantity,
       salesPrice: value.salesPrice,
       taxPercent: value.taxPercent,
       taxType: value.taxType,
@@ -291,7 +311,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private buildUpdateProductRequest(value: any): UpdateProductRequest {
     return {
       ...this.buildProductRequest(value),
-      productId: value.product.value
+      productId: value.product?.value
     };
   }
 }
