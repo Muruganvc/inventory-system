@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -10,6 +10,11 @@ import { ProductEntry } from '../../models/ProductEntry';
 import { ProductService } from '../../services/product.service';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
+import { MatDialog } from '@angular/material/dialog';
+import { SalesConfirmDialogComponent } from './sales-confirm-dialog/sales-confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { OrderService } from '../../services/order.service';
+import { OrderCreateRequest } from '../../models/CustomerRequest';
 
 @Component({
   selector: 'app-sales',
@@ -21,6 +26,8 @@ import { KeyValuePair } from '../../shared/common/KeyValuePair';
 export class SalesComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
+  private readonly orderService = inject(OrderService);
 
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -61,7 +68,8 @@ export class SalesComponent implements OnInit {
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       taxPercent: new FormControl({ value: null, disabled: true }),
-      totalAmount: new FormControl({ value: null, disabled: true })
+      totalAmount: new FormControl({ value: null, disabled: true }),
+      netAmount: new FormControl({ value: null, disabled: true })
     });
   }
 
@@ -101,7 +109,7 @@ export class SalesComponent implements OnInit {
         label: 'Confirm',
         icon: 'fas fa-arrow-left',
         class: 'btn-confirm',
-        callback: this.handleBack.bind(this),
+        callback: this.handleConfirm.bind(this),
         validate: false,
         isHidden: false
       }
@@ -113,7 +121,7 @@ export class SalesComponent implements OnInit {
   private getProducts(): void {
     this.productService.getProducts().subscribe({
       next: res => {
-        this.products = res.data;
+        this.products = res;
         this.productsList = this.products.map(p => ({
           key: p.productName,
           value: p.productId
@@ -150,26 +158,31 @@ export class SalesComponent implements OnInit {
     const priceControl = this.formGroup.get('price');
     const quantityControl = this.formGroup.get('quantity');
     const mrpControl = this.formGroup.get('mrp');
-
-    if (!priceControl || !quantityControl || !mrpControl) return;
-
+    const availableQuantityControl = this.formGroup.get('availableQuantity');
+    const totalAmountControl = this.formGroup.get('totalAmount');
+    if (!priceControl || !quantityControl || !mrpControl || !availableQuantityControl || !totalAmountControl) {
+      return;
+    }
+    const getNumberValue = (control: AbstractControl | null): number =>
+      control ? +control.value || 0 : 0;
     merge(priceControl.valueChanges, quantityControl.valueChanges, mrpControl.valueChanges)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        const mrp = +mrpControl.value || 0;
-        const price = +priceControl.value || 0;
-        const quantity = +quantityControl.value || 0;
-
+      .pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+        const price = getNumberValue(priceControl);
+        const quantity = getNumberValue(quantityControl);
+        const mrp = getNumberValue(mrpControl);
+        const availableQty = getNumberValue(availableQuantityControl);
         if (price > mrp) {
-          priceControl.setValue(mrp, { emitEvent: false }); // prevent further event loop
+          priceControl.setValue(mrp, { emitEvent: false });
           return;
         }
-
+        if (quantity > availableQty) {
+          quantityControl.setValue(availableQty, { emitEvent: false });
+          return;
+        }
         const total = price * quantity;
-        this.formGroup.get('totalAmount')?.setValue(total, { emitEvent: false });
+        totalAmountControl.setValue(total, { emitEvent: false });
       });
   }
-
 
   private patchForm(product: ProductsResponse): void {
     this.formGroup.patchValue({
@@ -192,33 +205,112 @@ export class SalesComponent implements OnInit {
 
   private handleSave(params: any): void {
     this.addProduct(params.form.value);
+    const netAmount = this.formGroup.get('netAmount')?.value;
     this.formGroup.reset();
+    this.formGroup.patchValue({ 'netAmount': netAmount }, { emitEvent: false });
   }
 
   private handleCancel(): void {
-    this.formGroup.reset();
+    if (this.productSales.length > 0) {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '100%',
+        maxWidth: '700px',
+        disableClose: true,
+        data: {
+          title: 'Sale Items',
+          message: 'Are you sure do you want to clear?..',
+          okBtn: {
+            title: 'Yes, Confirm',
+            isHiden: true
+          },
+          cancel: {
+            title: 'Cancel',
+            isHiden: true
+          }
+        }
+      });
+      dialogRef.afterClosed().subscribe({
+        next: result => {
+          if (result) {
+            this.productSales.splice(0);
+            this.productSales = [...this.productSales];
+            this.formGroup.reset();
+          }
+        }
+      });
+    }
+  }
+  private handleConfirm(): void {
+    if (this.productSales.length === 0) {
+      this.dialog.open(ConfirmDialogComponent, {
+        width: '100%',
+        maxWidth: '400px',
+        disableClose: true,
+        data: {
+          title: 'Sale Items',
+          message: 'No sales item found. Please add.',
+          okBtn: { title: 'Ok', isHiden: true },
+          cancel: { title: 'Cancel', isHiden: false }
+        }
+      }).afterClosed().subscribe();
+      return;
+    }
+
+    const totalAmount = this.productSales.reduce((sum, item) => sum + item.totalAmount, 0);
+
+    const dialogRef = this.dialog.open(SalesConfirmDialogComponent, {
+      width: '90%',
+      maxWidth: '600px',
+      height: '550px',
+      disableClose: true,
+      panelClass: 'no-radius-dialog',
+      data: {
+        name: '',
+        mobileNo: '',
+        address: '',
+        orderItems: this.productSales,
+        totalItems: this.productSales.length,
+        netTotal: totalAmount
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      const request: OrderCreateRequest = {
+        customer: result.customer,
+        orderItemRequests: result.orderItems
+      };
+      this.orderService.createOrder(request).subscribe({
+        next: response => {
+          console.log('✅ Order created successfully:', response);
+          // TODO: Reset state, show success notification, etc.
+        },
+        error: error => {
+          console.error('❌ Order creation failed:', error);
+          // TODO: Show error notification to user
+        }
+      });
+      console.log('📝 User confirmed order:', result);
+    });
   }
 
-  private handleBack(): void {
-    // Future: back navigation
-  }
+
 
   /** -------------------- PRODUCT ADD -------------------- */
 
   private addProduct(form: any): void {
     const selectedProduct = this.products.find(p => p.productId === form.product.value);
     if (!selectedProduct) return;
-
-    const totalAmount = this.calculateGSTFromBasePrice((form.price * form.quantity), selectedProduct.taxPercent).totalPrice;
+    const totalAmount = Number(this.calculateGSTFromBasePrice((form.price * form.quantity), selectedProduct.taxPercent).totalPrice.toFixed(2));
 
     const newProduct: ProductEntry = {
-      id: crypto.randomUUID(),
       productName: selectedProduct.productName,
       mrp: selectedProduct.mrp,
       taxPercent: selectedProduct.taxPercent,
       price: form.price,
       quantity: form.quantity,
-      totalAmount
+      totalAmount,
+      productId: selectedProduct.productId,
+      id: form.product.value
     };
 
     this.productSales = [...this.productSales, newProduct];
@@ -227,11 +319,45 @@ export class SalesComponent implements OnInit {
   /** -------------------- TABLE EVENTS -------------------- */
 
   onEdit(entry: ProductEntry): void {
-    // Future: implement edit
+    this.productSales = this.productSales.filter(p => p.id !== entry.id);
+    const selectedProduct = this.products.find(p => p.productId === entry.id);
+    this.formGroup.patchValue({
+      product: { key: entry.productName, value: entry.id },
+      mrp: entry.mrp,
+      taxPercent: entry.taxPercent,
+      price: entry.price,
+      quantity: entry.quantity,
+      totalAmount: entry.price * entry.quantity,
+      availableQuantity: selectedProduct?.quantity
+    });
   }
 
+
   onDelete(entry: ProductEntry): void {
-    this.productSales = this.productSales.filter(p => p.id !== entry.id);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '100%',
+      maxWidth: '400px',
+      disableClose: true,
+      data: {
+        title: 'Sale Items',
+        message: 'Are you sure do you want delete..',
+        okBtn: {
+          title: 'Yes, Confirm',
+          isHiden: true
+        },
+        cancel: {
+          title: 'Cancel',
+          isHiden: true
+        }
+      }
+    });
+    dialogRef.afterClosed().subscribe({
+      next: result => {
+        if (result) {
+          this.productSales = this.productSales.filter(p => p.id !== entry.id);
+        }
+      }
+    });
   }
 
   handleFieldChange(event: any): void {

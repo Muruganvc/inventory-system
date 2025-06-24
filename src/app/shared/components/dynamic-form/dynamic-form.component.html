@@ -1,7 +1,6 @@
 <form [formGroup]="formGroup">
-    <div class="header-row">
+    <div *ngIf="isPopup" class="header-row">
         <h2 class="form-title">{{ title }}</h2>
-
         <div *ngIf="!isMobileView" class="button-group">
             <ng-container *ngFor="let btn of buttons">
                 <button type="button" *ngIf="!btn.isHidden" mat-flat-button [disabled]="btn.disabled"
@@ -12,11 +11,10 @@
             </ng-container>
         </div>
     </div>
-
     <div class="form-grid">
         <ng-container *ngFor="let field of fields">
             <ng-container *ngIf="!field.isHidden">
-                <div class="form-field" [ngClass]="'col-span-' + field.colSpan">
+                <div class="form-field" [class.popup]="isPopup" [ngClass]="'col-span-' + field.colSpan">
                     <ng-container [ngSwitch]="field.type">
                         <!-- Input -->
                         <mat-form-field *ngSwitchCase="'input'" appearance="outline">
@@ -96,8 +94,7 @@
                         <ng-container *ngSwitchCase="'searchable-select'">
                             <div class="ng-select-wrapper">
                                 <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
-                                    [addTag]="field.addTag" 
-                                    (clear)="field.clear?.()"
+                                    [addTag]="field.addTag" (clear)="field.clear?.()"
                                     placeholder="Select {{ field.label }}"
                                     [class.ng-invalid]="formGroup.get(field.name)?.invalid"
                                     [class.ng-touched]="formGroup.get(field.name)?.touched">
@@ -163,7 +160,7 @@
     </div>
 
     <!-- Button Group -->
-    <div *ngIf="isMobileView" class="button-group">
+    <div *ngIf="!isPopup|| isMobileView" class="button-group">
         <ng-container *ngFor="let btn of buttons">
             <button type="button" *ngIf="!btn.isHidden" mat-flat-button [disabled]="btn.disabled" [ngClass]="btn.class"
                 (click)="onClick(btn)">

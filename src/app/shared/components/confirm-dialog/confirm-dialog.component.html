@@ -2,17 +2,15 @@
     <div class="dialog-header">
         <i class="far fa-circle-question"></i> <!-- This is the exact FA match for help_outline -->
         <h2>{{ data.title }}</h2>
-        
     </div>
-
     <mat-divider></mat-divider>
-
     <div class="dialog-content">
         <p>{{ data.message }}</p>
     </div>
-
     <div class="dialog-actions">
-        <button mat-stroked-button class="custom-cancel-btn" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button class="custom-confirm-btn" (click)="onConfirm()">Yes, Confirm</button>
+        <button mat-stroked-button *ngIf="data.cancel.isHiden" class="custom-cancel-btn"
+            (click)="onCancel()">{{data.cancel.title || 'Cancel'}}</button>
+        <button *ngIf="data.okBtn.isHiden" mat-flat-button class="custom-confirm-btn"
+            (click)="onConfirm()">{{data.okBtn.title || 'Yes, Confirm'}}</button>
     </div>
 </div>

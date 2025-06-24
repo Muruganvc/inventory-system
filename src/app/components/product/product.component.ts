@@ -104,8 +104,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     return newProduct;
   }
 
-  clearProductDetails(a: any) {
-    debugger;
+  clearProductDetails(a: any) { 
 
   }
 
@@ -173,21 +172,21 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   private loadAllCompanies(): void {
     this.productService.getCompany().subscribe({
-      next: res => this.updateFieldOptions('company', res.data),
+      next: res => this.updateFieldOptions('company', res),
       error: err => console.error('Company Load Error:', err)
     });
   }
 
   private loadCategories(companyId: number): void {
     this.productService.getCategories(companyId).subscribe({
-      next: res => this.updateFieldOptions('category', res.data),
+      next: res => this.updateFieldOptions('category', res),
       error: err => console.error('Category Load Error:', err)
     });
   }
 
   private loadProducts(categoryId: number): void {
     this.productService.getProductCategories(categoryId).subscribe({
-      next: res => this.updateFieldOptions('product', res.data),
+      next: res => this.updateFieldOptions('product', res),
       error: err => console.error('Product Load Error:', err)
     });
   }

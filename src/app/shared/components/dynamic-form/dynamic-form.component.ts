@@ -42,6 +42,7 @@ export class DynamicFormComponent {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) buttons: ActionButtons[] = [];
   isMobileView: boolean = false;
+  @Input() isPopup : boolean = false;
   constructor(private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {

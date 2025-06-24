@@ -4,6 +4,8 @@ import { ApiService } from '../shared/services/api.service';
 import { ProductRequest } from '../models/ProductRequest';
 import { ProductsResponse } from '../models/ProductsResponse';
 import { UpdateProductRequest } from '../models/UpdateProductRequest';
+import { map, Observable } from 'rxjs';
+import { ApiResponse } from '../shared/common/ApiResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -11,30 +13,41 @@ import { UpdateProductRequest } from '../models/UpdateProductRequest';
 export class ProductService {
 
   private readonly api = inject(ApiService)
-  getCompany(companyName?: string) {
+  getCompany = (companyName?: string): Observable<KeyValuePair[]> => {
     const url = companyName
       ? `companyName=${encodeURIComponent(companyName)}`
       : `company`;
 
-    return this.api.get<KeyValuePair[]>(url);
+    return this.api
+      .get<KeyValuePair[]>(url)
+      .pipe(map((res: ApiResponse<KeyValuePair[]>) => res.data));
   }
 
-  getCategories(companyId: number) {
-    return this.api.get<KeyValuePair[]>(`category/${companyId}`);
-  }
-  getProductCategories(categoryId: number) {
-    return this.api.get<KeyValuePair[]>(`product-category/${categoryId}`);
-  }
-
-  createProduct(product: ProductRequest) {
-    return this.api.post<ProductRequest, number>('product', product);
-  }
-  updateProduct(productId: number, product: UpdateProductRequest) {
-    return this.api.put<UpdateProductRequest, number>(`product/${productId}`, product);
-  }
-  getProducts() {
-    return this.api.get<ProductsResponse[]>('products');
+  getCategories = (companyId: number): Observable<KeyValuePair[]> => {
+    return this.api
+      .get<KeyValuePair[]>(`category/${companyId}`)
+      .pipe(map((res: ApiResponse<KeyValuePair[]>) => res.data));
   }
 
+  getProductCategories = (categoryId: number): Observable<KeyValuePair[]> => {
+    return this.api
+      .get<KeyValuePair[]>(`product-category/${categoryId}`)
+      .pipe(map((res: ApiResponse<KeyValuePair[]>) => res.data));
+  }
 
+  createProduct = (product: ProductRequest): Observable<number> => {
+    return this.api
+      .post<ProductRequest, number>('product', product)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+
+  updateProduct = (productId: number, product: UpdateProductRequest): Observable<number> => {
+    return this.api
+      .put<UpdateProductRequest, number>(`product/${productId}`, product)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+  getProducts = (): Observable<ProductsResponse[]> => {
+    return this.api.get<ProductsResponse[]>('products')
+      .pipe(map((res: ApiResponse<ProductsResponse[]>) => res.data));
+  }
 }
