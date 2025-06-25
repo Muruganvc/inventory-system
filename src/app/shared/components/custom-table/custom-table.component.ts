@@ -24,6 +24,11 @@ export interface TableColumn {
   align?: 'left' | 'center' | 'right';
   type?: string;
   isHidden: boolean;
+  pipe?: string;
+  highLight?: {
+    class: string,
+     condition: (row: any) => boolean;
+  }
 }
 
 @Component({
@@ -90,6 +95,24 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
   }
 
+  getCellClasses(col: TableColumn, row: any): { [key: string]: boolean } {
+    const classes: { [key: string]: boolean } = {};
+
+    if (col.highLight) {
+      classes['highlight-cell'] = true;
+      if (col.highLight.class && col.highLight.condition?.(row)) {
+        classes[col.highLight.class] = true;
+      }
+    }
+
+    return classes;
+  }
+  
+  getRowClass(row: any): string {
+    const match = this.columns.find(col => col.highLight?.condition?.(row));
+    return match ? match.highLight?.class || 'highlight-row' : '';
+  }
+
   get filteredData(): T[] {
     const term = this.searchTerm?.toLowerCase() || '';
     if (!term) return this.data;
@@ -114,6 +137,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   get paginatorLength(): number {
     return Math.max(this.dataSource.filteredData.length, 1);
   }
+ 
 
 
   ngOnInit() {

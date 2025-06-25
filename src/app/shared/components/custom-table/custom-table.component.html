@@ -1,9 +1,12 @@
 <ng-container *ngIf="showHeader">
   <div class="page-header">
     <h2 class="page-title">{{ title() }}</h2>
-    <button mat-flat-button (click)="openNew()" class="add-button">
-      <mat-icon>add</mat-icon>&nbsp; {{ addBtnTitle() }}
-    </button>
+    <ng-container *ngIf="!!addBtnTitle()">
+      <button mat-flat-button (click)="openNew()" class="add-button">
+        <mat-icon>add</mat-icon>&nbsp; {{ addBtnTitle() }}
+      </button>
+    </ng-container>
+
   </div>
 
   <mat-form-field appearance="outline" class="search-box">
@@ -23,13 +26,18 @@
           {{ col.label }}
         </th>
 
-        <td mat-cell *matCellDef="let row" [style.text-align]="col.align || 'left'">
+        <td mat-cell *matCellDef="let row" [style.text-align]="col.align || 'left'" [ngClass]="getRowClass(row)">
           <ng-container *ngIf="!isEditing(row); else editField">
             <ng-container *ngIf="col.type === 'checkbox' && col.isHidden; else defaultView">
               <mat-checkbox (change)="onFieldChange(row, col.key, $event.checked)" [checked]="row[col.key]">
               </mat-checkbox>
             </ng-container>
-            <ng-template #defaultView>{{ row[col.key] }}</ng-template>
+            <!-- <ng-template [style.highlight-cell]="col.highLight" #defaultView>{{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}</ng-template> -->
+            <ng-template #defaultView>
+              <span [ngClass]="getCellClasses(col, row)">
+                {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
+              </span>
+            </ng-template>
           </ng-container>
 
           <ng-template #editField>
@@ -111,13 +119,13 @@
       </mat-card>
     </div>
 
-    <mat-paginator [length]="filteredData.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
-      [pageSizeOptions]="[5]" showFirstLastButtons (page)="onPageChange($event)">
+    <mat-paginator [length]="filteredData.length" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="[5]"
+      showFirstLastButtons (page)="onPageChange($event)">
     </mat-paginator>
   </ng-template>
 
   <!-- Paginator desktop -->
-  <mat-paginator *ngIf="!isMobile && data?.length" [length]="data.length" [pageSize]="5" [pageSizeOptions]="[5]"
+  <mat-paginator *ngIf="!isMobile && data?.length" [length]="data.length" [pageSize]="5" [pageSizeOptions]="[5,10,20]"
     showFirstLastButtons>
   </mat-paginator>
 </div>

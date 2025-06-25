@@ -15,6 +15,7 @@ import { SalesConfirmDialogComponent } from './sales-confirm-dialog/sales-confir
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { OrderService } from '../../services/order.service';
 import { OrderCreateRequest } from '../../models/CustomerRequest';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sales',
@@ -308,7 +309,7 @@ export class SalesComponent implements OnInit {
       taxPercent: selectedProduct.taxPercent,
       price: form.price,
       quantity: form.quantity,
-      totalAmount,
+      totalAmount : (form.price * form.quantity),
       productId: selectedProduct.productId,
       id: form.product.value
     };

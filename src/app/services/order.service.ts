@@ -3,6 +3,8 @@ import { ApiService } from '../shared/services/api.service';
 import { OrderCreateRequest } from '../models/CustomerRequest';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../shared/common/ApiResponse';
+import { OrderListReponse } from '../models/OrderList';
+import { CustomerOrderList } from '../models/CustomerOrderList';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +16,17 @@ export class OrderService {
       return this.api
         .post<OrderCreateRequest, number>('new-order', orderItem)
         .pipe(map((res: ApiResponse<number>) => res.data));
+    }
+
+     getOrderSummaries = (): Observable<OrderListReponse[]> => {
+      return this.api
+        .get<OrderListReponse[]>('order-summary')
+        .pipe(map((res: ApiResponse<OrderListReponse[]>) => res.data));
+    }
+ 
+     getCustomerOrders = (): Observable<CustomerOrderList[]> => {
+      return this.api
+        .get<CustomerOrderList[]>('customer-orders')
+        .pipe(map((res: ApiResponse<CustomerOrderList[]>) => res.data));
     }
 }

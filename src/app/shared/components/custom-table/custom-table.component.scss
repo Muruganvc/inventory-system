@@ -214,3 +214,37 @@
   border-bottom: 2px solid green;
   letter-spacing: 0.5px;
 }
+
+// .highlight-cell {
+//   background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 100%);
+//   color: #fff;
+//   font-weight: 700;
+//   padding: 4px 10px;
+//   border-radius: 5px;
+//   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+// }
+
+
+.highlight-cell {
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+
+.highlight-row {
+  background-color: #ffe0b2; /* light orange */
+  font-weight: 500;
+}
