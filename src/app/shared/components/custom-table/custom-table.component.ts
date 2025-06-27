@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, input, Input, OnChanges, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { Component, effect, EventEmitter, input, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -27,7 +27,7 @@ export interface TableColumn {
   pipe?: string;
   highLight?: {
     class: string,
-     condition: (row: any) => boolean;
+    condition: (row: any) => boolean;
   }
 }
 
@@ -90,11 +90,9 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     ]).subscribe(result => {
       this.isMobile = result.breakpoints['(max-width: 699px)'];
       this.isTablet = result.breakpoints['(min-width: 700px) and (max-width: 1024px)'];
-      var x = result.breakpoints['(min-width: 1025px)'];
     });
 
   }
-
   getCellClasses(col: TableColumn, row: any): { [key: string]: boolean } {
     const classes: { [key: string]: boolean } = {};
 
@@ -107,7 +105,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
     return classes;
   }
-  
+
   getRowClass(row: any): string {
     const match = this.columns.find(col => col.highLight?.condition?.(row));
     return match ? match.highLight?.class || 'highlight-row' : '';
@@ -137,7 +135,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   get paginatorLength(): number {
     return Math.max(this.dataSource.filteredData.length, 1);
   }
- 
+
 
 
   ngOnInit() {
@@ -148,23 +146,75 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
       this.isMobile = result.breakpoints['(max-width: 699px)'];
       this.isTablet = result.breakpoints['(max-width: 1024px)'] && !this.isMobile;
     });
-  }
 
-  ngOnChanges() {
-    this.dataSource = new MatTableDataSource(this.data || []);
-    this.dataSource.paginator = this.paginator;
+    // ✅ Set displayedColumns correctly on init
+    this.displayedColumns = this.columns
+      .filter(col => !col.isHidden)
+      .map(col => col.key);
+
     this.displayedColumns = this.columns.map(c => c.key);
     if (this.showActions) this.displayedColumns.push('actions');
-    if (this.showCheckbox) this.displayedColumns.unshift('select');
+
+    // if (this.showActions) this.displayedColumns.push('actions');
+    // if (this.showCheckbox) this.displayedColumns.unshift('select');
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
+
+  // ngOnChanges() {
+  //   this.dataSource = new MatTableDataSource(this.data || []);
+  //   this.dataSource.paginator = this.paginator;
+  //   this.displayedColumns = this.columns.map(c => c.key);
+  //   if (this.showActions) this.displayedColumns.push('actions');
+  //   if (this.showCheckbox) this.displayedColumns.unshift('select');
+  // }
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && this.data) {
+      this.dataSource = new MatTableDataSource<T>(this.data);
+
+      // Ensure paginator is attached after view init
+      setTimeout(() => {
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
+      });
+
+      // Dynamically build displayed columns
+      this.displayedColumns = this.columns
+        .filter(col => !col.isHidden)
+        .map(col => col.key);
+
+      if (this.showActions) {
+        this.displayedColumns.push('actions');
       }
-    });
+
+      if (this.showCheckbox) {
+        this.displayedColumns.unshift('select');
+      }
+
+    }
+
+    //this.displayedColumns = this.columns.filter(col => !col.isHidden).map(col => col.key);
   }
+
+
+  // ngAfterViewInit() {
+  //   setTimeout(() => {
+  //     if (this.paginator) {
+  //       this.dataSource.paginator = this.paginator;
+  //     }
+  //   });
+  // }
+
+
+  ngAfterViewInit() {
+    if (this.dataSource && this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+
 
   startEdit(row: T) {
     // this.editRowId = row.id;

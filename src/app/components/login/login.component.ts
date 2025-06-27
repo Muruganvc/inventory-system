@@ -8,6 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { LoginRequest } from '../../models/LoginRequest';
+import { CommonService } from '../../shared/services/common.service';
 
 @Component({
   selector: 'app-login',
@@ -27,8 +30,11 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  private readonly auth = inject(AuthService);
+  private readonly commonService = inject(CommonService);
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.auth.logout();
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
@@ -37,32 +43,22 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.showErrorMessage('Please fill all fields');
+      this.commonService.showErrorMessage('Please fill all fields');
       return;
     }
     const { username, password } = this.loginForm.value;
-
-
-    if (username == password) {
-      this.router.navigate(['/dashboard']);
+    const loginRequest: LoginRequest = {
+      password: password,
+      userName: username
     }
-  }
-  showSuccessMessage() {
-    this.snackBar.open('Login successful!', 'Close', {
-      duration: 3000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center',
-      panelClass: ['success-snackbar']
+    this.auth.login(loginRequest).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+        this.commonService.showSuccessMessage('Login successful!');
+      },
+      error: () => this.commonService.showErrorMessage("Invalid credentials")
     });
-  }
 
-  showErrorMessage(msg: string) {
-    this.snackBar.open(msg, 'Dismiss', {
-      duration: 4000,
-      verticalPosition: 'bottom',
-      horizontalPosition: 'center',
-      panelClass: ['error-snackbar']
-    });
   }
 
 }

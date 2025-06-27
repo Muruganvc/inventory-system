@@ -201,7 +201,7 @@
   /* Darker green */
 }
 
- 
+
 .page-title {
   border-bottom: 2px solid #4caf50 !important;
   display: inline-block;
@@ -230,14 +230,17 @@
   padding: 4px 8px;
   border-radius: 4px;
 }
+
 .success {
   background-color: #e8f5e9;
   color: #2e7d32;
 }
+
 .error {
   background-color: #ffebee;
   color: #c62828;
 }
+
 .info {
   background-color: #e3f2fd;
   color: #1565c0;
@@ -245,6 +248,28 @@
 
 
 .highlight-row {
-  background-color: #ffe0b2; /* light orange */
+  background-color: #ffe0b2;
+  /* light orange */
   font-weight: 500;
 }
+
+ 
+.mat-mdc-row,
+.mdc-data-table__content {
+  height: 40px !important;
+
+}
+ 
+.mat-mdc-header-row {
+  background: linear-gradient(to right, #81c784, #ef9a9a) !important;
+  height: 40px;
+}
+
+.mat-mdc-header-cell {
+  background: transparent !important; // avoid overriding gradient
+  box-shadow: none !important;
+  border-bottom: 1px solid #ccc;
+  color: white; // optional for contrast
+}
+
+

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ProductService } from '../../../services/product.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,8 @@ import { ProductsResponse } from '../../../models/ProductsResponse';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
 import { FormGroup } from '@angular/forms';
+import { AuthService } from '../../../services/auth.service';
+import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-product-list',
@@ -15,26 +17,38 @@ import { FormGroup } from '@angular/forms';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent {
- 
+ private readonly authService = inject(AuthService);
+ private readonly commonService = inject(CommonService);
   constructor(private router: Router, private productService: ProductService, private dialog: MatDialog) { }
   ngOnInit(): void {
     this.getProducts();
   } 
+
+  role: boolean =true;
   products: ProductsResponse[] = [];
 
-  getProducts() {
+  getProducts(): void {
     this.productService.getProducts().subscribe({
-      next: result => {
+      next: (result) => {
         this.products = result;
+        const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
+        const isAdmin = this.authService.hasRole(["Admin"])
+        if (isAdmin && !hasIsActiveColumn) {
+          this.columns.push({
+            key: 'isActive',
+            label: 'Active',
+            align: 'right',
+            type: 'checkbox',
+            isHidden: false
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load products:', error);
       }
     });
-
-    if (true) {
-      this.columns.push(
-        { key: 'isActive', label: 'Active', align: 'right', type: 'checkbox', isHidden: true },
-      );
-    }
   }
+
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
     // { key: 'companyName', label: 'Company', align: 'left', isHidden: false },
@@ -55,13 +69,14 @@ export class ProductListComponent {
   }
 
   handleFieldChange(event: { row: ProductsResponse; key: string; value: any }) {
-    // this.productService.activatProduct(event.row.productId ?? 0).subscribe({
-    //   next: result => {
-    //     if (result) {
-    //       // this.getProducts();
-    //     }
-    //   }
-    // })
+    this.productService.setActiveProduct(event.row.productId ?? 0).subscribe({
+      next: result => {
+        if (result) {
+          this.getProducts();
+          this.commonService.showSuccessMessage("Updated.");
+        }
+      }
+    });
   }
 
   onDelete(product: ProductsResponse) {

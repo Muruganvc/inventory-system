@@ -3,7 +3,8 @@
     <h2 class="page-title">{{ title() }}</h2>
     <ng-container *ngIf="!!addBtnTitle()">
       <button mat-flat-button (click)="openNew()" class="add-button">
-        <mat-icon>add</mat-icon>&nbsp; {{ addBtnTitle() }}
+        <i class="fas fa-circle-plus" style="font-size: 18px;" matTooltip="Add"></i>
+         &nbsp; {{ addBtnTitle() }}
       </button>
     </ng-container>
 
@@ -18,7 +19,7 @@
 <div class="mat-elevation-z2">
   <!-- Desktop/tablet view -->
   <div *ngIf="!isMobile; else mobileView" class="table-scroll">
-    <table mat-table [dataSource]="dataSource" class="full-width-table" matSort>
+    <table mat-table [dataSource]="dataSource"  class="full-width-table" matSort>
 
       <!-- Dynamic columns -->
       <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
@@ -28,7 +29,8 @@
 
         <td mat-cell *matCellDef="let row" [style.text-align]="col.align || 'left'" [ngClass]="getRowClass(row)">
           <ng-container *ngIf="!isEditing(row); else editField">
-            <ng-container *ngIf="col.type === 'checkbox' && col.isHidden; else defaultView">
+            <ng-container *ngIf="col.type === 'checkbox' && !col.isHidden; else defaultView">
+               
               <mat-checkbox (change)="onFieldChange(row, col.key, $event.checked)" [checked]="row[col.key]">
               </mat-checkbox>
             </ng-container>
@@ -41,6 +43,7 @@
           </ng-container>
 
           <ng-template #editField>
+           
             <ng-container *ngIf="col.type === 'checkbox' && col.isHidden; else defaultEdit">
               <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
             </ng-container>
@@ -57,18 +60,18 @@
         <td mat-cell *matCellDef="let row" style="text-align: center;">
           <ng-container *ngIf="!isEditing(row); else editBtns">
             <button mat-icon-button (click)="startEdit(row)">
-              <mat-icon class="action-icon edit">edit</mat-icon>
+               <i class="fas fa-pencil-alt" style="font-size: 15px; color: green; cursor: pointer;"></i>
             </button>
             <button mat-icon-button (click)="deleteRow(row)">
-              <mat-icon class="action-icon delete">delete</mat-icon>
+             <i class="fas fa-trash-alt" style="font-size: 15px; color: red; cursor: pointer;"></i>
             </button>
           </ng-container>
           <ng-template #editBtns>
             <button mat-icon-button (click)="saveRow()">
-              <mat-icon class="action-icon save">save</mat-icon>
+             <i class="fas fa-save" style="font-size: 15px; color: green;" matTooltip="Save"></i>
             </button>
             <button mat-icon-button (click)="cancelEdit()">
-              <mat-icon class="action-icon close">close</mat-icon>
+              <i class="fas fa-times" style="font-size: 15px; color: gray;" matTooltip="Close"></i>
             </button>
           </ng-template>
         </td>
@@ -101,18 +104,18 @@
 
           <div class="actions" *ngIf="!isEditing(row)">
             <button mat-icon-button color="primary" (click)="startEdit(row)">
-              <mat-icon>edit</mat-icon>
+              <i class="fas fa-pencil-alt" style="font-size: 15px; color: green; cursor: pointer;"></i>
             </button>
             <button mat-icon-button color="warn" (click)="deleteRow(row)">
-              <mat-icon>delete</mat-icon>
+              <i class="fas fa-trash-alt" style="font-size: 15px; color: red; cursor: pointer;"></i>
             </button>
           </div>
           <div class="actions" *ngIf="isEditing(row)">
             <button mat-icon-button (click)="saveRow()">
-              <mat-icon>save</mat-icon>
+               <i class="fas fa-save" style="font-size: 15px; color: green;" matTooltip="Save"></i>
             </button>
             <button mat-icon-button (click)="cancelEdit()">
-              <mat-icon>close</mat-icon>
+               <i class="fas fa-times" style="font-size: 15px; color: gray;" matTooltip="Close"></i>
             </button>
           </div>
         </mat-card-content>
@@ -125,7 +128,23 @@
   </ng-template>
 
   <!-- Paginator desktop -->
-  <mat-paginator *ngIf="!isMobile && data?.length" [length]="data.length" [pageSize]="5" [pageSizeOptions]="[5,10,20]"
+  <!-- <mat-paginator *ngIf="!isMobile && data?.length" [length]="data.length" [pageSize]="5" [pageSizeOptions]="[5,10,20]"
     showFirstLastButtons>
-  </mat-paginator>
+  </mat-paginator> -->
+<!-- <mat-paginator
+  *ngIf="!isMobile && data?.length"
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator> -->
+
+<mat-paginator
+  *ngIf="!isMobile && dataSource.data?.length"
+  [length]="dataSource.filteredData.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons
+  (page)="onPageChange($event)">
+</mat-paginator>
+
+
 </div>

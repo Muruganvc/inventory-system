@@ -9,38 +9,54 @@
         <hr class="double-color-hr" />
 
         <mat-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="loginForm">
 
                 <!-- Username Field -->
                 <div class="form-row">
                     <label class="form-label">User Name :</label>
                     <mat-form-field appearance="outline" class="form-input multi-border">
+                        <mat-label>User Name</mat-label>
                         <input matInput formControlName="username" autocomplete="off" />
-                        <mat-icon matSuffix>person</mat-icon>
+                        <button mat-icon-button matSuffix disabled>
+                            <i class="fas fa-user"></i>
+                        </button>
                         <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
                             Username is required
                         </mat-error>
                     </mat-form-field>
                 </div>
 
+
                 <!-- Password Field -->
                 <div class="form-row">
                     <label class="form-label">Password :</label>
                     <mat-form-field appearance="outline" class="form-input multi-border">
+                        <mat-label>Password</mat-label>
                         <input matInput type="password" formControlName="password" autocomplete="off" />
-                        <mat-icon matSuffix>lock</mat-icon>
+                        <button mat-icon-button matSuffix disabled>
+                            <i class="fas fa-lock"></i>
+                        </button>
                         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
                             Password is required
                         </mat-error>
                     </mat-form-field>
                 </div>
 
+
                 <!-- Submit Button -->
-                <button [disabled]="loginForm.invalid" mat-raised-button type="submit"
-                    class="login-btn full-width custom-button no-theme-btn">
-                    Login
-                    <mat-icon class="right-icon">login</mat-icon>
-                </button>
+                <div>
+                    <button [disabled]="loginForm.invalid" (click)="onSubmit()" mat-raised-button type="submit"
+                        class="login-btn full-width custom-button no-theme-btn">
+                        Login
+                        <i class="fas fa-sign-in-alt right-icon" style="margin-left: 8px;"></i>
+                    </button>
+
+                    <div class="forgot-password">
+                        <a routerLink="/forgot-password">Forget Password?</a>
+                    </div>
+                </div>
+
+
 
             </form>
         </mat-card-content>

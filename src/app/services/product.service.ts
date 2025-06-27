@@ -50,4 +50,9 @@ export class ProductService {
     return this.api.get<ProductsResponse[]>('products')
       .pipe(map((res: ApiResponse<ProductsResponse[]>) => res.data));
   }
+
+  setActiveProduct = (productId: number): Observable<boolean> => {
+    return this.api.put<null,boolean>(`product/activate/${productId}`,null)
+      .pipe(map((res: ApiResponse<boolean>) => res.data));
+  }
 }

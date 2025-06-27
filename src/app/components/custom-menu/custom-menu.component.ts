@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { MenuItem } from '../../shared/common/MenuItem';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-custom-menu',
@@ -17,12 +18,18 @@ export class CustomMenuComponent implements OnInit {
     this.getMenus();
   }
 
-  fullName = 'Muruganvc';
+  fullName :string ;
+
+
+  private readonly authService = inject(AuthService);
+
+
 
   private readonly userService = inject(UserService);
   readonly menuItems = signal<MenuItem[]>([]);
 
   getMenus() {
+    this.fullName = this.authService.getUserName();
     this.userService.getUserMenu(1).subscribe({
       next: (items) => this.menuItems.set(items),
       error: (err) => console.error('Failed to load menu', err)

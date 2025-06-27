@@ -93,11 +93,16 @@
 
                         <ng-container *ngSwitchCase="'searchable-select'">
                             <div class="ng-select-wrapper">
-                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
-                                    [addTag]="field.addTag" (clear)="field.clear?.()"
-                                    placeholder="Select {{ field.label }}"
-                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                    [class.ng-touched]="formGroup.get(field.name)?.touched">
+                                <ng-select 
+                                        [formControlName]="field.name" 
+                                        [items]="field.options"
+                                        bindLabel="key"
+                                        [compareWith]="compareFn"
+                                        [addTag]="field.addTag"
+                                        (clear)="field.clear?.()"
+                                        placeholder="Select {{ field.label }}"
+                                        [class.ng-invalid]="formGroup.get(field.name)?.invalid"
+                                        [class.ng-touched]="formGroup.get(field.name)?.touched">
                                 </ng-select>
 
                                 <div class="mat-error force-error-style"

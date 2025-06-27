@@ -17,15 +17,7 @@ import { ReusableTableComponent } from "../../shared/components/reusable-table/r
 })
 export class DashboardComponent {
     private http = inject(HttpClient);
-    private toastr = inject(ToastrService);
-    cities = [
-        { id: 1, name: 'Vilnius' },
-        { id: 2, name: 'Kaunas' },
-        { id: 3, name: 'Pavilnys', disabled: true },
-        { id: 4, name: 'Pabradė' },
-        { id: 5, name: 'Klaipėda' }
-    ];
-
+ 
     data = signal<any>(null);
     selectedCity: any;
     fetchData() {
@@ -34,34 +26,9 @@ export class DashboardComponent {
             .get('https://jsonplaceholder.typicode.com/posts?_limit=50000')
             .subscribe((res) => this.data.set(res));
     }
+ 
 
- form: FormGroup;
-
-  items = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-  ];
-
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      selectedItem: [null, Validators.required]
-    });
-  }
-
-  onSubmit() {
-    if (this.form.valid) {
-      alert('Form submitted with: ' + JSON.stringify(this.form.value));
-    } else {
-      this.form.markAllAsTouched();
-    }
-  }
-
-  isInvalid(controlName: string): boolean {
-    const control = this.form.get(controlName);
-    return !!(control && control.invalid && (control.dirty || control.touched));
-  }
-
-
+ 
   tableColumns: TableColumn[] = [
   { field: 'id', header: 'ID', type: 'text', width: '60px', align: 'center', sortable: true },
   { field: 'name', header: 'Name', type: 'input', editable: true, width: '150px', align: 'left', filterable: true },

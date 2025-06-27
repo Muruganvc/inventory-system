@@ -1,24 +1,26 @@
-import { Component, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { Router, RouterModule } from '@angular/router'; 
-import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { Router, RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomMenuComponent } from "../custom-menu/custom-menu.component";
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-layout',
   standalone: true,
- imports: [MatToolbarModule, MatButtonModule, MatTooltipModule, MatSidenavModule, RouterModule, MatListModule, CustomMenuComponent],
+  imports: [MatToolbarModule, MatButtonModule, MatTooltipModule, MatSidenavModule, RouterModule, MatListModule, CustomMenuComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
+  private readonly authService = inject(AuthService);
 
   isMobileDevice = false;
   sidebarExpanded = true;
@@ -59,24 +61,28 @@ export class LayoutComponent {
     return this.router.url === item.route;
   }
   logout() {
-     this.openConfirm('');
-  }
-
-  openConfirm(key: string): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '100%',
       maxWidth: '400px',
       disableClose: true,
       data: {
         title: 'Logout',
+        okBtn: {
+          title: 'Yes, Confirm',
+          isHiden: true
+        },
+        cancel: {
+          title: 'Cancel',
+          isHiden: true
+        },
         message: 'Are you sure you want to Logout?'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // this.authService.logout();
+        this.authService.logout();
       }
     });
   }
-
+ 
 }

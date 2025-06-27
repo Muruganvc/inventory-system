@@ -9,6 +9,8 @@ import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
 import { filter, map, pairwise, startWith } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { CommonService } from '../../shared/services/common.service';
 
 @Component({
   selector: 'app-product',
@@ -20,6 +22,8 @@ import { filter, map, pairwise, startWith } from 'rxjs';
 export class ProductComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+  private readonly commonService = inject(CommonService);
 
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -68,8 +72,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   private initFields(): void {
-    const isAdmin = false;
-
+    const isAdmin = !this.authService.hasRole(["Admin"])
     this.fields = [
       { type: 'searchable-select', name: 'company', label: 'Company', colSpan: 3, options: [] },
       { type: 'searchable-select', name: 'category', label: 'Category', colSpan: 3, options: [] },
@@ -104,8 +107,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     return newProduct;
   }
 
-  clearProductDetails(a: any) { 
-
+  clearProductDetails(a: any) {
+    var category = this.formGroup.get('category')?.value;
+    this.loadProducts(category.value);
   }
 
 
@@ -198,7 +202,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   private bindCompanyChange(): void {
     this.formGroup.get('company')?.valueChanges.subscribe(selected => {
-      this.formGroup.patchValue({ category: null, product: null });
+      this.formGroup.patchValue({ category: null, product: null },{emitEvent:true});
       this.updateFieldOptions('category', []);
       this.updateFieldOptions('product', []);
       if (selected?.value) this.loadCategories(selected.value);
@@ -208,7 +212,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private bindCategoryChange(): void {
     this.formGroup.get('category')?.valueChanges.subscribe(selected => {
       this.formGroup.patchValue({ product: null });
-      this.updateFieldOptions('product', []);
+      // this.updateFieldOptions('product', []);
       if (selected?.value) this.loadProducts(selected.value);
     });
   }
@@ -218,8 +222,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       .pipe(filter((value) => !!value))
       .subscribe((selected) => {
         const patchedValue = { key: selected.key, value: selected.value ?? 0 };
-        this.formGroup.patchValue({ product: patchedValue }, { emitEvent: false });
-        this.updateFieldOptions('product', [patchedValue]);
+        this.formGroup.patchValue({ product: patchedValue }, { emitEvent: true });
+        // this.updateFieldOptions('product', [patchedValue]);
       });
   }
 
@@ -227,7 +231,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
     const availableControl = this.formGroup.get('availableQuantity');
-    availableControl?.setValue(0, { emitEvent: false });
+    availableControl?.setValue(0, { emitEvent: true });
     quantityControl?.valueChanges.pipe(
       startWith(''),
       map(val => Number(val) || 0),   // convert to number, treat empty as 0
@@ -239,7 +243,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     ).subscribe(diff => {
       const current = Number(availableControl?.value) || 0;
       const updated = current + diff;
-      availableControl?.setValue(updated, { emitEvent: false });
+      availableControl?.setValue(updated, { emitEvent: true });
     });
   }
 
@@ -250,7 +254,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     const request = this.buildProductRequest(params.form.value);
     this.productService.createProduct(request).subscribe({
       next: () => {
-        alert('New Product created.');
+        this.commonService.showSuccessMessage('New Product created.');
         this.resetForm();
       },
       error: err => console.error('Failed to create product:', err)
@@ -261,8 +265,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     const request = this.buildUpdateProductRequest(params.form.value);
     this.productService.updateProduct(request.productId, request).subscribe({
       next: () => {
-        alert('Product updated.');
+        this.commonService.showSuccessMessage('Product updated.');
         this.resetForm();
+         this.router.navigate(['/product-list']);
       },
       error: err => console.error('Failed to update product:', err)
     });

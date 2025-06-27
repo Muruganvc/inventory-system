@@ -59,7 +59,7 @@ export class DynamicFormComponent {
       }
     });
   }
-
+  compareFn = (a: any, b: any) => a && b && a.value === b.value;
   onClick(btn: ActionButtons): void {
     const form: FormGroup = btn.params?.form;
     if (btn.validate && form?.invalid) {

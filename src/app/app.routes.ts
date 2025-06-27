@@ -13,11 +13,12 @@ import { SalesOrdersComponent } from './components/order-summary/sales-orders/sa
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 import { SalesHistoryComponent } from './components/order-summary/sales-history/sales-history.component';
 import { OrderReportsComponent } from './components/order-summary/order-reports/order-reports.component';
+import { authGuard } from './shared/services/authGuard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent }, {
-        path: '', component: LayoutComponent, children: [
+        path: '', component: LayoutComponent,canActivate: [authGuard], children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'product-list', component: ProductListComponent },
             { path: 'product', component: ProductComponent },
@@ -44,5 +45,6 @@ export const routes: Routes = [
             },
 
         ]
-    }
+    },
+    { path: '**', component: LoginComponent }
 ];
