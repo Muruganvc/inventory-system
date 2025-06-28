@@ -16,4 +16,5 @@ export interface OrderItemRequest {
 export interface OrderCreateRequest {
   customer: CustomerRequest;
   orderItemRequests: OrderItemRequest[];
+  balanceAmount: number;
 }

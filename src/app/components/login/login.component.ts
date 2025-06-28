@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../models/LoginRequest';
 import { CommonService } from '../../shared/services/common.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +34,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   private readonly auth = inject(AuthService);
   private readonly commonService = inject(CommonService);
+  private readonly dialog = inject(MatDialog);
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.auth.logout();
@@ -59,6 +62,19 @@ export class LoginComponent {
       error: () => this.commonService.showErrorMessage("Invalid credentials")
     });
 
+  }
+  forgetPassword = (): void => {
+    this.dialog.open(ForgetPasswordComponent, {
+      width: '100%',
+      maxWidth: '400px',
+      disableClose: true,
+      data: {
+        title: 'Sale Items',
+        message: 'No sales item found. Please add.',
+        okBtn: { title: 'Ok', isHiden: true },
+        cancel: { title: 'Cancel', isHiden: false }
+      }
+    }).afterClosed().subscribe();
   }
 
 }

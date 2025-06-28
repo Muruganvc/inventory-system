@@ -1,3 +1,7 @@
-<app-custom-table [data]="customerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns" [actions]="tableActions" (actionClick)="onAction($event)"
-  [showActions]="true" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
+<app-custom-table [data]="customerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns"
+  [actions]="tableActions" (actionClick)="onAction($event)" [showActions]="true"
+  (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
 </app-custom-table>
+
+<app-invoice style="display: none;" #invoiceRef></app-invoice>
+<iframe #printFrame style="display: none;"></iframe>

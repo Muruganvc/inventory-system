@@ -63,7 +63,7 @@ export class SalesComponent implements OnInit {
 
   private initForm(): void {
     this.formGroup = new FormGroup({
-      product: new FormControl(null),
+      product: new FormControl(null, [Validators.required]),
       mrp: new FormControl({ value: null, disabled: true }, Validators.required),
       price: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
@@ -80,12 +80,33 @@ export class SalesComponent implements OnInit {
       { type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [] },
       { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2 },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8 },
+      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2,isNumberOnly: true  },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8,isNumberOnly: true  },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8,isNumberOnly: true  },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
   }
+
+  
+  tableActions =
+    [
+      {
+        iconClass: 'fas fa-pencil-alt',
+        color: 'green',
+        tooltip: 'Edit',
+        action: 'edit',
+        condition: (row: any) => !row.isEditing
+      },
+      {
+        iconClass: 'fas fa-trash-alt',
+        color: 'red',
+        tooltip: 'Delete',
+        action: 'delete',
+        condition: (row: any) => !row.isEditing
+      }
+    ];
+
+
 
   private initActionButtons(): void {
     this.actionButtons = [
@@ -108,7 +129,7 @@ export class SalesComponent implements OnInit {
       },
       {
         label: 'Confirm',
-        icon: 'fas fa-arrow-left',
+        icon: 'fas fa-thumbs-up',
         class: 'btn-confirm',
         callback: this.handleConfirm.bind(this),
         validate: false,
@@ -116,6 +137,16 @@ export class SalesComponent implements OnInit {
       }
     ];
   }
+
+
+  onAction(event: { row: ProductEntry; action: string }) {
+    const { row, action } = event;
+    switch (action) {
+      case 'edit': this.onEdit(row); break;
+      case 'delete': this.handleCancel(); break;
+    }
+  }
+
 
   /** -------------------- DATA BINDING -------------------- */
 
@@ -215,7 +246,7 @@ export class SalesComponent implements OnInit {
     if (this.productSales.length > 0) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '100%',
-        maxWidth: '700px',
+        maxWidth: '350px',
         disableClose: true,
         data: {
           title: 'Sale Items',
@@ -278,7 +309,8 @@ export class SalesComponent implements OnInit {
       if (!result) return;
       const request: OrderCreateRequest = {
         customer: result.customer,
-        orderItemRequests: result.orderItems
+        orderItemRequests: result.orderItems,
+        balanceAmount : result.balanceAmount
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {

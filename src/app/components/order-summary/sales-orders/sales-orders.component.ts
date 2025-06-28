@@ -1,44 +1,45 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
 import { OrderListReponse } from '../../../models/OrderList';
 import { OrderService } from '../../../services/order.service';
 import { CustomerOrderList } from '../../../models/CustomerOrderList';
+import { InvoiceComponent } from '../invoice/invoice.component';
 
 @Component({
   selector: 'app-sales-orders',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent, InvoiceComponent],
   templateUrl: './sales-orders.component.html',
   styleUrl: './sales-orders.component.scss'
 })
 export class SalesOrdersComponent implements OnInit {
   customerOrderList: CustomerOrderList[] = [];
+  @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
+  @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
+  isPrint: boolean;
   private readonly orderService = inject(OrderService);
   ngOnInit(): void {
     this.getOrderSummary();
   }
-
-
-  
-    tableActions =
-      [
-        {
-          iconClass: 'fas fa-print',
-          color: 'green',
-          tooltip: 'Print',
-          action: 'print',
-          condition: (row: any) => !row.isEditing // or `true` if always visible
-        }
-      ];
-  
-  
-    onAction(event: { row: CustomerOrderList; action: string }) {
-      const { row, action } = event;
-      switch (action) {
-        case 'print': this.onPrint(row); break; 
+  tableActions =
+    [
+      {
+        iconClass: 'fas fa-print',
+        color: 'green',
+        tooltip: 'Print',
+        action: 'print',
+        condition: (row: any) => !row.isEditing // or `true` if always visible
       }
+    ];
+
+
+  onAction(event: { row: CustomerOrderList; action: string }) {
+    const { row, action } = event;
+    switch (action) {
+      case 'print': this.onPrint(row); break;
     }
-  
+  }
+
 
   columns: {
     key: string;
@@ -76,13 +77,6 @@ export class SalesOrdersComponent implements OnInit {
     });
   }
 
-  onPrint(a: CustomerOrderList) {
-    const popup = window.open('/invoice-print', '_blank', 'width=900,height=800');
-
-    if (!popup) {
-      alert('Popup blocked. Please allow popups in your browser.');
-    }
-  }
   newOpen(a: any) {
 
   }
@@ -93,4 +87,89 @@ export class SalesOrdersComponent implements OnInit {
   onDelete(a: CustomerOrderList) {
 
   }
+
+  async onPrint(order: CustomerOrderList) {
+    this.isPrint = true;
+    const content = await this.invoiceComponent.getContentHtml(order.orderId); // <-- Safe call
+    const frame: HTMLIFrameElement = this.printFrame.nativeElement;
+
+    const doc = frame.contentWindow?.document!;
+    doc.open();
+
+    const html = `<html>
+    <head>
+      <title>Print Invoice</title>
+      <style>
+        @media print {
+          @page {
+            size: A4;
+            margin: 20mm;
+          }
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+          }
+            .signature-block {
+  text-align: right;
+  font-style: italic;
+}
+
+.text-alg{
+  text-align: right;
+}
+            .invoice-title {
+                text-align: center;
+                margin: 20px 0;
+            }
+                .invoice-title .original {
+                font-size: 12px;
+                font-style: italic;
+            }
+          .details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 14px;
+          }
+          .invoice-container {
+            width: 100%;
+            margin: 0 auto;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+          h1, h2, h3, h4, h5 {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-container">
+        ${content}
+      </div>
+    </body>
+  </html>`
+    doc.write(html);
+    doc.close();
+    setTimeout(() => {
+      frame.contentWindow?.focus();
+      frame.contentWindow?.print();
+    }, 500);
+  }
+
 } 

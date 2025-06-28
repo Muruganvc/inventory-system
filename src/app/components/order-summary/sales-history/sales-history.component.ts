@@ -1,17 +1,22 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { OrderListReponse } from '../../../models/OrderList';
 import { OrderService } from '../../../services/order.service';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
+import { InvoiceComponent } from "../invoice/invoice.component";
 
 @Component({
   selector: 'app-sales-history',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent, InvoiceComponent],
   templateUrl: './sales-history.component.html',
   styleUrl: './sales-history.component.scss'
 })
 export class SalesHistoryComponent {
 salesOrderList: OrderListReponse[] = [];
+
+  @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
+  @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
+
   private readonly orderService = inject(OrderService);
   ngOnInit(): void {
     this.getOrderSummary();
@@ -54,7 +59,7 @@ salesOrderList: OrderListReponse[] = [];
     ];
 
   getOrderSummary = (): void => {
-    this.orderService.getOrderSummaries().subscribe({
+    this.orderService.getOrderSummaries(1).subscribe({
       next: result => {
         this.salesOrderList = result
       }
@@ -74,4 +79,92 @@ salesOrderList: OrderListReponse[] = [];
   onDelete(a: OrderListReponse) {
 
   }
+
+  printInvoice() {
+    const content = this.invoiceComponent.getContentHtml(1); // <-- Safe call
+    const frame: HTMLIFrameElement = this.printFrame.nativeElement;
+
+    const doc = frame.contentWindow?.document!;
+    doc.open();
+
+    const html = `<html>
+    <head>
+      <title>Print Invoice</title>
+      <style>
+        @media print {
+          @page {
+            size: A4;
+            margin: 20mm;
+          }
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+          }
+            .signature-block {
+  text-align: right;
+  font-style: italic;
+}
+.text-alg{
+  text-align: left;
+}
+            .invoice-title {
+                text-align: center;
+                margin: 20px 0;
+            }
+                .invoice-title .original {
+                font-size: 12px;
+                font-style: italic;
+            }
+          .details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 14px;
+          }
+          .invoice-container {
+            width: 100%;
+            margin: 0 auto;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: left;
+            vertical-align: top;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+          h1, h2, h3, h4, h5 {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="invoice-container">
+        ${content}
+      </div>
+    </body>
+  </html>`
+
+    console.log(html);
+
+    doc.write(html);
+
+    doc.close();
+
+    setTimeout(() => {
+      frame.contentWindow?.focus();
+      frame.contentWindow?.print();
+    }, 500);
+  }
+
 }

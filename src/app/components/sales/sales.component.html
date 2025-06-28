@@ -2,7 +2,7 @@
     [title]="pageHeader"></app-dynamic-form>
 
 
-<app-custom-table [showHeader] ='showHeader' [data]="productSales" [title]="'Product List'" [addBtnTitle]="'Add Product'" [columns]="columns"
-    [showActions]="true" (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)">
+<app-custom-table [showHeader] ='showHeader' [actions]="tableActions" (actionClick)="onAction($event)" [data]="productSales" [title]="'Product List'" [addBtnTitle]="'Add Product'" [columns]="columns"
+    [showActions]="true" (edit)="onEdit($event)"  (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)">
 </app-custom-table>
 

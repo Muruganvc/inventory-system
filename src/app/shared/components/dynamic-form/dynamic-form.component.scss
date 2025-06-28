@@ -263,6 +263,15 @@ mat-form-field {
   }
 }
 
+.btn-confirm {
+  background-color: #ffc107 !important; // Orange
+  color: #fff !important;
+
+  &:hover {
+    background-color: #fb8c00 !important;
+  }
+}
+
  
 
 .me-1 {

@@ -18,9 +18,9 @@ export class OrderService {
         .pipe(map((res: ApiResponse<number>) => res.data));
     }
 
-     getOrderSummaries = (): Observable<OrderListReponse[]> => {
+     getOrderSummaries = (orderId : number): Observable<OrderListReponse[]> => {
       return this.api
-        .get<OrderListReponse[]>('order-summary')
+        .get<OrderListReponse[]>(`order-summary?OrderId=${orderId}`)
         .pipe(map((res: ApiResponse<OrderListReponse[]>) => res.data));
     }
  

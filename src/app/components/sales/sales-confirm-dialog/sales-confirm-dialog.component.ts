@@ -133,6 +133,8 @@ export class SalesConfirmDialogComponent implements OnInit {
       phone: formValue.mobileNo
     };
 
+    const balanceAmount: number = +formValue.balanceAmount || 0;
+
     const orderItems: OrderItemRequest[] = this.data.orderItems.map((item: ProductEntry) => ({
       discountPercent: formValue.disCountPercent,
       productId: item.productId,
@@ -144,7 +146,8 @@ export class SalesConfirmDialogComponent implements OnInit {
     const result = {
       ...this.userForm.value,
       customer,
-      orderItems
+      orderItems,
+      balanceAmount
     };
 
     this.dialogRef.close(result);

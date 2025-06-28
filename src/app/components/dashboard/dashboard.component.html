@@ -11,4 +11,9 @@
   (actionClick)="onActionClick($event)">
 </app-dynamic-table>
   -->
-<app-invoice></app-invoice>
+<!-- <button (click)="printInvoice()">Print Invoice</button>
+<app-invoice #invoiceRef></app-invoice>
+<iframe #printFrame style="display: none;"></iframe> -->
+
+<input type="text" [(ngModel)]="userMessage" placeholder="Enter your message">
+<button (click)="sendWhatsApp()">Send on WhatsApp</button>
