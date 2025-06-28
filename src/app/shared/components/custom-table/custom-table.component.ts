@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export interface TableRow {
   id: string | number;
@@ -43,7 +44,8 @@ export interface TableColumn {
     MatInputModule,
     MatCardModule,
     MatButtonModule, MatIconModule,
-    LayoutModule, MatExpansionModule, MatCheckboxModule
+    LayoutModule, MatExpansionModule, MatCheckboxModule,
+    MatTooltipModule
   ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
@@ -81,6 +83,14 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
   isMobile = false;
   isTablet = false;
+  @Input() actions: {
+  iconClass: string;
+  color: string;
+  tooltip: string;
+  action: string;
+  condition: (row: any) => boolean;
+}[] = [];
+  @Output() actionClick = new EventEmitter<{ row: any; action: string }>(); 
 
   constructor(private breakpointObserver: BreakpointObserver) {
     this.breakpointObserver.observe([
@@ -136,6 +146,10 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     return Math.max(this.dataSource.filteredData.length, 1);
   }
 
+  actionClick1(row: any, action: string) {
+    this.actionClick.emit({ row, action });
+    // handle the action
+  }
 
 
   ngOnInit() {

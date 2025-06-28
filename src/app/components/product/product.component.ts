@@ -8,14 +8,15 @@ import { UpdateProductRequest } from '../../models/UpdateProductRequest';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
-import { filter, map, pairwise, startWith } from 'rxjs';
+import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../shared/services/common.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product',
   standalone: true,
-  imports: [DynamicFormComponent],
+  imports: [DynamicFormComponent, CommonModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 })
@@ -24,7 +25,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
-
+  errorHtml: string;
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
@@ -44,7 +45,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.loadAllCompanies();
     this.bindCompanyChange();
     this.bindCategoryChange();
-    this.bindProductChange();
+    // this.bindProductChange();
     this.initActionButtons();
     this.bindQuantityChange();
   }
@@ -74,19 +75,25 @@ export class ProductComponent implements OnInit, OnDestroy {
   private initFields(): void {
     const isAdmin = !this.authService.hasRole(["Admin"])
     this.fields = [
-      { type: 'searchable-select', name: 'company', label: 'Company', colSpan: 3, options: [] },
-      { type: 'searchable-select', name: 'category', label: 'Category', colSpan: 3, options: [] },
+      {
+        type: 'searchable-select', name: 'company', label: 'Company', colSpan: 3, options: [],
+        clear: (value: string) => this.clearDropDwon(value)
+      },
+      {
+        type: 'searchable-select', name: 'category', label: 'Category', colSpan: 3, options: [],
+        clear: (value: string) => this.clearDropDwon(value)
+      },
       {
         type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [],
         addTag: true,
-        // add: (term: string) => this.clearProductDetails(term),
-        clear: () => this.clearProductDetails('')
+        // add: (term: string) => this.clearDropDwon(term),
+        clear: (value: string) => this.clearDropDwon(value)
       },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'availableQuantity', label: 'Available Quantity', colSpan: 3, isReadOnly: true },
-      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2 },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Available Quantity', colSpan: 3, isReadOnly: true, isNumberOnly: true },
+      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2, isNumberOnly: true },
       { type: 'input', name: 'taxType', label: 'Tax Type', colSpan: isAdmin ? 3 : 2, maxLength: 5 },
       { type: 'input', name: 'barCode', label: 'Bar Code', colSpan: 3 },
       { type: 'input', name: 'brandName', label: 'Brand Name', colSpan: 3 },
@@ -107,9 +114,17 @@ export class ProductComponent implements OnInit, OnDestroy {
     return newProduct;
   }
 
-  clearProductDetails(a: any) {
-    var category = this.formGroup.get('category')?.value;
-    this.loadProducts(category.value);
+  clearDropDwon(value: string) {
+    if (value == 'company') {
+      this.formGroup.patchValue({ category: null, product: null });
+      this.updateFieldOptions('category', []);
+      this.updateFieldOptions('product', []);
+    } else if (value == 'category') {
+      this.formGroup.patchValue({ product: null });
+      var category = this.formGroup.get('category')?.value;
+      this.updateFieldOptions('product', []);
+      this.loadProducts(category.value);
+    }
   }
 
 
@@ -200,32 +215,54 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (field) field.options = options;
   }
 
+
   private bindCompanyChange(): void {
-    this.formGroup.get('company')?.valueChanges.subscribe(selected => {
-      this.formGroup.patchValue({ category: null, product: null },{emitEvent:true});
-      this.updateFieldOptions('category', []);
-      this.updateFieldOptions('product', []);
-      if (selected?.value) this.loadCategories(selected.value);
-    });
+    this.formGroup.get('company')?.valueChanges
+      .pipe(
+        filter(value => !!value)
+      )
+      .subscribe(selected => {
+        const categoryControl = this.formGroup.get('category');
+        const productControl = this.formGroup.get('product');
+        if (categoryControl?.value || productControl?.value) {
+          categoryControl?.reset(null);
+          productControl?.reset(null);
+        }
+        this.updateFieldOptions('category', []);
+        this.updateFieldOptions('product', []);
+
+        if (selected?.value) {
+          this.loadCategories(selected.value);
+        }
+      });
   }
 
+
+  // private bindCategoryChange(): void {
+  //   this.formGroup.get('category')?.valueChanges.subscribe(selected => {
+  //     this.formGroup.patchValue({ product: null });
+  //     // this.updateFieldOptions('product', []);
+  //     if (selected?.value) this.loadProducts(selected.value);
+  //   });
+  // }
+
   private bindCategoryChange(): void {
-    this.formGroup.get('category')?.valueChanges.subscribe(selected => {
+    this.formGroup.get('category')?.valueChanges.pipe(filter(value => !!value)).subscribe(selected => {
       this.formGroup.patchValue({ product: null });
-      // this.updateFieldOptions('product', []);
+      this.updateFieldOptions('product', []);
       if (selected?.value) this.loadProducts(selected.value);
     });
   }
 
-  private bindProductChange(): void {
-    this.formGroup.get('product')?.valueChanges
-      .pipe(filter((value) => !!value))
-      .subscribe((selected) => {
-        const patchedValue = { key: selected.key, value: selected.value ?? 0 };
-        this.formGroup.patchValue({ product: patchedValue }, { emitEvent: true });
-        // this.updateFieldOptions('product', [patchedValue]);
-      });
-  }
+  // private bindProductChange(): void {
+  //   this.formGroup.get('product')?.valueChanges
+  //     .pipe(filter((value) => !!value))
+  //     .subscribe((selected) => {
+  //       const patchedValue = { key: selected.key, value: selected.value ?? 0 };
+  //       this.formGroup.patchValue({ product: patchedValue }, { emitEvent: true });
+  //       // this.updateFieldOptions('product', [patchedValue]);
+  //     });
+  // }
 
 
   private bindQuantityChange(): void {
@@ -251,15 +288,37 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
+    const formErrors = params.form.errors;
+    const errorMessages = formErrors
+      ? Object.values(formErrors)
+        .map((err: any) => err?.message)
+        .filter(Boolean)
+      : [];
+
+    if (errorMessages.length) {
+      this.commonService.showErrorMessage(errorMessages.join('<br>'));
+      return;
+    }
+
     const request = this.buildProductRequest(params.form.value);
+
     this.productService.createProduct(request).subscribe({
-      next: () => {
-        this.commonService.showSuccessMessage('New Product created.');
-        this.resetForm();
+      next: (result) => {
+        const message = result === 0
+          ? 'Product already exists.'
+          : 'New Product created.';
+        this.commonService.showSuccessMessage(message);
+
+        if (result !== 0) {
+          this.ngOnInit();
+        }
       },
-      error: err => console.error('Failed to create product:', err)
+      error: (err) => {
+        console.error('Failed to create product:', err);
+      }
     });
   }
+
 
   private handleUpdate(params: any): void {
     const request = this.buildUpdateProductRequest(params.form.value);
@@ -267,7 +326,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       next: () => {
         this.commonService.showSuccessMessage('Product updated.');
         this.resetForm();
-         this.router.navigate(['/product-list']);
+        this.router.navigate(['/product-list']);
       },
       error: err => console.error('Failed to update product:', err)
     });
@@ -294,7 +353,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private buildProductRequest(value: any): ProductRequest {
     const { company, category, product } = value;
     // const productName = [company?.key, category?.key, product?.key].filter(Boolean).join(' ');
-    const productName = [product?.key].filter(Boolean).join(' ');
+    const productName = product?.key ? product.key : `${company?.key ?? ''} ${category?.key ?? ''}`.trim();
     return {
       barCode: value.barCode,
       brandName: value.brandName,

@@ -24,11 +24,64 @@ export class ProductListComponent {
     this.getProducts();
   } 
 
+
+  tableActions =
+    [
+      {
+        iconClass: 'fas fa-pencil-alt',
+        color: 'green',
+        tooltip: 'Edit',
+        action: 'edit',
+        condition: (row: any) => !row.isEditing
+      },
+      {
+        iconClass: 'fas fa-trash-alt',
+        color: 'red',
+        tooltip: 'Delete',
+        action: 'delete',
+        condition: (row: any) => !row.isEditing
+      }
+      // ,{
+      //   iconClass: 'fas fa-save',
+      //   color: 'green',
+      //   tooltip: 'Save',
+      //   action: 'save',
+      //   condition: (row: any) => row.isEditing
+      // },
+      // {
+      //   iconClass: 'fas fa-times',
+      //   color: 'gray',
+      //   tooltip: 'Cancel',
+      //   action: 'cancel',
+      //   condition: (row: any) => row.isEditing
+      // },
+      // {
+      //   iconClass: 'fas fa-print',
+      //   color: 'red',
+      //   tooltip: 'Print',
+      //   action: 'print',
+      //   condition: (row: any) => !row.isEditing // or `true` if always visible
+      // }
+    ];
+
+
+  onAction(event: { row: ProductsResponse; action: string }) {
+    const { row, action } = event;
+    switch (action) {
+      case 'edit': this.onEdit(row); break;
+      // case 'delete': this.deleteRow(row); break;
+      // case 'save': this.saveRow(row); break;
+      // case 'cancel': this.cancelEdit(row); break;
+    }
+  }
+
+
+
   role: boolean =true;
   products: ProductsResponse[] = [];
 
   getProducts(): void {
-    this.productService.getProducts().subscribe({
+    this.productService.getProducts('product').subscribe({
       next: (result) => {
         this.products = result;
         const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
@@ -51,10 +104,7 @@ export class ProductListComponent {
 
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
-    // { key: 'companyName', label: 'Company', align: 'left', isHidden: false },
-    // { key: 'categoryName', label: 'Cat.Name', align: 'right', isHidden: false },
     { key: 'productName', label: 'Prod.Name', align: 'left', isHidden: false },
-    // { key: 'description', label: 'Description', align: 'left', isHidden: false },
     { key: 'mrp', label: 'Mrp ₹', align: 'left', isHidden: false },
     { key: 'salesPrice', label: 'Sales Price ₹', align: 'left', isHidden: false },
     { key: 'taxPercent', label: 'Tax %', align: 'left', isHidden: false },

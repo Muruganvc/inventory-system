@@ -7,11 +7,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { TableColumn, DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table.component';
 import { ReusableTableComponent } from "../../shared/components/reusable-table/reusable-table.component";
+import { InvoiceComponent } from "../order-summary/invoice/invoice.component";
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [CommonModule, NgSelectModule, ReactiveFormsModule, CommonModule, FormsModule, ReusableTableComponent, DynamicTableComponent],
+    imports: [CommonModule, NgSelectModule, ReactiveFormsModule, CommonModule, FormsModule, ReusableTableComponent, DynamicTableComponent, InvoiceComponent],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.scss'
 })

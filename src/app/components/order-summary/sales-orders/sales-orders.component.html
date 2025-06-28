@@ -1,3 +1,3 @@
-<app-custom-table [data]="customerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns"
-  [showActions]="true" (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
+<app-custom-table [data]="customerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns" [actions]="tableActions" (actionClick)="onAction($event)"
+  [showActions]="true" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
 </app-custom-table>

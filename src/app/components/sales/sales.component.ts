@@ -120,7 +120,7 @@ export class SalesComponent implements OnInit {
   /** -------------------- DATA BINDING -------------------- */
 
   private getProducts(): void {
-    this.productService.getProducts().subscribe({
+    this.productService.getProducts('sales').subscribe({
       next: res => {
         this.products = res;
         this.productsList = this.products.map(p => ({

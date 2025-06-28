@@ -14,11 +14,13 @@ import { OrderSummaryComponent } from './components/order-summary/order-summary.
 import { SalesHistoryComponent } from './components/order-summary/sales-history/sales-history.component';
 import { OrderReportsComponent } from './components/order-summary/order-reports/order-reports.component';
 import { authGuard } from './shared/services/authGuard';
+import { InvoiceComponent } from './components/order-summary/invoice/invoice.component';
+import { BackupComponent } from './components/backup/backup.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent }, {
-        path: '', component: LayoutComponent,canActivate: [authGuard], children: [
+        path: '', component: LayoutComponent, canActivate: [authGuard], children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'product-list', component: ProductListComponent },
             { path: 'product', component: ProductComponent },
@@ -40,11 +42,13 @@ export const routes: Routes = [
                     { path: '', redirectTo: 'sales-orders', pathMatch: 'full' },
                     { path: 'sales-orders', component: SalesOrdersComponent },
                     { path: 'sales-history', component: SalesHistoryComponent },
-                    { path: 'order-reports', component: OrderReportsComponent }
+                    { path: 'sales-reports', component: OrderReportsComponent }
                 ]
             },
-
+            { path: 'data-backup', component: BackupComponent },
         ]
     },
+    { path: 'invoice-print', component: InvoiceComponent },
+
     { path: '**', component: LoginComponent }
 ];

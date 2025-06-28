@@ -13,7 +13,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ActionButtons } from '../../common/ActionButton';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'; 
+import { NumberOnlyDirective } from '../../services/NumberOnlyDirective ';
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
@@ -30,7 +31,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     MatSlideToggleModule,
     MatIconModule,
     MatButtonModule,
-    NgSelectModule
+    NgSelectModule,
+    NumberOnlyDirective
   ],
   templateUrl: './dynamic-form.component.html',
   styleUrl: './dynamic-form.component.scss',
@@ -60,11 +62,12 @@ export class DynamicFormComponent {
     });
   }
   compareFn = (a: any, b: any) => a && b && a.value === b.value;
+
   onClick(btn: ActionButtons): void {
     const form: FormGroup = btn.params?.form;
     if (btn.validate && form?.invalid) {
       this.markFormGroupTouched(form);
-      return;
+      // return;
     }
     btn.callback?.(btn.params);
   }

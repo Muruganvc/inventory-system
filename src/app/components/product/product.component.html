@@ -1,2 +1,3 @@
+<div *ngIf="errorHtml" [innerHTML]="errorHtml" class="error-text"></div>
 <app-dynamic-form [formGroup]="formGroup" [isPopup]="true" [fields]="fields" [buttons]="actionButtons"
     [title]="pageHeader"></app-dynamic-form>

@@ -46,8 +46,8 @@ export class ProductService {
       .put<UpdateProductRequest, number>(`product/${productId}`, product)
       .pipe(map((res: ApiResponse<number>) => res.data));
   }
-  getProducts = (): Observable<ProductsResponse[]> => {
-    return this.api.get<ProductsResponse[]>('products')
+  getProducts = (type:string): Observable<ProductsResponse[]> => {
+    return this.api.get<ProductsResponse[]>(`products/${type}`)
       .pipe(map((res: ApiResponse<ProductsResponse[]>) => res.data));
   }
 

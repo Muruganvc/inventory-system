@@ -18,6 +18,28 @@ export class SalesOrdersComponent implements OnInit {
     this.getOrderSummary();
   }
 
+
+  
+    tableActions =
+      [
+        {
+          iconClass: 'fas fa-print',
+          color: 'green',
+          tooltip: 'Print',
+          action: 'print',
+          condition: (row: any) => !row.isEditing // or `true` if always visible
+        }
+      ];
+  
+  
+    onAction(event: { row: CustomerOrderList; action: string }) {
+      const { row, action } = event;
+      switch (action) {
+        case 'print': this.onPrint(row); break; 
+      }
+    }
+  
+
   columns: {
     key: string;
     label: string;
@@ -54,8 +76,12 @@ export class SalesOrdersComponent implements OnInit {
     });
   }
 
-  onEdit(a: CustomerOrderList) {
+  onPrint(a: CustomerOrderList) {
+    const popup = window.open('/invoice-print', '_blank', 'width=900,height=800');
 
+    if (!popup) {
+      alert('Popup blocked. Please allow popups in your browser.');
+    }
   }
   newOpen(a: any) {
 

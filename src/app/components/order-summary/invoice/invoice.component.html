@@ -1,0 +1,53 @@
+<div class="invoice-container print-section">
+  <div class="header">
+    <div>
+      <h1 class="title">SALES INVOICE</h1>
+      <p><strong>Date:</strong> {{ today | date }}</p>
+      <p><strong>Invoice Id:</strong> INV-001</p>
+      <p><strong>Due Date:</strong> {{ today | date:'shortDate' }}</p>
+    </div>
+  </div>
+
+  <table class="item-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of invoice.items">
+        <td>{{ item.id }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.unitPrice | currency }}</td>
+        <td>{{ item.quantity * item.unitPrice | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="totals">
+    <p><strong>Subtotal:</strong> {{ subtotal | currency }}</p>
+    <p><strong>Tax Rate:</strong> {{ invoice.taxRate }}%</p>
+    <p><strong>Sales Tax:</strong> {{ tax | currency }}</p>
+    <p><strong>Shipping Charge:</strong> {{ invoice.shipping | currency }}</p>
+    <p><strong>Total Bill:</strong> {{ total | currency }}</p>
+  </div>
+
+  <div class="notes">
+    <p>Note:</p>
+    <ol>
+      <li>Only faulty goods can be exchanged in 10 days after sale.</li>
+      <li>Please include the bill number in your payment notes.</li>
+    </ol>
+    <p>If you have any query concerning this invoice, use the following information:</p>
+    <p>{{ invoice.company.phone }}, {{ invoice.company.email }}</p>
+  </div>
+
+  <div class="signature">
+    <strong>Authorized Signatory</strong>
+  </div>
+</div>

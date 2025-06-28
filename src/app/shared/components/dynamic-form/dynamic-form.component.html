@@ -19,7 +19,7 @@
                         <!-- Input -->
                         <mat-form-field *ngSwitchCase="'input'" appearance="outline">
                             <mat-label>{{ field.label }}</mat-label>
-                            <input matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
+                            <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name" [readonly]="field.isReadOnly"
                                 [attr.maxlength]="field.maxLength || null" appAppSentenceCase />
                             <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                                 {{ field.label }} is required
@@ -99,7 +99,7 @@
                                         bindLabel="key"
                                         [compareWith]="compareFn"
                                         [addTag]="field.addTag"
-                                        (clear)="field.clear?.()"
+                                        (clear)="field.clear?.(field.name)"
                                         placeholder="Select {{ field.label }}"
                                         [class.ng-invalid]="formGroup.get(field.name)?.invalid"
                                         [class.ng-touched]="formGroup.get(field.name)?.touched">
