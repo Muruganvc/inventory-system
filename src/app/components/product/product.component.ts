@@ -8,10 +8,11 @@ import { UpdateProductRequest } from '../../models/UpdateProductRequest';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
-import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../shared/services/common.service';
 import { CommonModule } from '@angular/common';
+import { CompanyService } from '../../services/company.service';
 
 @Component({
   selector: 'app-product',
@@ -25,6 +26,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
+    private readonly companyService = inject(CompanyService);
   errorHtml: string;
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -190,8 +192,15 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- DATA LOADERS -------------------- */
 
   private loadAllCompanies(): void {
-    this.productService.getCompany().subscribe({
-      next: res => this.updateFieldOptions('company', res),
+    this.companyService.getCompanies().subscribe({
+      next: res => {
+        const keyValue: KeyValuePair[] = res.map(company => ({
+          key: company.companyName,
+          value: company.companyId
+        }));
+
+        this.updateFieldOptions('company', keyValue);
+      },
       error: err => console.error('Company Load Error:', err)
     });
   }

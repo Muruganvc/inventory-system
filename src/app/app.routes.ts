@@ -23,6 +23,7 @@ import { ProductCategoryListComponent } from './components/inventory/product-cat
 import { ProfileComponent } from './components/settings/profile/profile.component';
 import { UserListComponent } from './components/settings/new-user/user-list/user-list.component';
 import { UserMenuPermissionComponent } from './components/settings/user-menu-permission/user-menu-permission.component';
+import { CompanyComponent } from './components/inventory/company/company.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -39,6 +40,7 @@ export const routes: Routes = [
                 children: [
                     { path: '', redirectTo: 'company-list', pathMatch: 'full' },
                     { path: 'company-list', component: CompanyListComponent },
+                    { path: 'company', component: CompanyComponent },
                     { path: 'category-list', component: CategoryListComponent },
                     { path: 'product-category-list', component: ProductCategoryListComponent }
                 ]

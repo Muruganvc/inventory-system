@@ -13,15 +13,15 @@ import { ApiResponse } from '../shared/common/ApiResponse';
 export class ProductService {
 
   private readonly api = inject(ApiService)
-  getCompany = (companyName?: string): Observable<KeyValuePair[]> => {
-    const url = companyName
-      ? `companyName=${encodeURIComponent(companyName)}`
-      : `company`;
+  // getCompany = (companyName?: string): Observable<KeyValuePair[]> => {
+  //   const url = companyName
+  //     ? `companyName=${encodeURIComponent(companyName)}`
+  //     : `company`;
 
-    return this.api
-      .get<KeyValuePair[]>(url)
-      .pipe(map((res: ApiResponse<KeyValuePair[]>) => res.data));
-  }
+  //   return this.api
+  //     .get<KeyValuePair[]>(url)
+  //     .pipe(map((res: ApiResponse<KeyValuePair[]>) => res.data));
+  // }
 
   getCategories = (companyId: number): Observable<KeyValuePair[]> => {
     return this.api
