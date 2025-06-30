@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { MenuItem } from '../../../shared/common/MenuItem';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../../services/user.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { GetMenuItemPermissionQueryResponse } from '../../../models/GetMenuItemPermissionQueryResponse';
+import { CommonService } from '../../../shared/services/common.service';
 @Component({
   selector: 'app-user-menu-permission',
   standalone: true,
@@ -18,7 +19,9 @@ import { GetMenuItemPermissionQueryResponse } from '../../../models/GetMenuItemP
 })
 export class UserMenuPermissionComponent {
 
-  constructor(private readonly userService: UserService) { }
+  private readonly userService = inject(UserService);
+  private readonly commonService = inject(CommonService);
+  
   screenHeight: number = window.innerHeight;
   users: {
     id: number,
@@ -27,15 +30,15 @@ export class UserMenuPermissionComponent {
   selectedUserId: number;
 
   flatMenu: any[] = [];
-  menu : GetMenuItemPermissionQueryResponse[] =[];
+  originalMenu: MenuItem[] = [];
   displayedColumns: string[] = ['label', 'icon'];
 
   ngOnInit(): void {
     this.getUsers();
-    this.getUserMenu();
     this.userService.getUserMenus().subscribe({
       next: (menu: MenuItem[]) => {
         this.flatMenu = [];
+        this.originalMenu = menu;
         this.flattenMenu(menu);
       },
       error: (err) => {
@@ -51,7 +54,6 @@ export class UserMenuPermissionComponent {
     this.userService.getUsers().subscribe({
       next: result => {
         if (!!result) {
-          debugger;
           this.users = result.map(a => ({
             id: a.userId,
             name: a.firstName
@@ -65,20 +67,54 @@ export class UserMenuPermissionComponent {
   updateHeight(): void {
     this.screenHeight = window.innerHeight;
   }
-  flattenMenu(menuItems: MenuItem[], level: number = 0): void {
-    for (let item of menuItems) {
-      this.flatMenu.push({ ...item, level });
+
+  flattenMenu(
+    menuItems: MenuItem[],
+    permissionItems: GetMenuItemPermissionQueryResponse[] = [],
+    level: number = 0
+  ): void {
+    for (const item of menuItems) {
+      const matched = permissionItems.find(p => p.id === item.id);
+      const hasPermission = matched ? matched.hasPermission === true : false;
+
+      this.flatMenu.push({
+        ...item,
+        permission: hasPermission,
+        level
+      });
+
       if (item.subMenuItem?.length) {
-        this.flattenMenu(item.subMenuItem, level + 1);
+        this.flattenMenu(item.subMenuItem, permissionItems, level + 1);
       }
     }
   }
+  onUserSelected = (event: any): void => {
+    if (!event) {
+      this.flatMenu = [];
+      this.flattenMenu(this.originalMenu, []);
+      return;
+    }
 
-  getUserMenu = (): void => {
-    this.userService.getUserMenuPermission(1).subscribe({
-      next: result => {
-          this.menu = result;
-      }
+    this.userService.getUserMenuPermission(event.id).subscribe({
+      next: permissionResult => {
+        this.flatMenu = [];
+        this.flattenMenu(this.originalMenu, permissionResult);
+      },
+      error: err => console.error('Permission fetch failed', err)
     });
+  }
+
+  addOrRemoveMenu = (row: any): void => {
+    if (this.selectedUserId > 0) {
+      this.userService.addOrRemoveUserMenuItem(this.selectedUserId, row.id).subscribe({
+        next: result => {
+          if (!!result) {
+          }
+        }
+      });
+    }else{
+      this.commonService.showWarning("Must be select user.");
+    }
+   
   }
 }

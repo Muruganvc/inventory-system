@@ -73,4 +73,9 @@ export class UserService {
       .pipe(map((res: ApiResponse<boolean>) => res.data));
   }
 
+    addOrRemoveUserMenuItem = (userId: number,menuId: number): Observable<boolean> => {
+    return this.api.post<null,boolean>(`menu/${userId}/${menuId}`,null)
+      .pipe(map((res: ApiResponse<boolean>) => res.data));
+  }
+
 }

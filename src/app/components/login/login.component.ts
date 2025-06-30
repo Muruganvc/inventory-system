@@ -46,7 +46,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.commonService.showErrorMessage('Please fill all fields');
+      this.commonService.showError('Please fill all fields');
       return;
     }
     const { username, password } = this.loginForm.value;
@@ -57,9 +57,9 @@ export class LoginComponent {
     this.auth.login(loginRequest).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
-        this.commonService.showSuccessMessage('Login successful!');
+        this.commonService.showSuccess('Login successful!');
       },
-      error: () => this.commonService.showErrorMessage("Invalid credentials")
+      error: () => this.commonService.showError("Invalid credentials")
     });
 
   }

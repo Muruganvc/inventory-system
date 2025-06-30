@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit {
     this.userService.updateUser(Number(userId), userUpdate).subscribe({
       next: (result) => {
         if (result) {
-          this.commonService.showSuccessMessage("Successfully updated");
+          this.commonService.showSuccess("Successfully updated");
         }
       },
       error: (error) => {

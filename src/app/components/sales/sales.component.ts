@@ -15,7 +15,7 @@ import { SalesConfirmDialogComponent } from './sales-confirm-dialog/sales-confir
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { OrderService } from '../../services/order.service';
 import { OrderCreateRequest } from '../../models/CustomerRequest';
-import { RouterModule } from '@angular/router';
+import { CommonService } from '../../shared/services/common.service';
 
 @Component({
   selector: 'app-sales',
@@ -29,6 +29,7 @@ export class SalesComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   private readonly orderService = inject(OrderService);
+  private readonly commonService = inject(CommonService);
 
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -80,14 +81,14 @@ export class SalesComponent implements OnInit {
       { type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [] },
       { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2,isNumberOnly: true  },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8,isNumberOnly: true  },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8,isNumberOnly: true  },
+      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2, isNumberOnly: true },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
   }
 
-  
+
   tableActions =
     [
       {
@@ -161,7 +162,7 @@ export class SalesComponent implements OnInit {
         this.updateFieldOptions('product', this.productsList);
       },
       error: err => {
-        console.error('Failed to load products:', err);
+        this.commonService.showError('Failed to load products');
         this.productsList = [];
       }
     });
@@ -310,19 +311,18 @@ export class SalesComponent implements OnInit {
       const request: OrderCreateRequest = {
         customer: result.customer,
         orderItemRequests: result.orderItems,
-        balanceAmount : result.balanceAmount
+        balanceAmount: result.balanceAmount
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {
-          console.log('✅ Order created successfully:', response);
-          // TODO: Reset state, show success notification, etc.
+          if (response > 0) {
+            this.commonService.showSuccess('✅ Order created successfully.');
+          }
         },
         error: error => {
-          console.error('❌ Order creation failed:', error);
-          // TODO: Show error notification to user
+          this.commonService.showError('❌ Order creation failed');
         }
       });
-      console.log('📝 User confirmed order:', result);
     });
   }
 
@@ -331,6 +331,13 @@ export class SalesComponent implements OnInit {
   /** -------------------- PRODUCT ADD -------------------- */
 
   private addProduct(form: any): void {
+
+    const isExists = this.productSales.some(a => a.productId == form.product.value);
+    if (isExists) {
+      this.commonService.showWarning('Product already exists.');
+      return;
+    }
+
     const selectedProduct = this.products.find(p => p.productId === form.product.value);
     if (!selectedProduct) return;
     const totalAmount = Number(this.calculateGSTFromBasePrice((form.price * form.quantity), selectedProduct.taxPercent).totalPrice.toFixed(2));
@@ -341,7 +348,7 @@ export class SalesComponent implements OnInit {
       taxPercent: selectedProduct.taxPercent,
       price: form.price,
       quantity: form.quantity,
-      totalAmount : (form.price * form.quantity),
+      totalAmount: (form.price * form.quantity),
       productId: selectedProduct.productId,
       id: form.product.value
     };
@@ -391,9 +398,5 @@ export class SalesComponent implements OnInit {
         }
       }
     });
-  }
-
-  handleFieldChange(event: any): void {
-    // Future: handle dynamic field change
   }
 }

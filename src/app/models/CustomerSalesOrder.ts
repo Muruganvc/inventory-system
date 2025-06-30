@@ -23,4 +23,5 @@ export interface Invoice {
   totalTaxable: number;
   totalAmount: number;
   amountInWords: string;
+  user:string;
 }

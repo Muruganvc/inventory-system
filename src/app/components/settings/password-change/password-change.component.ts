@@ -42,7 +42,7 @@ formGroup!: FormGroup;
     this.userService.updatePassword(Number(userId), userUpdate).subscribe({
       next: (result) => {
         if (result) {
-          this.commonService.showSuccessMessage("Successfully password Changed");
+          this.commonService.showSuccess("Successfully password Changed");
           this.authService.logout();
         }
       },

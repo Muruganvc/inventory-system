@@ -68,12 +68,12 @@ export class ApiService {
 
   post<TRequest, TResponse>(
     url: string,
-    body: TRequest,
+    body?: TRequest,
     params?: ApiParams,
     headers?: ApiHeaders
   ): Observable<ApiResponse<TResponse>> {
     return this.http
-      .post<ApiResponse<TResponse>>(`${this.baseUrl}${url}`, body, {
+      .post<ApiResponse<TResponse>>(`${this.baseUrl}${url}`,  body ?? {}, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })

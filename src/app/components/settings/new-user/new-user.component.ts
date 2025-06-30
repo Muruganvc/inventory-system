@@ -103,7 +103,7 @@ export class NewUserComponent implements OnInit {
     this.userService.createNewUser(user).subscribe({
       next: result => {
           if(!!result){
-            this.commonService.showSuccessMessage("New User Created.");
+            this.commonService.showSuccess("New User Created.");
           }
       }
     });

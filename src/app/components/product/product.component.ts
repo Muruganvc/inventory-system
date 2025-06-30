@@ -296,7 +296,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       : [];
 
     if (errorMessages.length) {
-      this.commonService.showErrorMessage(errorMessages.join('<br>'));
+      this.commonService.showError(errorMessages.join('<br>'));
       return;
     }
 
@@ -307,7 +307,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         const message = result === 0
           ? 'Product already exists.'
           : 'New Product created.';
-        this.commonService.showSuccessMessage(message);
+        this.commonService.showSuccess(message);
 
         if (result !== 0) {
           this.ngOnInit();
@@ -324,7 +324,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     const request = this.buildUpdateProductRequest(params.form.value);
     this.productService.updateProduct(request.productId, request).subscribe({
       next: () => {
-        this.commonService.showSuccessMessage('Product updated.');
+        this.commonService.showSuccess('Product updated.');
         this.resetForm();
         this.router.navigate(['/product-list']);
       },

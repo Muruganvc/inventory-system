@@ -61,7 +61,7 @@ export class UserListComponent implements OnInit {
       next: result => {
         if (result) {
           this.getUsers();
-          this.commonService.showSuccessMessage("Updated.");
+          this.commonService.showSuccess("Updated.");
         }
       }
     });

@@ -17,7 +17,7 @@ export class InvoiceComponent implements OnInit {
   }
   @ViewChild('invoiceContent', { static: false }) invoiceContent!: ElementRef;
   private readonly orderService = inject(OrderService);
-private cdr = inject(ChangeDetectorRef);
+  private cdr = inject(ChangeDetectorRef);
   customer = {
     name: '',
     address: '',
@@ -30,7 +30,8 @@ private cdr = inject(ChangeDetectorRef);
     items: [],
     totalAmount: 0,
     amountInWords: '',
-    totalTaxable: 0
+    totalTaxable: 0,
+    user:''
   };
 
   company = {
@@ -48,7 +49,7 @@ private cdr = inject(ChangeDetectorRef);
     accountNumber: '3615678789',
     ifsc: 'SBIN0000997',
   };
- 
+
   async getOrder(orderId: number): Promise<void> {
     try {
       const result = await firstValueFrom(this.orderService.getOrderSummaries(orderId));
@@ -62,10 +63,11 @@ private cdr = inject(ChangeDetectorRef);
           rate: a.unitPrice,
           total: a.quantity * a.unitPrice,
           unit: 'PCS',
-          igstAmount: 10,     
-          igstPercent: 18,   
-          taxableValue: 18  
+          igstAmount: 10,
+          igstPercent: 18,
+          taxableValue: 18
         }));
+        this.invoice.user = result[0].user;
 
         this.invoice.totalAmount = this.invoice.items.reduce((sum, item) => sum + item.total, 0);
         this.invoice.amountInWords = this.numberToWords(Math.round(this.invoice.totalAmount)) + ' rupees only';
@@ -80,25 +82,25 @@ private cdr = inject(ChangeDetectorRef);
   }
 
   async getContentHtml1(orderId: number): Promise<string> {
-    await this.getOrder(orderId);   
-    this.cdr.detectChanges();              
-    await new Promise(r => setTimeout(r));   
+    await this.getOrder(orderId);
+    this.cdr.detectChanges();
+    await new Promise(r => setTimeout(r));
     return this.invoiceContent.nativeElement.innerHTML;
   }
 
-async getContentHtml(orderId: number): Promise<string> {
-  // Clear old invoice data to avoid flickering or stale content
-  this.invoice.items = [];
-  this.invoice.totalAmount = 0;
-  this.invoice.amountInWords = '';
-  this.customer = { name: '', address: '', phone: '' };
+  async getContentHtml(orderId: number): Promise<string> {
+    // Clear old invoice data to avoid flickering or stale content
+    this.invoice.items = [];
+    this.invoice.totalAmount = 0;
+    this.invoice.amountInWords = '';
+    this.customer = { name: '', address: '', phone: '' };
 
-  await this.getOrder(orderId);            // Step 1: Fetch fresh data
-  this.cdr.detectChanges();                // Step 2: Trigger change detection
-  await new Promise(r => setTimeout(r, 0)); // Step 3: Wait one tick for DOM update
+    await this.getOrder(orderId);            // Step 1: Fetch fresh data
+    this.cdr.detectChanges();                // Step 2: Trigger change detection
+    await new Promise(r => setTimeout(r, 0)); // Step 3: Wait one tick for DOM update
 
-  return this.invoiceContent.nativeElement.innerHTML;
-}
+    return this.invoiceContent.nativeElement.innerHTML;
+  }
 
   numberToWords(num: number): string {
     if (num === 0) return 'zero';
@@ -144,16 +146,16 @@ async getContentHtml(orderId: number): Promise<string> {
     return result.trim();
   }
   paginatedItems: any[][] = [];
-paginateItems() {
-  const pageSize = 15; // ← Now showing 15 items per page
-  const items = this.invoice.items;
-  this.paginatedItems = [];
+  paginateItems() {
+    const pageSize = 15; // ← Now showing 15 items per page
+    const items = this.invoice.items;
+    this.paginatedItems = [];
 
-  for (let i = 0; i < items.length; i += pageSize) {
-    this.paginatedItems.push(items.slice(i, i + pageSize));
+    for (let i = 0; i < items.length; i += pageSize) {
+      this.paginatedItems.push(items.slice(i, i + pageSize));
+    }
   }
-}
-pageSize = 15; //
+  pageSize = 15; //
   getPageTotal(page: any[]): number {
     return page.reduce((acc, item) => acc + item.total, 0);
   }

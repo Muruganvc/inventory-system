@@ -102,7 +102,7 @@ export class ProductListComponent {
       next: result => {
         if (result) {
           this.getProducts();
-          this.commonService.showSuccessMessage("Updated.");
+          this.commonService.showSuccess("Updated.");
         }
       }
     });

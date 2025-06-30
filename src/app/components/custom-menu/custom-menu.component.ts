@@ -18,6 +18,7 @@ export class CustomMenuComponent implements OnInit {
     this.getMenus();
   }
   fullName: string;
+  role : string;
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   readonly menuItems = signal<MenuItem[]>([]);
@@ -25,6 +26,9 @@ export class CustomMenuComponent implements OnInit {
   getMenus() {
     this.fullName = this.authService.getUserName();
     const userId = this.authService.getUserId();
+
+    this.role = this.authService.hasRole(["Admin"]) ? 'Admin' :'User';
+
     this.userService.getUserMenu(+userId).subscribe({
       next: (items) => this.menuItems.set(items),
       error: (err) => console.error('Failed to load menu', err)

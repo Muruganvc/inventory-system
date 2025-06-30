@@ -111,7 +111,6 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     if (!decoded) return false;
 
-    // Find the role claim key dynamically
     const roleClaimKey = Object.keys(decoded).find(k => k.endsWith('/identity/claims/role'));
 
     if (!roleClaimKey) return false;
