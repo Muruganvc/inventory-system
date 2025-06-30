@@ -102,4 +102,8 @@ export class LayoutComponent {
     this.router.navigate(['/setting/change-password']);
   }
 
+  onMenuPermission =() :void =>{
+    this.router.navigate(['/setting/user-menu-permission']); 
+  }
+
 }

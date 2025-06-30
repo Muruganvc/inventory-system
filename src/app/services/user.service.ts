@@ -9,6 +9,7 @@ import { UpdateUserRequest } from '../models/UpdateUserRequest';
 import { ChangePasswordRequest } from '../models/ChangePasswordRequest';
 import { NewUserRequest } from '../models/NewUserRequest';
 import { UserListResponse } from '../models/UserListResponse';
+import { GetMenuItemPermissionQueryResponse } from '../models/GetMenuItemPermissionQueryResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,18 @@ export class UserService {
   getUserMenu = (userId: number): Observable<MenuItem[]> => {
     return this.api
       .get<MenuItem[]>(`menus/${userId}`)
+      .pipe(map((res: ApiResponse<MenuItem[]>) => res.data));
+  }
+
+  getUserMenuPermission = (userId: number): Observable<GetMenuItemPermissionQueryResponse[]> => {
+    return this.api
+      .get<GetMenuItemPermissionQueryResponse[]>(`menu/${userId}`)
+      .pipe(map((res: ApiResponse<GetMenuItemPermissionQueryResponse[]>) => res.data));
+  }
+
+   getUserMenus = (): Observable<MenuItem[]> => {
+    return this.api
+      .get<MenuItem[]>(`menus`)
       .pipe(map((res: ApiResponse<MenuItem[]>) => res.data));
   }
 

@@ -22,6 +22,7 @@ import { CategoryListComponent } from './components/inventory/category/category-
 import { ProductCategoryListComponent } from './components/inventory/product-category/product-category-list/product-category-list.component';
 import { ProfileComponent } from './components/settings/profile/profile.component';
 import { UserListComponent } from './components/settings/new-user/user-list/user-list.component';
+import { UserMenuPermissionComponent } from './components/settings/user-menu-permission/user-menu-permission.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -50,7 +51,8 @@ export const routes: Routes = [
                     { path: 'user-permission', component: UserPermissionComponent },
                     { path: 'user-list', component: UserListComponent },
                      { path: 'user', component: NewUserComponent },
-                    { path: 'profile', component: ProfileComponent }
+                    { path: 'profile', component: ProfileComponent },
+                    { path: 'user-menu-permission', component: UserMenuPermissionComponent }
                 ]
             },
             {
