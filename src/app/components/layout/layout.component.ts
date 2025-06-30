@@ -10,10 +10,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { CustomMenuComponent } from "../custom-menu/custom-menu.component";
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { AuthService } from '../../services/auth.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatTooltipModule, MatSidenavModule, RouterModule, MatListModule, CustomMenuComponent],
+  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, MatTooltipModule, MatSidenavModule, RouterModule, MatListModule, CustomMenuComponent, CommonModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
@@ -25,6 +27,9 @@ export class LayoutComponent {
   isMobileDevice = false;
   sidebarExpanded = true;
 
+  isAdmin =() : boolean =>{
+     return this.authService.hasRole(["Admin"])
+  }
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog) {
     this.breakpointObserver.observe([Breakpoints.Handset])
@@ -60,8 +65,9 @@ export class LayoutComponent {
   isActive(item: any): boolean {
     return this.router.url === item.route;
   }
-  logout() {
-     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+
+  onLogout() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '100%',
       maxWidth: '400px',
       disableClose: true,
@@ -84,5 +90,16 @@ export class LayoutComponent {
       }
     });
   }
- 
+  onNewUser = (): void => {
+    this.router.navigate(['/setting/user-list']);
+
+  }
+  onProfile = (): void => {
+    this.router.navigate(['/setting/profile']);
+  }
+
+  onChangePassword = (): void => {
+    this.router.navigate(['/setting/change-password']);
+  }
+
 }

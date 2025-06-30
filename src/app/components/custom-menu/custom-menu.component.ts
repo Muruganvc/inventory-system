@@ -17,20 +17,15 @@ export class CustomMenuComponent implements OnInit {
   ngOnInit(): void {
     this.getMenus();
   }
-
-  fullName :string ;
-
-
+  fullName: string;
   private readonly authService = inject(AuthService);
-
-
-
   private readonly userService = inject(UserService);
   readonly menuItems = signal<MenuItem[]>([]);
 
   getMenus() {
     this.fullName = this.authService.getUserName();
-    this.userService.getUserMenu(1).subscribe({
+    const userId = this.authService.getUserId();
+    this.userService.getUserMenu(+userId).subscribe({
       next: (items) => this.menuItems.set(items),
       error: (err) => console.error('Failed to load menu', err)
     });

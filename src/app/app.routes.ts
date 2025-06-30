@@ -16,6 +16,12 @@ import { OrderReportsComponent } from './components/order-summary/order-reports/
 import { authGuard } from './shared/services/authGuard';
 import { InvoiceComponent } from './components/order-summary/invoice/invoice.component';
 import { BackupComponent } from './components/backup/backup.component';
+import { InventoryComponent } from './components/inventory/inventory.component';
+import { CompanyListComponent } from './components/inventory/company/company-list/company-list.component';
+import { CategoryListComponent } from './components/inventory/category/category-list/category-list.component';
+import { ProductCategoryListComponent } from './components/inventory/product-category/product-category-list/product-category-list.component';
+import { ProfileComponent } from './components/settings/profile/profile.component';
+import { UserListComponent } from './components/settings/new-user/user-list/user-list.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -28,12 +34,23 @@ export const routes: Routes = [
                 path: 'sales', component: SalesComponent
             },
             {
-                path: 'settings', component: SettingsComponent,
+                path: 'inventory', component: InventoryComponent,
+                children: [
+                    { path: '', redirectTo: 'company-list', pathMatch: 'full' },
+                    { path: 'company-list', component: CompanyListComponent },
+                    { path: 'category-list', component: CategoryListComponent },
+                    { path: 'product-category-list', component: ProductCategoryListComponent }
+                ]
+            },
+            {
+                path: 'setting', component: SettingsComponent,
                 children: [
                     { path: '', redirectTo: 'change-password', pathMatch: 'full' },
                     { path: 'change-password', component: PasswordChangeComponent },
                     { path: 'user-permission', component: UserPermissionComponent },
-                    { path: 'add-user', component: NewUserComponent }
+                    { path: 'user-list', component: UserListComponent },
+                     { path: 'user', component: NewUserComponent },
+                    { path: 'profile', component: ProfileComponent }
                 ]
             },
             {

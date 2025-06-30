@@ -1,15 +1,40 @@
 <mat-toolbar color="primary" class="top-toolbar custom-shadow">
     <button mat-icon-button (click)="sidenav.toggle()">
-        <i class="fas fa-bars"></i>  
+        <i class="fas fa-bars"></i>
     </button>
 
     <span class="toolbar-title">My App</span>
     <span class="spacer"></span>
+ 
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+       <i class="fas fa-user-circle"></i>
+    </button>
 
-<button mat-icon-button  matTooltip="Sign Out" (click)="logout()" aria-label="input">
-    <i class="fas fa-sign-out-alt"></i>
-</button>
-     
+    <mat-menu #userMenu="matMenu">
+        <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
+           <i class="fas fa-user-plus pd-10-rt"></i>
+            <span>Add New User</span>
+        </button>
+
+        <button mat-menu-item (click)="onProfile()">
+           <i class="fas fa-user pd-10-rt"></i>
+            <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="onChangePassword()">
+           <i class="fas fa-lock pd-10-rt"></i>
+            <span>Change Password</span>
+        </button>
+        <button mat-menu-item (click)="onLogout()">
+            <i class="fas fa-sign-out-alt pd-10-rt"></i>
+            <span>Logout</span>
+        </button>
+    </mat-menu>
+
+
+    <!-- <button mat-icon-button matTooltip="Sign Out" (click)="logout()" aria-label="input">
+        <i class="fas fa-sign-out-alt"></i>
+    </button> -->
+
 </mat-toolbar>
 
 <mat-sidenav-container class="main-container">
@@ -24,4 +49,3 @@
 <footer class="footer">
     &copy; 2025 Your Company
 </footer>
- 

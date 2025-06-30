@@ -41,27 +41,6 @@ export class ProductListComponent {
         action: 'delete',
         condition: (row: any) => !row.isEditing
       }
-      // ,{
-      //   iconClass: 'fas fa-save',
-      //   color: 'green',
-      //   tooltip: 'Save',
-      //   action: 'save',
-      //   condition: (row: any) => row.isEditing
-      // },
-      // {
-      //   iconClass: 'fas fa-times',
-      //   color: 'gray',
-      //   tooltip: 'Cancel',
-      //   action: 'cancel',
-      //   condition: (row: any) => row.isEditing
-      // },
-      // {
-      //   iconClass: 'fas fa-print',
-      //   color: 'red',
-      //   tooltip: 'Print',
-      //   action: 'print',
-      //   condition: (row: any) => !row.isEditing // or `true` if always visible
-      // }
     ];
 
 
