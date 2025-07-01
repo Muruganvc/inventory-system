@@ -5,6 +5,12 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../shared/common/ApiResponse';
 import { GetCompanyQueryResponse } from '../models/GetCompanyQueryResponse';
 import { CompanyUpdateCommand } from '../models/CompanyUpdateCommand';
+import { GetCategoryQueryResponse } from '../models/GetCategoryQueryResponse';
+import { CategoryCreateRequest } from '../models/CategoryCreateRequest';
+import { CategoryUpdateRequest } from '../models/CategoryUpdateRequest';
+import { GetProductCategoryQueryResponse } from '../models/GetProductCategoryQueryResponse';
+import { ProductCategoryCreateCommand } from '../models/ProductCategoryCreateCommand';
+import { ProductCategoryUpdateRequest } from '../models/ProductCategoryUpdateRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -28,4 +34,41 @@ export class CompanyService {
       .put<CompanyUpdateCommand, number>(`company/${companyId}`, update)
       .pipe(map((res: ApiResponse<number>) => res.data));
   }
+
+  createCategory = (create: CategoryCreateRequest): Observable<number> => {
+    return this.api
+      .post<CategoryCreateRequest, number>('category', create)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+
+   getCategories = (): Observable<GetCategoryQueryResponse[]> => {
+    return this.api
+      .get<GetCategoryQueryResponse[]>('categories')
+      .pipe(map((res: ApiResponse<GetCategoryQueryResponse[]>) => res.data));
+  }
+
+    updateCategory = (categoryId: number, update: CategoryUpdateRequest): Observable<number> => {
+    return this.api
+      .put<CategoryUpdateRequest, number>(`category/${categoryId}`, update)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+
+  createProductCategory = (create: ProductCategoryCreateCommand): Observable<number> => {
+    return this.api
+      .post<ProductCategoryCreateCommand, number>('product-category', create)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+
+   getProductCategories = (): Observable<GetProductCategoryQueryResponse[]> => {
+    return this.api
+      .get<GetProductCategoryQueryResponse[]>('product-categories')
+      .pipe(map((res: ApiResponse<GetProductCategoryQueryResponse[]>) => res.data));
+  }
+
+    updateProductCategory = (productCategoryId: number, update: ProductCategoryUpdateRequest): Observable<number> => {
+    return this.api
+      .put<ProductCategoryUpdateRequest, number>(`product-category/${productCategoryId}`, update)
+      .pipe(map((res: ApiResponse<number>) => res.data));
+  }
+
 }

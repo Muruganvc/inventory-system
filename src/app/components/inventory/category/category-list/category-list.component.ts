@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CustomTableComponent } from "../../../../shared/components/custom-table/custom-table.component";
+import { Router } from '@angular/router';
+import { GetCategoryQueryResponse } from '../../../../models/GetCategoryQueryResponse';
+import { CompanyService } from '../../../../services/company.service';
 
 @Component({
   selector: 'app-category-list',
@@ -8,8 +11,21 @@ import { CustomTableComponent } from "../../../../shared/components/custom-table
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss'
 })
-export class CategoryListComponent {
-tableActions =
+export class CategoryListComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly companyService = inject(CompanyService);
+  categories: GetCategoryQueryResponse[] = [];
+  ngOnInit(): void {
+    this.companyService.getCategories().subscribe({
+      next: result => {
+        if (!!result) {
+          this.categories = result;
+        }
+      }
+    });
+  }
+
+  tableActions =
     [
       {
         iconClass: 'fas fa-pencil-alt',
@@ -28,24 +44,29 @@ tableActions =
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
-    { key: 'category', label: 'Category Name', align: 'left', isHidden: false },
-    { key: 'company', label: 'Company Name', align: 'left', isHidden: false },
+    { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
+    { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: false },
-    { key: 'creator', label: 'Creator By', align: 'left', isHidden: false },
+    { key: 'createdBy', label: 'Creator By', align: 'left', isHidden: false },
   ];
 
 
   onAction(event: { row: any; action: string }) {
     const { row, action } = event;
     switch (action) {
-      // case 'edit': this.onEdit(row); break;
+      case 'edit': this.onEdit(row); break;
       // case 'delete': this.deleteRow(row); break;
       // case 'save': this.saveRow(row); break;
       // case 'cancel': this.cancelEdit(row); break;
     }
   }
+  onEdit(company: GetCategoryQueryResponse) {
+    this.router.navigate(['/inventory/category'], {
+      state: { data: company }
+    });
+  }
 
   newOpen(a: any) {
-
+    this.router.navigate(['/inventory/category']);
   }
 }

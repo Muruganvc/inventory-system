@@ -24,6 +24,8 @@ import { ProfileComponent } from './components/settings/profile/profile.componen
 import { UserListComponent } from './components/settings/new-user/user-list/user-list.component';
 import { UserMenuPermissionComponent } from './components/settings/user-menu-permission/user-menu-permission.component';
 import { CompanyComponent } from './components/inventory/company/company.component';
+import { CategoryComponent } from './components/inventory/category/category.component';
+import { ProductCategoryComponent } from './components/inventory/product-category/product-category.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -42,7 +44,9 @@ export const routes: Routes = [
                     { path: 'company-list', component: CompanyListComponent },
                     { path: 'company', component: CompanyComponent },
                     { path: 'category-list', component: CategoryListComponent },
-                    { path: 'product-category-list', component: ProductCategoryListComponent }
+                    { path: 'category', component: CategoryComponent },
+                    { path: 'product-category-list', component: ProductCategoryListComponent },
+                    { path: 'product-category', component: ProductCategoryComponent }
                 ]
             },
             {
