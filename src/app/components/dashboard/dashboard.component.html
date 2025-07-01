@@ -1,19 +1,111 @@
- 
-<!-- <button (click)="fetchData()">Fetch Data</button>
-<pre>{{ data() | json }}</pre>
+<div class="dashboard-container">
 
- 
+  <!-- 🔷 Info Cards -->
+  <div class="info-cards">
+    <div class="card bg-teal">
+      <div class="card-content">
+        <i class="fas fa-crosshairs icon"></i>
+        <div class="text-base leading-7">
+          <div>
+            <span class="tooltip">
+              <i class="fas fa-sack-dollar"></i>
+              <span class="tooltiptext">Total Amount</span>
+            </span>
+            500000
+          </div>
+          <div>
+            <span class="tooltip">
+              <i class="fas fa-wallet"></i>
+              <span class="tooltiptext">Balance Amount</span>
+            </span>
+            10000
+          </div>
+          <p>Lisha</p>
+        </div>
+      </div>
+    </div>
 
-<app-dynamic-table
-  [columns]="tableColumns"
-  [data]="tableData"
-  (rowClick)="onRowClick($event)"
-  (actionClick)="onActionClick($event)">
-</app-dynamic-table>
-  -->
-<!-- <button (click)="printInvoice()">Print Invoice</button>
-<app-invoice #invoiceRef></app-invoice>
-<iframe #printFrame style="display: none;"></iframe> -->
+    <div class="card bg-orange">
+      <div class="card-content">
+        <i class="fas fa-store icon"></i>
+        <div>
+          <h2>295</h2>
+          <p>Shops</p>
+        </div>
+      </div>
+    </div>
 
-<input type="text" [(ngModel)]="userMessage" placeholder="Enter your message">
-<button (click)="sendWhatsApp()">Send on WhatsApp</button>
+    <div class="card bg-red">
+      <div class="card-content">
+        <i class="fas fa-boxes icon"></i>
+        <div>
+          <h2>45784</h2>
+          <p>Products Sold</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-purple">
+      <div class="card-content">
+        <i class="fas fa-money-bill-wave icon"></i>
+        <div>
+          <h2>$346,928</h2>
+          <p>Total Revenue</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🟪 Company Balance Details (Auto Slider) -->
+<div class="chart-wrapper">
+  <div class="small-chart-column">
+    <div
+      class="small-chart-card"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+    >
+      <div class="balance-container">
+        <app-compay-wise-balance [company]="companies[currentCompanyIndex]"></app-compay-wise-balance>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- 📊 Mixed Chart Layout -->
+  <div class="chart-wrapper">
+    <!-- Left: Large Chart -->
+    <div class="large-chart-card">
+      <h3>Month Wise Sales</h3>
+      <app-monthwise></app-monthwise>
+    </div>
+
+    <!-- Right: Stacked Small Charts -->
+    <div class="small-chart-column">
+      <div class="small-chart-card">
+        <h3>Week Wise</h3>
+        <app-weekwise></app-weekwise>
+      </div>
+      <div class="small-chart-card">
+        <h3>Day Wise</h3>
+        <app-daywise></app-daywise>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🟩 Full Width Charts Grid -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Category Wise Sales</h3>
+      <app-yearwise></app-yearwise>
+    </div>
+    <div class="chart-card">
+      <h3>Top 3 Products</h3>
+      <app-daywise></app-daywise>
+    </div>
+    <div class="chart-card">
+      <h3>Recent Transactions</h3>
+      <app-weekwise></app-weekwise>
+    </div>
+  </div>
+</div>

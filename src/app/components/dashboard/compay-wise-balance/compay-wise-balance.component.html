@@ -1,0 +1,68 @@
+<div class="balance-card1">
+  <h2 class="balance-title">Company Balance Summary</h2>
+
+  <div class="balance-grid">
+    <!-- Company Name -->
+    <div class="balance-item">
+      <i class="fas fa-building icon company-icon"></i>
+      <div>
+        <div class="label">Company</div>
+        <div class="value">{{ company?.name || 'N/A' }}</div>
+      </div>
+    </div>
+
+    <!-- Party Name -->
+    <div class="balance-item">
+      <i class="fas fa-user-tie icon party-icon"></i>
+      <div>
+        <div class="label">Party</div>
+        <div class="value">{{ company?.partyName || 'N/A' }}</div>
+      </div>
+    </div>
+
+    <!-- Total Balance -->
+    <div class="balance-item">
+      <i class="fas fa-wallet icon total-icon"></i>
+      <div>
+        <div class="label">Total Balance</div>
+        <div class="value">₹ {{ company?.totalBalanceAmount | number: '1.2-2' }}</div>
+      </div>
+    </div>
+
+    <!-- Remaining Balance -->
+    <div class="balance-item">
+      <i class="fas fa-money-bill-wave icon balance-icon"></i>
+      <div>
+        <div class="label">Remaining</div>
+        <div class="value">₹ {{ company?.balanceAmount | number: '1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- View History Toggle -->
+<div class="history-toggle">
+  <button (click)="toggleHistory()" class="history-button">
+    <i class="fas fa-history"></i> {{ showHistory ? 'Hide' : 'View' }} History
+  </button>
+</div>
+
+<!-- History List -->
+<div *ngIf="showHistory" class="history-section1">
+  <h3 class="history-heading">Transaction History</h3>
+
+  <div *ngIf="company?.transactions?.length; else noHistory" class="transaction-list">
+    <div *ngFor="let txn of company.transactions" class="transaction-card">
+      <div class="txn-header">
+        <span class="txn-date">{{ txn.date }}</span>
+        <span class="txn-amount">₹ {{ txn.amount | number: '1.2-2' }}</span>
+      </div>
+      <div class="txn-description">{{ txn.description }}</div>
+    </div>
+  </div>
+
+  <ng-template #noHistory>
+    <p class="no-history-text">No transaction records available.</p>
+  </ng-template>
+</div>
