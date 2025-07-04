@@ -6,6 +6,7 @@ export interface CustomerSalesOrder {
 }
 
 export interface InvoiceItem {
+  productId:number;
   name: string;
   qty: number;
   unit: string;
@@ -24,4 +25,6 @@ export interface Invoice {
   totalAmount: number;
   amountInWords: string;
   user:string;
+  disCountPercent : number;
+  balanceAmount:number;
 }

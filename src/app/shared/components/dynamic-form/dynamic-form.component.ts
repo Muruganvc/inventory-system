@@ -67,7 +67,7 @@ export class DynamicFormComponent {
     const form: FormGroup = btn.params?.form;
     if (btn.validate && form?.invalid) {
       this.markFormGroupTouched(form);
-      return;
+      // return;
     }
     btn.callback?.(btn.params);
   }

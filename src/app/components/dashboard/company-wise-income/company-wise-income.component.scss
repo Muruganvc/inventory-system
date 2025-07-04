@@ -1,0 +1,125 @@
+/* === Dashboard Grid === */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+
+  @media (max-width: 600px) {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+}
+
+/* === Company Card === */
+.company-card {
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  padding: 20px;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* === Company Header === */
+.company-header {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+  color: #222;
+}
+
+/* === Category List === */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* === Category Item Row === */
+.category-row,
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+  padding: 0.5rem 0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+/* === Category Name === */
+.category-name {
+  flex: 1 1 50%;
+  font-weight: 600;
+  color: #444;
+}
+
+/* === Stats Column === */
+.stats {
+  text-align: right;
+  flex: 1 1 50%;
+}
+
+/* === Income === */
+.income {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-right: 12px;
+}
+
+/* === Quantity === */
+.quantity {
+  color: #007bff;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* === Responsive Fixes === */
+@media (max-width: 480px) {
+  .company-header {
+    font-size: 16px;
+  }
+
+  .category-row,
+  .category-item {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+  }
+
+  .stats {
+    text-align: left;
+  }
+
+  .dashboard {
+    margin-left: -12px;
+  }
+}
+
+.product-list {
+  list-style-type: disc;
+  padding-left: 1rem;
+  margin: 4px 0;
+  font-size: 0.85rem;
+  color:  black;
+}

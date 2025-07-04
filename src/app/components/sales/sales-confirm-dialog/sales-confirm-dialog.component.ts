@@ -51,7 +51,7 @@ export class SalesConfirmDialogComponent implements OnInit {
       ]),
       address: new FormControl(null),
       disCountPercent: new FormControl(null),
-      taxPercent: new FormControl({ value: null, disabled: false }),
+      // taxPercent: new FormControl({ value: null, disabled: false }),
       finalTotal: new FormControl({ value: data.netTotal, disabled: true }),
       netTotal: new FormControl({ value: data.netTotal, disabled: true }),
       disCountAmount: new FormControl({ value: data.netTotal, disabled: true }),
@@ -133,7 +133,7 @@ export class SalesConfirmDialogComponent implements OnInit {
       phone: formValue.mobileNo
     };
 
-    const balanceAmount: number = +formValue.balanceAmount || 0;
+    const givenAmount: number = +formValue.givenAmount || 0;
 
     const orderItems: OrderItemRequest[] = this.data.orderItems.map((item: ProductEntry) => ({
       discountPercent: formValue.disCountPercent,
@@ -147,7 +147,7 @@ export class SalesConfirmDialogComponent implements OnInit {
       ...this.userForm.value,
       customer,
       orderItems,
-      balanceAmount
+      givenAmount
     };
 
     this.dialogRef.close(result);

@@ -1,6 +1,7 @@
 import { TableRow } from "../shared/components/custom-table/custom-table.component";
 
 export interface ProductsResponse extends TableRow {
+  productFullName: string;
   productId: number;
   productName: string;
   productCategoryId?: number;
@@ -12,11 +13,8 @@ export interface ProductsResponse extends TableRow {
   description?: string | null;
   mrp: number;
   salesPrice: number;
+  landingPrice: number;
   quantity: number;
-  taxPercent: number;
-  taxType?: string | null;
-  barcode?: string | null;
-  brandName?: string | null;
   isActive: boolean;
   userName?: string | null;
 }

@@ -45,7 +45,7 @@ export class SalesComponent implements OnInit {
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
     { key: 'productName', label: 'Prod. Name', align: 'left', isHidden: false },
     { key: 'mrp', label: 'MRP ₹', align: 'left', isHidden: false },
-    { key: 'taxPercent', label: 'Tax %', align: 'left', isHidden: false },
+    { key: 'salesPrice', label: 'Sales Price', align: 'left', isHidden: false },
     { key: 'price', label: 'Price ₹', align: 'left', isHidden: false },
     { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
     { key: 'totalAmount', label: 'Amount ₹', align: 'left', isHidden: false }
@@ -69,9 +69,10 @@ export class SalesComponent implements OnInit {
       price: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
-      taxPercent: new FormControl({ value: null, disabled: true }),
+      salesPrice: new FormControl({ value: null, disabled: true }),
       totalAmount: new FormControl({ value: null, disabled: true }),
-      netAmount: new FormControl({ value: null, disabled: true })
+      netAmount: new FormControl({ value: null, disabled: true }),
+      landingPrice: new FormControl({ value: null, disabled: true })
     });
   }
 
@@ -81,7 +82,8 @@ export class SalesComponent implements OnInit {
       { type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [] },
       { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2, },
       { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
@@ -156,7 +158,7 @@ export class SalesComponent implements OnInit {
       next: res => {
         this.products = res;
         this.productsList = this.products.map(p => ({
-          key: p.productName,
+          key: `${p.companyName} ${p.categoryName} ${p.productCategoryName}`,
           value: p.productId
         }));
         this.updateFieldOptions('product', this.productsList);
@@ -221,8 +223,9 @@ export class SalesComponent implements OnInit {
     this.formGroup.patchValue({
       mrp: product.mrp,
       availableQuantity: product.quantity,
-      taxPercent: product.taxPercent,
-      totalAmount: 0
+      totalAmount: 0,
+      salesPrice : product.salesPrice,
+      landingPrice:product.landingPrice
     });
   }
 
@@ -311,16 +314,16 @@ export class SalesComponent implements OnInit {
       const request: OrderCreateRequest = {
         customer: result.customer,
         orderItemRequests: result.orderItems,
-        balanceAmount: result.balanceAmount
+        givenAmount: result.givenAmount
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {
           if (response > 0) {
-            this.commonService.showSuccess('✅ Order created successfully.');
+            this.commonService.showSuccess('Order created successfully.');
           }
         },
         error: error => {
-          this.commonService.showError('❌ Order creation failed');
+          this.commonService.showError('Order creation failed');
         }
       });
     });
@@ -340,17 +343,15 @@ export class SalesComponent implements OnInit {
 
     const selectedProduct = this.products.find(p => p.productId === form.product.value);
     if (!selectedProduct) return;
-    const totalAmount = Number(this.calculateGSTFromBasePrice((form.price * form.quantity), selectedProduct.taxPercent).totalPrice.toFixed(2));
-
     const newProduct: ProductEntry = {
-      productName: selectedProduct.productName,
+      productName: `${ selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
       mrp: selectedProduct.mrp,
-      taxPercent: selectedProduct.taxPercent,
       price: form.price,
       quantity: form.quantity,
       totalAmount: (form.price * form.quantity),
       productId: selectedProduct.productId,
-      id: form.product.value
+      id: form.product.value,
+      salesPrice : selectedProduct.salesPrice
     };
 
     this.productSales = [...this.productSales, newProduct];
@@ -364,7 +365,6 @@ export class SalesComponent implements OnInit {
     this.formGroup.patchValue({
       product: { key: entry.productName, value: entry.id },
       mrp: entry.mrp,
-      taxPercent: entry.taxPercent,
       price: entry.price,
       quantity: entry.quantity,
       totalAmount: entry.price * entry.quantity,

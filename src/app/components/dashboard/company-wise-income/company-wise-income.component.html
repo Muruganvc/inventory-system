@@ -1,0 +1,28 @@
+<div class="dashboard-grid">
+  <div
+    class="company-card"
+    *ngFor="let company of companyData"
+    [style.background]="company.bgColor"
+  >
+    <div class="company-header">{{ company.company }}</div>
+
+    <div class="category-list">
+      <div class="category-item" *ngFor="let cat of company.categories">
+        <div class="category-info">
+          <div class="category-name">{{ cat.category }}</div>
+
+          <!-- Products list with quantity and amount -->
+          <ul class="product-list">
+            <li *ngFor="let product of cat.products">
+              {{ product.name }} - Qty: {{ product.quantity }}, ₹{{ product.income | number }}
+            </li>
+          </ul>
+
+          <!-- Optional: Category total -->
+          <div class="quantity">Total Qty: {{ cat.totalQuantity }}</div>
+        </div>
+        <div class="income">₹{{ cat.totalIncome | number }}</div>
+      </div>
+    </div>
+  </div>
+</div>

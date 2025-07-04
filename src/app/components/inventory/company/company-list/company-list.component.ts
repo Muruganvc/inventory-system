@@ -37,18 +37,18 @@ export class CompanyListComponent implements OnInit {
         action: 'edit',
         condition: (row: any) => !row.isEditing
       },
-      {
-        iconClass: 'fas fa-trash-alt',
-        color: 'red',
-        tooltip: 'Delete',
-        action: 'delete',
-        condition: (row: any) => !row.isEditing
-      }
+      // {
+      //   iconClass: 'fas fa-trash-alt',
+      //   color: 'red',
+      //   tooltip: 'Delete',
+      //   action: 'delete',
+      //   condition: (row: any) => !row.isEditing
+      // }
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
-    { key: 'description', label: 'Description', align: 'left', isHidden: false },
+    { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
     { key: 'createdBy', label: 'Creator By', align: 'left', isHidden: false },
   ];

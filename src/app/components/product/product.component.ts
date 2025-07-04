@@ -26,7 +26,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
-    private readonly companyService = inject(CompanyService);
+  private readonly companyService = inject(CompanyService);
   errorHtml: string;
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -63,16 +63,19 @@ export class ProductComponent implements OnInit, OnDestroy {
       product: new FormControl(null),
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
+      landingPrice: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
-      taxPercent: new FormControl(null),
-      taxType: new FormControl(null),
-      barCode: new FormControl(null),
-      brandName: new FormControl(null),
-      description: new FormControl(null),
+      // description: new FormControl(null),
       isActive: new FormControl(null)
-    }, { validators: salesPriceLessThanMRPValidator() });
+    }, {
+      validators: [
+        salesPriceLessThanMRPValidator(),
+        landingPriceLessThanSalesPriceValidator()
+      ]
+    });
   }
+
 
   private initFields(): void {
     const isAdmin = !this.authService.hasRole(["Admin"])
@@ -91,14 +94,11 @@ export class ProductComponent implements OnInit, OnDestroy {
         // add: (term: string) => this.clearDropDwon(term),
         clear: (value: string) => this.clearDropDwon(value)
       },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'availableQuantity', label: 'Available Quantity', colSpan: 3, isReadOnly: true, isNumberOnly: true },
-      { type: 'input', name: 'taxPercent', label: 'Tax %', colSpan: isAdmin ? 3 : 2, isNumOnly: true, maxLength: 2, isNumberOnly: true },
-      { type: 'input', name: 'taxType', label: 'Tax Type', colSpan: isAdmin ? 3 : 2, maxLength: 5 },
-      { type: 'input', name: 'barCode', label: 'Bar Code', colSpan: 3 },
-      { type: 'input', name: 'brandName', label: 'Brand Name', colSpan: 3 },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 2, isReadOnly: true, isNumberOnly: true },
       {
         type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: isAdmin,
         options: [
@@ -106,7 +106,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           { label: 'User', value: 'user' },
         ]
       },
-      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12 }
+      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12, isHidden: true }
     ];
   }
   createNewProduct(term: string) {
@@ -178,13 +178,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       product: { value: product.productId, key: product.productName },
       mrp: product.mrp,
       salesPrice: product.salesPrice,
+      landingPrice: product.landingPrice,
       quantity: product.quantity,
       availableQuantity: product.quantity,
-      taxPercent: product.taxPercent,
-      taxType: product.taxType,
-      barCode: product.barcode,
-      brandName: product.brandName,
-      description: product.description,
+      // description: product.description,
       isActive: product.isActive
     });
   }
@@ -277,7 +274,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
     const availableControl = this.formGroup.get('availableQuantity');
-    availableControl?.setValue(0, { emitEvent: true });
+    availableControl?.setValue(+quantityControl?.value, { emitEvent: true });
     quantityControl?.valueChanges.pipe(
       startWith(''),
       map(val => Number(val) || 0),   // convert to number, treat empty as 0
@@ -309,16 +306,27 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
+
+
     const request = this.buildProductRequest(params.form.value);
+
+
+    // if (request.salesPrice > request.mrp) {
+    //   this.commonService.showWarning('The sales price must not exceed the MRP');
+    //   return
+    // }
+
+    // if (request.landingPrice > request.salesPrice) {
+    //   this.commonService.showWarning('The landing price must not exceed the sales price');
+    //   return
+    // }
 
     this.productService.createProduct(request).subscribe({
       next: (result) => {
-        const message = result === 0
-          ? 'Product already exists.'
-          : 'New Product created.';
-        this.commonService.showSuccess(message);
-
-        if (result !== 0) {
+        if (result === 0) {
+          this.commonService.showWarning('Product already exists.');
+        } else {
+          this.commonService.showSuccess('New Product created.');
           this.ngOnInit();
         }
       },
@@ -326,6 +334,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         console.error('Failed to create product:', err);
       }
     });
+
   }
 
 
@@ -364,19 +373,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     // const productName = [company?.key, category?.key, product?.key].filter(Boolean).join(' ');
     const productName = product?.key ? product.key : `${company?.key ?? ''} ${category?.key ?? ''}`.trim();
     return {
-      barCode: value.barCode,
-      brandName: value.brandName,
       productCategoryId: product?.value ?? null,
       categoryId: category?.value,
       companyId: company?.value,
-      description: value.description,
+      // description: value.description,
       mrp: value.mrp,
       productName,
       totalQuantity: value.quantity,
       salesPrice: value.salesPrice,
-      taxPercent: value.taxPercent,
-      taxType: value.taxType,
-      isActive: !!value.isActive
+      isActive: !!value.isActive,
+      landingPrice: value.landingPrice
     };
   }
 
@@ -400,6 +406,24 @@ function salesPriceLessThanMRPValidator(): ValidatorFn {
       return {
         salesPriceExceedsMRP: {
           message: 'Sales Price should not exceed MRP'
+        }
+      };
+    }
+    return null;
+  };
+}
+
+
+function landingPriceLessThanSalesPriceValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const group = control as FormGroup;
+    const salesPrice = group.get('salesPrice')?.value;
+    const landingPrice = group.get('landingPrice')?.value;
+
+    if (salesPrice != null && landingPrice != null && Number(landingPrice) > Number(salesPrice)) {
+      return {
+        salesPriceExceedsMRP: {
+          message: 'Landing Price should not Sales Price'
         }
       };
     }

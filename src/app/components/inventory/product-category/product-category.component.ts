@@ -60,7 +60,7 @@ export class ProductCategoryComponent {
         type: 'searchable-select',
         name: 'company',
         label: 'Company Name',
-        colSpan: 4,
+        colSpan: 3,
         options: [],
         clear: () => { this.formGroup.patchValue({ category: null }) }
       },
@@ -68,7 +68,7 @@ export class ProductCategoryComponent {
         type: 'searchable-select',
         name: 'category',
         label: 'Category Name',
-        colSpan: 4,
+        colSpan: 3,
         options: [],
         clear: () => { }
       },
@@ -89,7 +89,8 @@ export class ProductCategoryComponent {
         type: 'textarea',
         name: 'description',
         label: 'Description',
-        colSpan: 10
+        colSpan: 10,
+        isHidden:true
       }
     ];
   }

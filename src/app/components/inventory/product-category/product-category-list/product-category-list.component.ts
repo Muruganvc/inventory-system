@@ -34,20 +34,20 @@ export class ProductCategoryListComponent implements OnInit {
         action: 'edit',
         condition: (row: any) => !row.isEditing
       },
-      {
-        iconClass: 'fas fa-trash-alt',
-        color: 'red',
-        tooltip: 'Delete',
-        action: 'delete',
-        condition: (row: any) => !row.isEditing
-      }
+      // {
+      //   iconClass: 'fas fa-trash-alt',
+      //   color: 'red',
+      //   tooltip: 'Delete',
+      //   action: 'delete',
+      //   condition: (row: any) => !row.isEditing
+      // }
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string }[] = [
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
     { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: false },
     { key: 'productCategoryName', label: 'Product Category Name', align: 'left', isHidden: false },
-    { key: 'description', label: 'Description', align: 'left', isHidden: false },
+    { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
     { key: 'createdAt', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'username', label: 'Creator By', align: 'left', isHidden: false },

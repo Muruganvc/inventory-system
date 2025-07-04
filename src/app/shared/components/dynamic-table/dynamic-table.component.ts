@@ -15,7 +15,8 @@ export interface TableColumn {
   sortable?: boolean;
   filterable?: boolean;
   editable?: boolean;
-  options?: { label: string; value: any }[]; // for select
+  options?: { label: string; value: any }[];
+  highLight?: boolean;
 }
 
 

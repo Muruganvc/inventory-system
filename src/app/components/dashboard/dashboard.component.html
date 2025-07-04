@@ -1,5 +1,4 @@
 <div class="dashboard-container">
-
   <!-- 🔷 Info Cards -->
   <div class="info-cards">
     <div class="card bg-teal">
@@ -27,10 +26,10 @@
 
     <div class="card bg-orange">
       <div class="card-content">
-        <i class="fas fa-store icon"></i>
+        <i class="fas fa-credit-card icon"></i>
         <div>
-          <h2>295</h2>
-          <p>Shops</p>
+          <h2>₹{{productSoldOut.balanceAmount}}</h2>
+          <p>Total Outstanding Balance</p>
         </div>
       </div>
     </div>
@@ -39,7 +38,7 @@
       <div class="card-content">
         <i class="fas fa-boxes icon"></i>
         <div>
-          <h2>45784</h2>
+          <h2>{{productSoldOut.totalQuantity}}</h2>
           <p>Products Sold</p>
         </div>
       </div>
@@ -49,7 +48,7 @@
       <div class="card-content">
         <i class="fas fa-money-bill-wave icon"></i>
         <div>
-          <h2>$346,928</h2>
+           <h2>₹{{productSoldOut.totalNetAmount}}</h2>
           <p>Total Revenue</p>
         </div>
       </div>
@@ -57,19 +56,14 @@
   </div>
 
   <!-- 🟪 Company Balance Details (Auto Slider) -->
-<div class="chart-wrapper">
+
+
   <div class="small-chart-column">
-    <div
-      class="small-chart-card"
-      (mouseenter)="onMouseEnter()"
-      (mouseleave)="onMouseLeave()"
-    >
-      <div class="balance-container">
-        <app-compay-wise-balance [company]="companies[currentCompanyIndex]"></app-compay-wise-balance>
-      </div>
+    <div class="small-chart-card" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+      <app-compay-wise-balance [company]="companies[currentCompanyIndex]"></app-compay-wise-balance>
+
     </div>
   </div>
-</div>
 
 
   <!-- 📊 Mixed Chart Layout -->
@@ -92,6 +86,33 @@
       </div>
     </div>
   </div>
+
+  <!-- <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Category Wise total Income</h3>
+      <div class="dashboard-container dashboard">
+        <div class="company-card" *ngFor="let company of companyData" [style.background]="company.bgColor">
+          <div class="company-header">{{ company.company }}</div>
+          <div class="category-row" *ngFor="let cat of company.categories">
+            <div class="category-name">{{ cat.category }}</div>
+            <div class="stats">
+              <span class="income">₹{{ cat.totalIncome | number }}</span>
+              <span class="quantity">Qty: {{ cat.totalQuantity }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+
+    <div class="small-chart-column">
+    <div class="small-chart-card" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+      <app-company-wise-income></app-company-wise-income>
+
+    </div>
+  </div>
+
 
   <!-- 🟩 Full Width Charts Grid -->
   <div class="charts-grid">

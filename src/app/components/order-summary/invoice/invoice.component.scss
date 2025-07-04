@@ -51,3 +51,15 @@
 .text-alg{
   text-align: right;
 }
+
+.company-bank-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.company-info, .bank-section {
+  flex: 1;
+  min-width: 45%;
+}

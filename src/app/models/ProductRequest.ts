@@ -6,10 +6,7 @@ export interface ProductRequest {
     description?: string;
     mrp: number;
     salesPrice: number;
-    taxType?: string;
+    landingPrice:number;
     totalQuantity: number;
-    barCode?: string;
-    brandName?: string;
-    taxPercent?: number;
     isActive: boolean;
 }

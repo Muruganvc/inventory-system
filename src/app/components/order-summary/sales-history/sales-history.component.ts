@@ -109,6 +109,27 @@ salesOrderList: OrderListReponse[] = [];
 .text-alg{
   text-align: left;
 }
+
+tfoot {
+    display: table-row-group;
+  }
+
+  .company-bank-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.company-info, .bank-section {
+  flex: 1;
+  min-width: 45%;
+}
+
+  .summary-only-on-last-page {
+    page-break-before: avoid;
+    page-break-after: always;
+  }
             .invoice-title {
                 text-align: center;
                 margin: 20px 0;

@@ -1,5 +1,6 @@
 .dashboard-container {
   padding: 1rem;
+  // padding-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -38,10 +39,21 @@
   }
 }
 
-.bg-teal { background-color: #00796b; }
-.bg-orange { background-color: #ef6c00; }
-.bg-red { background-color: #d32f2f; }
-.bg-purple { background-color: #6a1b9a; }
+.bg-teal {
+  background-color: #00796b;
+}
+
+.bg-orange {
+  background-color: #ef6c00;
+}
+
+.bg-red {
+  background-color: #d32f2f;
+}
+
+.bg-purple {
+  background-color: #6a1b9a;
+}
 
 /* Main Chart Layout */
 .chart-wrapper {
@@ -102,81 +114,171 @@
     transform: translateY(-4px);
   }
 }
- 
+
 .tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-  }
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
 
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    // background: linear-gradient(to right, red, orange);
-    background:linear-gradient(to right, #81c784, #ef9a9a);
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 6px;
-    position: absolute;
-    z-index: 1;
-    bottom: -110%; /* position above icon */
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 0.8rem;
-  }
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  // background: linear-gradient(to right, red, orange);
+  background: linear-gradient(to right, #81c784, #ef9a9a);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: -110%;
+  /* position above icon */
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
 
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
 
-  .tooltip i {
-    color: #4CAF50;
-  }
+.tooltip i {
+  color: #4CAF50;
+}
 
 
 // Company Wise
 
-   .company-nav-buttons {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
+.company-nav-buttons {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 
-  .company-nav-buttons button {
-    padding: 12px 24px;
+.company-nav-buttons button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.company-nav-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+}
+
+.company-nav-buttons button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.company-nav-buttons button i {
+  font-size: 18px;
+}
+
+
+
+
+
+// monthwise income
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px; 
+
+}
+
+.company-card {
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  color: #333;
+}
+
+.company-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.company-header {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+  // padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.category-name {
+  flex: 1 1 50%;
+  color: #444;
+}
+
+.stats {
+  text-align: right;
+  flex: 1 1 50%;
+}
+
+.income {
+  color: #28a745;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.quantity {
+  color: #007bff;
+  font-size: 14px;
+}
+ 
+@media (max-width: 480px) {
+  .company-header {
     font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #4f46e5, #3b82f6);
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(8px);
   }
 
-  .company-nav-buttons button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  .category-row {
+    font-size: 14px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .company-nav-buttons button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    box-shadow: none;
-    opacity: 0.6;
+  .dashboard {
+    margin-left: -12px;
   }
 
-  .company-nav-buttons button i {
-    font-size: 18px;
+  .stats {
+    text-align: left;
   }
-
+}
   

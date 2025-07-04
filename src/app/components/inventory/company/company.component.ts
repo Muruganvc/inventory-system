@@ -55,7 +55,7 @@ export class CompanyComponent implements OnInit {
   private initForm(): void {
     this.formGroup = new FormGroup({
       companyName: new FormControl(null, Validators.required),
-      isActive: new FormControl(null, Validators.required),
+      isActive: new FormControl(null),
       description: new FormControl(null)
     });
   }
@@ -64,7 +64,7 @@ export class CompanyComponent implements OnInit {
     this.fields = [
       { type: 'input', name: 'companyName', label: 'Company Name', colSpan: 6, maxLength: 20 },
       { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 6 },
-      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12 }
+      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12,isHidden: true }
     ];
   }
 

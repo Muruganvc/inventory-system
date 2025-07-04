@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProductsResponse } from '../../../models/ProductsResponse';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
-import { FormGroup } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { CommonService } from '../../../shared/services/common.service';
 
@@ -17,12 +16,12 @@ import { CommonService } from '../../../shared/services/common.service';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent {
- private readonly authService = inject(AuthService);
- private readonly commonService = inject(CommonService);
+  private readonly authService = inject(AuthService);
+  private readonly commonService = inject(CommonService);
   constructor(private router: Router, private productService: ProductService, private dialog: MatDialog) { }
   ngOnInit(): void {
     this.getProducts();
-  } 
+  }
 
 
   tableActions =
@@ -34,13 +33,13 @@ export class ProductListComponent {
         action: 'edit',
         condition: (row: any) => !row.isEditing
       },
-      {
-        iconClass: 'fas fa-trash-alt',
-        color: 'red',
-        tooltip: 'Delete',
-        action: 'delete',
-        condition: (row: any) => !row.isEditing
-      }
+      // {
+      //   iconClass: 'fas fa-trash-alt',
+      //   color: 'red',
+      //   tooltip: 'Delete',
+      //   action: 'delete',
+      //   condition: (row: any) => !row.isEditing
+      // }
     ];
 
 
@@ -56,12 +55,21 @@ export class ProductListComponent {
 
 
 
-  role: boolean =true;
+  role: boolean = true;
   products: ProductsResponse[] = [];
 
   getProducts(): void {
     this.productService.getProducts('product').subscribe({
       next: (result) => {
+
+        result.forEach(a => {
+          const company = a.companyName || '';
+          const category = a.categoryName || '';
+          const productCategory = a.productCategoryName || '';
+          a.productFullName = `${company} ${category} ${productCategory}`;
+        });
+
+
         this.products = result;
         const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
         const isAdmin = this.authService.hasRole(["Admin"])
@@ -82,16 +90,23 @@ export class ProductListComponent {
   }
 
 
-  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
-    { key: 'productName', label: 'Prod.Name', align: 'left', isHidden: false },
-    { key: 'mrp', label: 'Mrp ₹', align: 'left', isHidden: false },
-    { key: 'salesPrice', label: 'Sales Price ₹', align: 'left', isHidden: false },
-    { key: 'taxPercent', label: 'Tax %', align: 'left', isHidden: false },
-    { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
-    { key: 'userName', label: 'Creator', align: 'left', isHidden: false } 
-  ];
+  columns: {
+    key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean
+  }[] = [
+      { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
+      { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
+      { key: 'productName', label: 'Prod.Name', align: 'left', isHidden: true },
+      {
+        key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false
+      },
+      { key: 'mrp', label: 'Mrp ₹', align: 'left', isHidden: false },
+      { key: 'salesPrice', label: 'Sales Price ₹', align: 'left', isHidden: false },
+      { key: 'landingPrice', label: 'Landing Price', align: 'left', isHidden: false },
+      { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
+      { key: 'userName', label: 'Creator', align: 'left', isHidden: false }
+    ];
 
-  onEdit(product: ProductsResponse) { 
+  onEdit(product: ProductsResponse) {
     this.router.navigate(['/product'], {
       state: { data: product }
     });

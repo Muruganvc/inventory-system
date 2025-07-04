@@ -1,19 +1,37 @@
-<div  *ngIf="invoice.items.length > 0" #invoiceContent class="invoice-wrapper">
-  <div class="company-info">
+<div *ngIf="invoice.items.length > 0" #invoiceContent class="invoice-wrapper">
+<div class="company-bank-row">
+  <div class="company-header">
     <h1>{{ company.name }}</h1>
-    <p>{{ company.tagline }}</p>
-    <div class="contact">
-      <p>{{ company.address }}</p>
-      <p>Tel: {{ company.phone }} | Email: {{ company.email }}</p>
-      <p>GSTIN: {{ company.gstin }}</p>
-    </div>
   </div>
 
+  <div class="row-content">
+    <div class="company-info">
+      <p>{{ company.tagline }}</p>
+      <div class="contact">
+        <p>{{ company.address }}</p>
+        <p>Tel: {{ company.phone }} | Email: {{ company.email }}</p>
+        <p>GSTIN: {{ company.gstin }}</p>
+      </div>
+    </div>
+
+    <div class="bank-section">
+      <h3>Bank Details</h3>
+      <p><strong>Bank Name:</strong> {{ bank.name }}</p>
+      <p><strong>Branch Name:</strong> {{ bank.branch }}</p>
+      <p><strong>Bank Account Number:</strong> {{ bank.accountNumber }}</p>
+      <p><strong>Bank Branch IFSC:</strong> {{ bank.ifsc }}</p>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Invoice Header -->
   <div class="invoice-title">
     <h2>TAX INVOICE</h2>
     <p class="original">ORIGINAL FOR RECIPIENT</p>
   </div>
 
+  <!-- Customer and Invoice Details -->
   <div class="details">
     <div class="left-details">
       <p><strong>M/S:</strong> {{ customer.name }}</p>
@@ -27,56 +45,84 @@
     </div>
   </div>
 
+  <!-- Product Table -->
   <table class="product-table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Name of Product(s)</th>
-      <th>Qty</th>
-      <th>Rate</th>
-      <th>Total</th>
-    </tr>
-  </thead>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name of Product(s)</th>
+        <th>Qty</th>
+        <th>Rate</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of invoice.items; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.qty }}</td>
+        <td class="text-alg">{{ item.rate | currency:'INR':'symbol':'1.2-2' }}</td>
+        <td class="text-alg">{{ item.total | currency:'INR':'symbol':'1.2-2' }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4"><strong>Grand Total</strong></td>
+        <td class="text-alg">
+          <strong>{{ getInvoiceTotal(invoice.items) | currency:'INR':'symbol':'1.2-2' }}</strong>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 
-  <tbody>
-    <ng-container *ngFor="let group of paginatedItems; let pageIndex = index">
-  <ng-container *ngFor="let item of group; let i = index">
-    <tr>
-      <td>{{ pageIndex * pageSize + i + 1 }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.qty }}</td>
-      <td class="text-alg">{{ item.rate | currency:'INR':'symbol':'1.2-2' }}</td>
-      <td class="text-alg">{{ item.total | currency:'INR':'symbol':'1.2-2' }}</td>
-    </tr>
-  </ng-container>
+  <!-- Summary (Shown Once) -->
+  <div class="invoice-summary" style="page-break-inside: avoid; margin-top: 1rem;">
+    <table class="summary-table">
+      <tr>
+        <td><strong>Original Price (Before Discount):</strong></td>
+        <td class="text-alg">{{ invoice.totalAmount | currency:'INR':'symbol':'1.2-2' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Discount %:</strong></td>
+        <td class="text-alg">{{ invoice.disCountPercent }}%</td>
+      </tr>
+      <tr>
+        <td><strong>Discount Amount:</strong></td>
+        <td class="text-alg">
+          {{ calculateDiscount(invoice.totalAmount, invoice.disCountPercent) | currency:'INR':'symbol':'1.2-2' }}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Sub Total:</strong></td>
+        <td class="text-alg">
+          {{
+            invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)
+            | currency:'INR':'symbol':'1.2-2'
+          }}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Given Amount:</strong></td>
+        <td class="text-alg">{{ givenAmount | currency:'INR':'symbol':'1.2-2' }}</td>
+      </tr>
+      <tr>
+        <td><strong>Final Amount:</strong></td>
+        <td class="text-alg">
+          {{
+            (invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)) - givenAmount
+            | currency:'INR':'symbol':'1.2-2'
+          }}
+        </td>
+      </tr>
+    </table>
+  </div>
 
-  <!-- Page Total after each group -->
-  <tr>
-    <td colspan="4" class="text-right"><strong>Page Total ({{ pageIndex + 1 }})</strong></td>
-    <td  class="text-alg">
-      <strong>{{ getPageTotal(group) | currency:'INR':'symbol':'1.2-2' }}</strong>
-    </td>
-  </tr>
-
-  <!-- Optional: Page break -->
-  <tr class="page-break"></tr>
-</ng-container>
-  </tbody>
-
-  <tfoot>
-    <tr>
-      <td colspan="3"><strong>Total</strong></td>
-      <td></td>
-      <td class="text-alg"><strong>{{ invoice.totalAmount | currency:'INR':'symbol':'1.2-2' }}</strong></td>
-    </tr>
-  </tfoot>
-</table>
-
-
+  <!-- Amount in Words -->
   <div class="in-words">
     <p><strong>Total in words:</strong> {{ invoice.amountInWords }}</p>
   </div>
 
+  <!-- Bank Details -->
   <div class="bank-section">
     <h3>Bank Details</h3>
     <p><strong>Bank Name:</strong> {{ bank.name }}</p>
@@ -85,9 +131,10 @@
     <p><strong>Bank Branch IFSC:</strong> {{ bank.ifsc }}</p>
   </div>
 
+  <!-- Signature Block -->
   <div class="signature-block">
     <p><strong>Total Amount After Tax:</strong> ₹ {{ invoice.totalAmount | number:'1.2-2' }}</p>
     <p>For {{ company.name }}</p>
-    <p><em>This is computer generated invoice no signature required.</em></p>
+    <p><em>This is a computer-generated invoice. No signature required.</em></p>
   </div>
 </div>

@@ -46,7 +46,7 @@ export class CategoryComponent implements OnInit {
     this.formGroup = new FormGroup({
       company: new FormControl(null, Validators.required),
       categoryName: new FormControl(null, Validators.required),
-      isActive: new FormControl(null, Validators.required),
+      isActive: new FormControl(null),
       description: new FormControl(null)
     });
   }
@@ -78,7 +78,8 @@ export class CategoryComponent implements OnInit {
         type: 'textarea',
         name: 'description',
         label: 'Description',
-        colSpan: 12
+        colSpan: 12,
+        isHidden: true
       }
     ];
   }
