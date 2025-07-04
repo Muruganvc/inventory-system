@@ -1,0 +1,131 @@
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+  .filter-field {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .vertical-dots {
+    font-size: 20px;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: #000;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.product-card__left {
+  width: 40%;
+  padding: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .product-card__label {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .product-card__title {
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
+
+.product-card__right {
+  width: 60%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+
+  .product-card__category {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .product-card__subcategory {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .product-card__quantity {
+    font-size: 13px;
+    color: #444;
+  }
+}
+
+/* ✅ Responsive layout - correct nesting fix */
+@media (max-width: 600px) {
+  .product-card {
+    flex-direction: column !important;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .product-card__left,
+  .product-card__right {
+    width: 100% !important;
+  }
+
+  .product-card__left {
+    border-radius: 12px 12px 0 0;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .product-card__right {
+    border-radius: 0 0 12px 12px;
+    padding: 12px;
+  }
+
+  // Optional: soften red background on mobile
+  .product-card__left[style*="red"] {
+    background-color: #f44336 !important;
+  }
+}

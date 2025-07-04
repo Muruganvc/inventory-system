@@ -51,10 +51,8 @@ export class DynamicFormComponent {
     this.breakpointObserver
       .observe([Breakpoints.Handset])
       .subscribe(result => {
-        this.isMobileView = result.matches;
-        console.log('Mobile View:', this.isMobileView);
-      });
-
+        this.isMobileView = result.matches; 
+      }); 
     this.fields.forEach(field => {
       if (!this.formGroup.get(field.name)) {
         this.formGroup.addControl(field.name, new FormControl(null));

@@ -108,6 +108,7 @@ export class CompanyComponent implements OnInit {
   }
 
   private createCompany(): void {
+    if(this.formGroup.invalid) return;
     const formValue = this.formGroup.value;
 
     const createCommand: CompanyCreate = {
@@ -124,10 +125,7 @@ export class CompanyComponent implements OnInit {
         } else {
           this.commonService.showInfo('New Company not created.');
         }
-      },
-      error: () => {
-        this.commonService.showError('New Company not created.');
-      }
+      } 
     });
   }
 

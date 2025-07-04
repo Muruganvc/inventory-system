@@ -27,6 +27,9 @@ export class LayoutComponent {
   isMobileDevice = false;
   sidebarExpanded = true;
 
+
+    dashBoardView : string ='Dashboard Card view';
+
   isAdmin =() : boolean =>{
      return this.authService.hasRole(["Admin"])
   }
@@ -105,5 +108,13 @@ export class LayoutComponent {
   onMenuPermission =() :void =>{
     this.router.navigate(['/setting/user-menu-permission']); 
   }
+
+  onGridView(): void {
+    const isGridView = this.router.url === '/dashboard-gridview';
+
+    this.dashBoardView = !isGridView ? 'Dashboard Modern view' : 'Dashboard Card view';
+    this.router.navigate([isGridView ? '/dashboard' : '/dashboard-gridview']);
+  }
+
 
 }

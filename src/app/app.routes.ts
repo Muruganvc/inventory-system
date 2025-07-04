@@ -26,12 +26,14 @@ import { UserMenuPermissionComponent } from './components/settings/user-menu-per
 import { CompanyComponent } from './components/inventory/company/company.component';
 import { CategoryComponent } from './components/inventory/category/category.component';
 import { ProductCategoryComponent } from './components/inventory/product-category/product-category.component';
+import { DashboardGridviewComponent } from './components/dashboard/dashboard-gridview/dashboard-gridview.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent }, {
         path: '', component: LayoutComponent, canActivate: [authGuard], children: [
             { path: 'dashboard', component: DashboardComponent },
+             { path: 'dashboard-gridview', component: DashboardGridviewComponent },
             { path: 'product-list', component: ProductListComponent },
             { path: 'product', component: ProductComponent },
             {

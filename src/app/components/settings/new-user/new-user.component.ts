@@ -51,7 +51,7 @@ export class NewUserComponent implements OnInit {
       { type: 'input', name: 'firstName', label: 'First Name', colSpan: 6, maxLength: 20 },
       { type: 'input', name: 'lastName', label: 'Last Name', colSpan: 6, maxLength: 20 },
       { type: 'input', name: 'userName', label: 'User Name', colSpan: 6, maxLength: 20 },
-      { type: 'input', name: 'email', label: 'Email', colSpan: 6, maxLength: 20 },
+      { type: 'input', name: 'email', label: 'Email', colSpan: 6, maxLength: 50 },
       {
         type: 'radio', name: 'role', label: 'Role', colSpan: 6, isReadOnly: false,
         options: [

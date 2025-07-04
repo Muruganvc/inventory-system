@@ -11,6 +11,12 @@
     </button>
 
     <mat-menu #userMenu="matMenu">
+
+         <button  mat-menu-item (click)="onGridView()">
+            <i class="fas fa-border-all pd-10-rt"></i>
+            <span>{{dashBoardView}}</span>
+        </button>
+
         <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
             <i class="fas fa-user-plus pd-10-rt"></i>
             <span>Add New User</span>

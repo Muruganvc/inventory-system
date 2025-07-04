@@ -1,0 +1,61 @@
+<div class="filter-bar">
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Search</mat-label>
+    <input matInput type="text" placeholder="Company, category, or product" [(ngModel)]="searchText"
+      (input)="applyFilter()" />
+  </mat-form-field>
+
+  <!-- Font Awesome icon as menu trigger -->
+  <i [matMenuTriggerFor]="filterMenu" class="fas fa-ellipsis-v vertical-dots" tabindex="0"
+    aria-label="More options"></i>
+
+  <mat-menu #filterMenu="matMenu">
+    <!-- <button mat-menu-item (click)="openAdvancedFilter($event)">
+      <i class="fas fa-filter"></i>
+      <span>&nbsp;Advanced Filters</span>
+    </button> -->
+    <button mat-menu-item (click)="sortByCompanyAsc()">
+      <i class="fas fa-sort-alpha-down"></i>
+      <span>&nbsp;Company: A to Z</span>
+    </button>
+
+    <button mat-menu-item (click)="sortByCompanyDesc()">
+  <i class="fas fa-sort-alpha-up-alt"></i>
+  <span>&nbsp;Company: Z to A</span>
+</button>
+
+    <button mat-menu-item (click)="sortByQuantityAsc()">
+      <i class="fas fa-sort-amount-up-alt"></i>
+      <span>&nbsp;Quantity: Low to High</span>
+    </button>
+
+    <button mat-menu-item (click)="sortByQuantityDesc()">
+      <i class="fas fa-sort-amount-down-alt"></i>
+      <span>&nbsp;Quantity: High to Low</span>
+    </button>
+
+    <button mat-menu-item (click)="resetFilter()">
+      <i class="fas fa-sync-alt"></i>
+      <span>&nbsp;Reset</span>
+    </button>
+  </mat-menu>
+</div>
+
+<div class="product-grid">
+  <div class="product-card" *ngFor="let product of productList">
+    <div class="product-card__left" [style.backgroundColor]="product.color">
+      <div class="product-card__label">COMPANY</div>
+      <div class="product-card__title" [title]="product.companyName">
+        {{ product.companyName }}
+      </div>
+    </div>
+
+    <div class="product-card__right">
+      <div class="product-card__category">{{ product.categoryName }}</div>
+      <div class="product-card__subcategory">{{ product.productCategoryName }}</div>
+      <div class="product-card__quantity">
+        Quantity: <strong>{{ product.quantity }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
