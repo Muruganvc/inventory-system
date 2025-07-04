@@ -1,0 +1,7 @@
+{
+  "apiBaseUrl": "https://localhost:7012/",
+  "apiKey": "your-api-key-here",
+  "enableLogging": true,
+  "appVersion": "1.0.0",
+  "companyName": "VENNILA ELECTRICALS"
+}

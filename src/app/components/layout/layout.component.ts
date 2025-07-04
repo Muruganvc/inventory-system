@@ -12,6 +12,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { AuthService } from '../../services/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
+import { ConfigService } from '../../shared/services/config.service';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -23,15 +24,16 @@ export class LayoutComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
   private readonly authService = inject(AuthService);
+  configService = inject(ConfigService);
 
   isMobileDevice = false;
   sidebarExpanded = true;
 
 
-    dashBoardView : string ='Dashboard Card view';
+  dashBoardView: string = 'Dashboard Card view';
 
-  isAdmin =() : boolean =>{
-     return this.authService.hasRole(["Admin"])
+  isAdmin = (): boolean => {
+    return this.authService.hasRole(["Admin"])
   }
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog) {
@@ -105,8 +107,8 @@ export class LayoutComponent {
     this.router.navigate(['/setting/change-password']);
   }
 
-  onMenuPermission =() :void =>{
-    this.router.navigate(['/setting/user-menu-permission']); 
+  onMenuPermission = (): void => {
+    this.router.navigate(['/setting/user-menu-permission']);
   }
 
   onGridView(): void {

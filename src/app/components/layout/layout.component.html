@@ -3,7 +3,7 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <span class="toolbar-title">My App</span>
+    <span class="toolbar-title">{{configService.companyName}}</span>
     <span class="spacer"></span>
 
     <button mat-icon-button [matMenuTriggerFor]="userMenu">
@@ -12,7 +12,7 @@
 
     <mat-menu #userMenu="matMenu">
 
-         <button  mat-menu-item (click)="onGridView()">
+        <button mat-menu-item (click)="onGridView()">
             <i class="fas fa-border-all pd-10-rt"></i>
             <span>{{dashBoardView}}</span>
         </button>

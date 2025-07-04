@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { ApiResponse } from '../common/ApiResponse';
+import { ConfigService } from './config.service';
 
 export type ApiHeaders = Record<string, string>;
 export type ApiParams = Record<string, string | number | boolean | Array<string | number | boolean>>;
@@ -9,10 +10,11 @@ export type ApiParams = Record<string, string | number | boolean | Array<string 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
-  private readonly baseUrl = 'https://localhost:7012/';
+export class ApiService{ 
   private readonly http = inject(HttpClient);
+  private readonly configService = inject(ConfigService);
 
+ 
   private createHeaders(headers?: ApiHeaders): HttpHeaders {
     let httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
     const token = localStorage.getItem('token');
@@ -57,9 +59,9 @@ export class ApiService {
     url: string,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> {
+  ): Observable<ApiResponse<TResponse>> { 
     return this.http
-      .get<ApiResponse<TResponse>>(`${this.baseUrl}${url}`, {
+      .get<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
@@ -73,7 +75,7 @@ export class ApiService {
     headers?: ApiHeaders
   ): Observable<ApiResponse<TResponse>> {
     return this.http
-      .post<ApiResponse<TResponse>>(`${this.baseUrl}${url}`,  body ?? {}, {
+      .post<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body ?? {}, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
@@ -92,7 +94,7 @@ export class ApiService {
     };
 
     return this.http
-      .put<ApiResponse<TResponse>>(`${this.baseUrl}${url}`, body ?? {}, options)
+      .put<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body ?? {}, options)
       .pipe(catchError(this.handleError));
   }
 
@@ -103,7 +105,7 @@ export class ApiService {
     headers?: ApiHeaders
   ): Observable<ApiResponse<TResponse>> {
     return this.http
-      .patch<ApiResponse<TResponse>>(`${this.baseUrl}${url}`, body, {
+      .patch<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
@@ -116,7 +118,7 @@ export class ApiService {
     headers?: ApiHeaders
   ): Observable<ApiResponse<TResponse>> {
     return this.http
-      .delete<ApiResponse<TResponse>>(`${this.baseUrl}${url}`, {
+      .delete<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
