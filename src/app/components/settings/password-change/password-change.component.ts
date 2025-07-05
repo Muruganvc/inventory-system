@@ -45,10 +45,7 @@ formGroup!: FormGroup;
           this.commonService.showSuccess("Successfully password Changed");
           this.authService.logout();
         }
-      },
-      error: (error) => {
-        console.error('Update failed', error);
-      }
+      } 
     });
   };
 

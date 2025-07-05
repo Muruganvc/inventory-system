@@ -19,7 +19,10 @@ export class ProductCategoryListComponent implements OnInit {
     this.companyService.getProductCategories().subscribe({
       next: result => {
         if (!!result) {
-          this.productCategories = result;
+             this.productCategories = result.map(a => ({
+            ...a,
+            productFullName: `${a.companyName} ${a.categoryName} ${a.productCategoryName}`
+          }));
         }
       }
     });
@@ -44,13 +47,14 @@ export class ProductCategoryListComponent implements OnInit {
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string }[] = [
-    { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
-    { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: false },
-    { key: 'productCategoryName', label: 'Product Category Name', align: 'left', isHidden: false },
+    { key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false },
+    { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
+    { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
+    { key: 'productCategoryName', label: 'Product Category Name', align: 'left', isHidden: true },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
     { key: 'createdAt', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
-    { key: 'username', label: 'Creator By', align: 'left', isHidden: false },
+    { key: 'username', label: 'Created By', align: 'left', isHidden: false },
   ];
 
 

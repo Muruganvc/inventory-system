@@ -50,7 +50,7 @@ export class CompanyListComponent implements OnInit {
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
-    { key: 'createdBy', label: 'Creator By', align: 'left', isHidden: false },
+    { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false },
   ];
 
 

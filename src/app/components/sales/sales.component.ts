@@ -57,7 +57,7 @@ export class SalesComponent implements OnInit {
     this.initActionButtons();
     this.getProducts();
     this.bindProductChange();
-    this.bindTotalAmountChange();
+    this.bindTotalAmountChange(); 
   }
 
   /** -------------------- INIT -------------------- */
@@ -170,6 +170,10 @@ export class SalesComponent implements OnInit {
     });
   }
 
+
+
+
+
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
     if (field) field.options = options;
@@ -224,8 +228,8 @@ export class SalesComponent implements OnInit {
       mrp: product.mrp,
       availableQuantity: product.quantity,
       totalAmount: 0,
-      salesPrice : product.salesPrice,
-      landingPrice:product.landingPrice
+      salesPrice: product.salesPrice,
+      landingPrice: product.landingPrice
     });
   }
 
@@ -281,6 +285,7 @@ export class SalesComponent implements OnInit {
       this.dialog.open(ConfirmDialogComponent, {
         width: '100%',
         maxWidth: '400px',
+        
         disableClose: true,
         data: {
           title: 'Sale Items',
@@ -297,7 +302,7 @@ export class SalesComponent implements OnInit {
     const dialogRef = this.dialog.open(SalesConfirmDialogComponent, {
       width: '90%',
       maxWidth: '600px',
-      height: '550px',
+      height: '470px',
       disableClose: true,
       panelClass: 'no-radius-dialog',
       data: {
@@ -314,12 +319,16 @@ export class SalesComponent implements OnInit {
       const request: OrderCreateRequest = {
         customer: result.customer,
         orderItemRequests: result.orderItems,
-        givenAmount: result.givenAmount
+        givenAmount: result.givenAmount,
+        gstNumber : result.gstNumber,
+        isGst : result.isGst
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {
           if (response > 0) {
             this.commonService.showSuccess('Order created successfully.');
+            this.formGroup.reset();
+            this.productSales = [];
           }
         },
         error: error => {
@@ -341,17 +350,26 @@ export class SalesComponent implements OnInit {
       return;
     }
 
+    if (form.quantity == 0) {
+      this.commonService.showWarning('Sorry, This product is currently out of stock.');
+      return;
+    }
+
     const selectedProduct = this.products.find(p => p.productId === form.product.value);
+    if (selectedProduct && Number(form.price) < selectedProduct.landingPrice) {
+      this.commonService.showWarning('Unit price should not be less than Landing Price.');
+      return;
+    }
     if (!selectedProduct) return;
     const newProduct: ProductEntry = {
-      productName: `${ selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
+      productName: `${selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
       mrp: selectedProduct.mrp,
       price: form.price,
       quantity: form.quantity,
       totalAmount: (form.price * form.quantity),
       productId: selectedProduct.productId,
       id: form.product.value,
-      salesPrice : selectedProduct.salesPrice
+      salesPrice: selectedProduct.salesPrice
     };
 
     this.productSales = [...this.productSales, newProduct];

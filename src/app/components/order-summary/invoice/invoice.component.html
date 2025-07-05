@@ -1,8 +1,8 @@
 <div *ngIf="invoice.items.length > 0" #invoiceContent class="invoice-wrapper">
-<div class="company-bank-row">
-  <div class="company-header">
-    <h1>{{ company.name }}</h1>
-  </div>
+  <div class="company-bank-row">
+    <div class="company-header">
+      <h1>{{ company.name }}</h1>
+    </div>
 
   <div class="row-content">
     <div class="company-info">
@@ -13,23 +13,20 @@
         <p>GSTIN: {{ company.gstin }}</p>
       </div>
     </div>
-
-    <div class="bank-section">
-      <h3>Bank Details</h3>
-      <p><strong>Bank Name:</strong> {{ bank.name }}</p>
-      <p><strong>Branch Name:</strong> {{ bank.branch }}</p>
-      <p><strong>Bank Account Number:</strong> {{ bank.accountNumber }}</p>
-      <p><strong>Bank Branch IFSC:</strong> {{ bank.ifsc }}</p>
+  
+    <div class="company-logo">
+      <img src="../../../../../public/TheeranChinnamalai.jfif" alt="Company Logo" />
     </div>
   </div>
-</div>
+  
+  </div>
 
 
   <!-- Invoice Header -->
-  <div class="invoice-title">
+  <!-- <div class="invoice-title">
     <h2>TAX INVOICE</h2>
     <p class="original">ORIGINAL FOR RECIPIENT</p>
-  </div>
+  </div> -->
 
   <!-- Customer and Invoice Details -->
   <div class="details">
@@ -96,8 +93,8 @@
         <td><strong>Sub Total:</strong></td>
         <td class="text-alg">
           {{
-            invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)
-            | currency:'INR':'symbol':'1.2-2'
+          invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)
+          | currency:'INR':'symbol':'1.2-2'
           }}
         </td>
       </tr>
@@ -109,8 +106,8 @@
         <td><strong>Final Amount:</strong></td>
         <td class="text-alg">
           {{
-            (invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)) - givenAmount
-            | currency:'INR':'symbol':'1.2-2'
+          (invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)) - givenAmount
+          | currency:'INR':'symbol':'1.2-2'
           }}
         </td>
       </tr>
@@ -133,7 +130,6 @@
 
   <!-- Signature Block -->
   <div class="signature-block">
-    <p><strong>Total Amount After Tax:</strong> ₹ {{ invoice.totalAmount | number:'1.2-2' }}</p>
     <p>For {{ company.name }}</p>
     <p><em>This is a computer-generated invoice. No signature required.</em></p>
   </div>

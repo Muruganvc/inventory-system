@@ -17,4 +17,5 @@ export interface ProductsResponse extends TableRow {
   quantity: number;
   isActive: boolean;
   userName?: string | null;
+  serialNo: string;
 }

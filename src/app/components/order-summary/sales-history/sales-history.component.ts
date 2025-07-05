@@ -175,9 +175,6 @@ tfoot {
       </div>
     </body>
   </html>`
-
-    console.log(html);
-
     doc.write(html);
 
     doc.close();

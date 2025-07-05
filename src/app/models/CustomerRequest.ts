@@ -17,4 +17,6 @@ export interface OrderCreateRequest {
   customer: CustomerRequest;
   orderItemRequests: OrderItemRequest[];
   givenAmount: number;
+  isGst: boolean;
+  gstNumber: string;
 }

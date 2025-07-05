@@ -9,8 +9,5 @@ export interface UpdateProductRequest {
     salesPrice: number;
     totalQuantity: number;
     isActive: boolean;
-    taxType?: string | null;       // default "GST"
-    barCode?: string | null;       // default null
-    brandName?: string | null;     // default null
-    taxPercent?: number;           // default 18
+    serialNo : string;
 }

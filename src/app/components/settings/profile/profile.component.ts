@@ -61,10 +61,7 @@ export class ProfileComponent implements OnInit {
         if (result) {
           this.commonService.showSuccess("Successfully updated");
         }
-      },
-      error: (error) => {
-        console.error('Update failed', error);
-      }
+      } 
     });
   };
 

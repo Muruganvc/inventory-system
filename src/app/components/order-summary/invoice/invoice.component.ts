@@ -70,45 +70,42 @@ export class InvoiceComponent implements OnInit {
   }
 
   async getOrder(orderId: number): Promise<void> {
-    try {
-      const result = await firstValueFrom(this.orderService.getOrderSummaries(orderId));
 
-      if (result?.length) {
-        const [firstItem] = result;
+    const result = await firstValueFrom(this.orderService.getOrderSummaries(orderId));
 
-        this.invoice = {
-          ...this.invoice,
-          invoiceNo: String(orderId),
-          invoiceDate: new Date().toISOString().split('T')[0],
-          items: result.map(a => ({
-            name: a.fullProductName,
-            qty: a.quantity,
-            rate: a.unitPrice,
-            total: a.quantity * a.unitPrice,
-            balanceAmount: a.balanceAmount,
-            unit: 'PCS',
-            productId: a.productId,
-            igstAmount: 10, // Hardcoded for now
-            igstPercent: 18,
-            taxableValue: 18,
-          })),
-          user: firstItem.user,
-          disCountPercent: firstItem.discountPercent,
-        };
+    if (result?.length) {
+      const [firstItem] = result;
 
-        this.invoice.totalAmount = this.getInvoiceTotal(this.invoice.items);
-        this.invoice.amountInWords = this.numberToWords(Math.round(this.invoice.totalAmount)) + ' rupees only';
+      this.invoice = {
+        ...this.invoice,
+        invoiceNo: String(orderId),
+        invoiceDate: new Date().toISOString().split('T')[0],
+        items: result.map(a => ({
+          name: a.fullProductName,
+          qty: a.quantity,
+          rate: a.unitPrice,
+          total: a.quantity * a.unitPrice,
+          balanceAmount: a.balanceAmount,
+          unit: 'PCS',
+          productId: a.productId,
+          igstAmount: 10, // Hardcoded for now
+          igstPercent: 18,
+          taxableValue: 18,
+        })),
+        user: firstItem.user,
+        disCountPercent: firstItem.discountPercent,
+      };
 
-        this.givenAmount = firstItem.finalAmount - firstItem.balanceAmount;
+      this.invoice.totalAmount = this.getInvoiceTotal(this.invoice.items);
+      this.invoice.amountInWords = this.numberToWords(Math.round(this.invoice.totalAmount)) + ' rupees only';
 
-        this.customer = {
-          name: firstItem.customerName,
-          address: firstItem.address,
-          phone: firstItem.phone,
-        };
-      }
-    } catch (err) {
-      console.error('Failed to fetch order:', err);
+      this.givenAmount = firstItem.finalAmount - firstItem.balanceAmount;
+
+      this.customer = {
+        name: firstItem.customerName,
+        address: firstItem.address,
+        phone: firstItem.phone,
+      };
     }
   }
 

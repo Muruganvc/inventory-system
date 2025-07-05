@@ -94,7 +94,7 @@ columns: {
     const html = `
       <html>
         <head>
-          <title>Print Invoice</title>
+         <title>TAX INVOICE - ORIGINAL FOR RECIPIENT</title>
           <style>
             @media print {
               @page { size: A4; margin: 20mm; }
@@ -173,8 +173,6 @@ columns: {
         </body>
       </html>
     `;
-
-    console.log(html)
     doc.write(html);
     doc.close();
 

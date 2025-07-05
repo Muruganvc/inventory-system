@@ -159,8 +159,7 @@ export class ProductCategoryComponent {
           value: company.companyId
         }));
         this.updateFieldOptions('company', options);
-      },
-      error: err => console.error('Company Load Error:', err)
+      }
     });
   }
 
@@ -185,8 +184,7 @@ export class ProductCategoryComponent {
 
   private loadCategories(companyId: number): void {
     this.productService.getCategories(companyId).subscribe({
-      next: res => this.updateFieldOptions('category', res),
-      error: err => console.error('Category Load Error:', err)
+      next: res => this.updateFieldOptions('category', res) 
     });
   }
 

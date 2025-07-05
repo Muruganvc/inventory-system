@@ -143,8 +143,7 @@ export class CategoryComponent implements OnInit {
           value: company.companyId
         }));
         this.updateFieldOptions('company', options);
-      },
-      error: err => console.error('Company Load Error:', err)
+      }
     });
   }
 

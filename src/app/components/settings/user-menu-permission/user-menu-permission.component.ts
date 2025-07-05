@@ -40,10 +40,7 @@ export class UserMenuPermissionComponent {
         this.flatMenu = [];
         this.originalMenu = menu;
         this.flattenMenu(menu);
-      },
-      error: (err) => {
-        console.error('Failed to load menu:', err);
-      }
+      } 
     });
 
     this.updateHeight();
@@ -99,8 +96,7 @@ export class UserMenuPermissionComponent {
       next: permissionResult => {
         this.flatMenu = [];
         this.flattenMenu(this.originalMenu, permissionResult);
-      },
-      error: err => console.error('Permission fetch failed', err)
+      } 
     });
   }
 

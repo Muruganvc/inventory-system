@@ -1,11 +1,12 @@
 <h4 mat-dialog-title>Seles Confirmation</h4>
 <div class="amount-summary-row">
-    <span>Total Amount: {{ userForm.get('netTotal')?.value }}</span>
+    <span>Total Amount: {{ userForm.get('netTotal')?.value | currency:'INR':'symbol':'1.2-2' }}</span>
     <span>Total Items: {{ data.totalItems }}</span>
-    <span>Dis. Amount: {{ userForm.get('disCountAmount')?.value }}</span>
-    <span>Final Amount: {{ userForm.get('finalTotal')?.value }}</span>
+    <span>Dis. Amount: {{ userForm.get('disCountAmount')?.value | currency:'INR':'symbol':'1.2-2' }}</span>
+    <span>Final Amount: {{ userForm.get('finalTotal')?.value | currency:'INR':'symbol':'1.2-2' }}</span>
 
 </div>
+
 
 <div class="form-scroll-container">
     <app-dynamic-form [isPopup]="false" [formGroup]="userForm" [fields]="fields" [buttons]="actionButtons"

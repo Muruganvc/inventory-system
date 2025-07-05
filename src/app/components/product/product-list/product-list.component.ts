@@ -82,10 +82,7 @@ export class ProductListComponent {
             isHidden: false
           });
         }
-      },
-      error: (error) => {
-        console.error('Failed to load products:', error);
-      }
+      } 
     });
   }
 
@@ -96,14 +93,13 @@ export class ProductListComponent {
       { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
       { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
       { key: 'productName', label: 'Prod.Name', align: 'left', isHidden: true },
-      {
-        key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false
-      },
+      { key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false },
+      { key: 'serialNo', label: 'Serial No', align: 'left', isHidden: false },
       { key: 'mrp', label: 'Mrp ₹', align: 'left', isHidden: false },
-      { key: 'salesPrice', label: 'Sales Price ₹', align: 'left', isHidden: false },
-      { key: 'landingPrice', label: 'Landing Price', align: 'left', isHidden: false },
+      { key: 'salesPrice', label: 'Sales ₹', align: 'left', isHidden: false },
+      { key: 'landingPrice', label: 'Landing', align: 'left', isHidden: false },
       { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
-      { key: 'userName', label: 'Creator', align: 'left', isHidden: false }
+      { key: 'userName', label: 'Created By', align: 'left', isHidden: false }
     ];
 
   onEdit(product: ProductsResponse) {

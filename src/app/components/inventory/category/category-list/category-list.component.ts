@@ -18,11 +18,15 @@ export class CategoryListComponent implements OnInit {
   ngOnInit(): void {
     this.companyService.getCategories().subscribe({
       next: result => {
-        if (!!result) {
-          this.categories = result;
+        if (result && Array.isArray(result)) {
+          this.categories = result.map(a => ({
+            ...a,
+            companyCategoryName: `${a.companyName} ${a.categoryName}`
+          }));
         }
       }
     });
+
   }
 
   tableActions =
@@ -44,10 +48,10 @@ export class CategoryListComponent implements OnInit {
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
-    { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
-    { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: false },
+    { key: 'companyCategoryName', label: 'Company Category Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
-    { key: 'createdBy', label: 'Creator By', align: 'left', isHidden: false },
+    { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
+    { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false },
   ];
 
 

@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest, filter, merge, startWith } from 'rxjs';
 import { CustomerRequest, OrderItemRequest } from '../../../models/CustomerRequest';
 import { ProductEntry } from '../../../models/ProductEntry';
+import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-sales-confirm-dialog',
@@ -28,6 +29,7 @@ import { ProductEntry } from '../../../models/ProductEntry';
   styleUrl: './sales-confirm-dialog.component.scss'
 })
 export class SalesConfirmDialogComponent implements OnInit {
+  private readonly commonService = inject(CommonService);
   userForm: FormGroup;
   pageHeader: 'Customer Information';
   fields: any[] = [];
@@ -47,16 +49,17 @@ export class SalesConfirmDialogComponent implements OnInit {
         Validators.required,
         Validators.minLength(10),
         Validators.maxLength(10),
-        Validators.pattern(/^[0-9]{10}$/) // ensures only digits
+        Validators.pattern(/^[0-9]{10}$/)
       ]),
       address: new FormControl(null),
       disCountPercent: new FormControl(null),
-      // taxPercent: new FormControl({ value: null, disabled: false }),
       finalTotal: new FormControl({ value: data.netTotal, disabled: true }),
       netTotal: new FormControl({ value: data.netTotal, disabled: true }),
       disCountAmount: new FormControl({ value: data.netTotal, disabled: true }),
       givenAmount: new FormControl({ value: null, disabled: false }),
       balanceAmount: new FormControl({ value: data.netTotal, disabled: true }),
+      isGst: new FormControl(null),
+      gstNumber: new FormControl(null),
     });
   }
   ngOnInit(): void {
@@ -66,6 +69,7 @@ export class SalesConfirmDialogComponent implements OnInit {
     this.bindCustomerEvent();
     this.bindFinalTotalCalculation();
     this.bindCalculateBalance();
+    this.isGstChecked();
   }
 
   private getCustomers = (): void => {
@@ -126,6 +130,13 @@ export class SalesConfirmDialogComponent implements OnInit {
   private handleSave(params: any): void {
     const formValue = params.form.value;
     const hasCustomerId = typeof formValue.customerName?.value !== 'undefined';
+
+    if (formValue.isGst && !formValue.gstNumber?.trim()) {
+      this.commonService.showInfo('GST Number is required.');
+      return;
+    }
+
+
     const customer: CustomerRequest = {
       address: formValue.address,
       customerId: hasCustomerId ? formValue.customerName.value : 0,
@@ -136,26 +147,50 @@ export class SalesConfirmDialogComponent implements OnInit {
     const givenAmount: number = +formValue.givenAmount || 0;
 
     const orderItems: OrderItemRequest[] = this.data.orderItems.map((item: ProductEntry) => ({
-      discountPercent: formValue.disCountPercent,
+      discountPercent: Number(formValue.disCountPercent),
       productId: item.productId,
-      quantity: item.quantity,
+      quantity: Number(item.quantity),
       remarks: formValue.remarks,
-      unitPrice: item.price
+      unitPrice: Number(item.price)
     }));
 
     const result = {
       ...this.userForm.value,
       customer,
       orderItems,
-      givenAmount
+      givenAmount,
+      isGst: formValue.isGst,
+      GstNumber: formValue.gstNumber
     };
 
     this.dialogRef.close(result);
   }
 
   handleCancel = (): void => {
-    this.dialogRef.close(this.userForm.value);
+    this.dialogRef.close();
   }
+
+  private isGstChecked(): void {
+    const gstToggleControl = this.userForm.get('isGst');
+    const gstNumberControl = this.userForm.get('gstNumber');
+
+    if (!gstToggleControl || !gstNumberControl) return;
+
+    gstToggleControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isChecked: boolean) => {
+        if (isChecked) {
+          gstNumberControl.setValidators(Validators.required);
+        } else {
+          gstNumberControl.clearValidators();
+        }
+
+        gstNumberControl.reset(); // clears value & marks as pristine
+        gstNumberControl.updateValueAndValidity();
+      });
+  }
+
+
 
   initFields = (): void => {
     this.fields = [
@@ -168,7 +203,8 @@ export class SalesConfirmDialogComponent implements OnInit {
       { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, isNumOnly: true, maxLength: 2 },
       { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'balanceAmount', label: 'Balance Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
-      { type: 'textarea', name: 'remarks', label: 'Remarks', colSpan: 12 }
+      { type: 'checkbox', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
+      { type: 'input', name: 'gstNumber', label: 'Gst Number', colSpan: 8, maxLength: 15 },
     ];
   }
 

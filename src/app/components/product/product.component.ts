@@ -60,6 +60,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.formGroup = new FormGroup({
       company: new FormControl(null, Validators.required),
       category: new FormControl(null, Validators.required),
+      productCategory: new FormControl(null),
       product: new FormControl(null),
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
@@ -67,7 +68,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       // description: new FormControl(null),
-      isActive: new FormControl(null)
+      isActive: new FormControl(null),
+      serialNo: new FormControl(null)
     }, {
       validators: [
         salesPriceLessThanMRPValidator(),
@@ -89,11 +91,12 @@ export class ProductComponent implements OnInit, OnDestroy {
         clear: (value: string) => this.clearDropDwon(value)
       },
       {
-        type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [],
+        type: 'searchable-select', name: 'productCategory', label: 'Product Name', colSpan: 3, options: [],
         addTag: true,
         // add: (term: string) => this.clearDropDwon(term),
         clear: (value: string) => this.clearDropDwon(value)
       },
+      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 3, isNumOnly: true, maxLength: 15 },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
@@ -111,20 +114,20 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   createNewProduct(term: string) {
     const newProduct = { key: term, value: term }; // can replace with ID later
-    const productField = this.fields.find(f => f.name === 'product');
+    const productField = this.fields.find(f => f.name === 'productCategory');
     productField?.options?.push(newProduct);
     return newProduct;
   }
 
   clearDropDwon(value: string) {
     if (value == 'company') {
-      this.formGroup.patchValue({ category: null, product: null });
+      this.formGroup.patchValue({ category: null, productCategory: null });
       this.updateFieldOptions('category', []);
-      this.updateFieldOptions('product', []);
+      this.updateFieldOptions('productCategory', []);
     } else if (value == 'category') {
-      this.formGroup.patchValue({ product: null });
+      this.formGroup.patchValue({ productCategory: null });
       var category = this.formGroup.get('category')?.value;
-      this.updateFieldOptions('product', []);
+      this.updateFieldOptions('productCategory', []);
       this.loadProducts(category.value);
     }
   }
@@ -176,13 +179,14 @@ export class ProductComponent implements OnInit, OnDestroy {
       company: { value: product.companyId, key: product.companyName },
       category: { value: product.categoryId, key: product.categoryName },
       product: { value: product.productId, key: product.productName },
+      productCategory: { value: product.productCategoryId, key: product.productCategoryName },
       mrp: product.mrp,
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
       quantity: product.quantity,
-      availableQuantity: product.quantity,
-      // description: product.description,
-      isActive: product.isActive
+      availableQuantity: product.quantity, 
+      isActive: product.isActive,
+      serialNo: product.serialNo
     });
   }
 
@@ -197,22 +201,19 @@ export class ProductComponent implements OnInit, OnDestroy {
         }));
 
         this.updateFieldOptions('company', keyValue);
-      },
-      error: err => console.error('Company Load Error:', err)
+      }
     });
   }
 
   private loadCategories(companyId: number): void {
     this.productService.getCategories(companyId).subscribe({
-      next: res => this.updateFieldOptions('category', res),
-      error: err => console.error('Category Load Error:', err)
+      next: res => this.updateFieldOptions('category', res)
     });
   }
 
   private loadProducts(categoryId: number): void {
     this.productService.getProductCategories(categoryId).subscribe({
-      next: res => this.updateFieldOptions('product', res),
-      error: err => console.error('Product Load Error:', err)
+      next: res => this.updateFieldOptions('productCategory', res)
     });
   }
 
@@ -229,47 +230,30 @@ export class ProductComponent implements OnInit, OnDestroy {
       )
       .subscribe(selected => {
         const categoryControl = this.formGroup.get('category');
-        const productControl = this.formGroup.get('product');
+        const productControl = this.formGroup.get('productCategory');
         if (categoryControl?.value || productControl?.value) {
           categoryControl?.reset(null);
           productControl?.reset(null);
         }
         this.updateFieldOptions('category', []);
-        this.updateFieldOptions('product', []);
+        this.updateFieldOptions('productCategory', []);
 
         if (selected?.value) {
           this.loadCategories(selected.value);
         }
       });
   }
-
-
-  // private bindCategoryChange(): void {
-  //   this.formGroup.get('category')?.valueChanges.subscribe(selected => {
-  //     this.formGroup.patchValue({ product: null });
-  //     // this.updateFieldOptions('product', []);
-  //     if (selected?.value) this.loadProducts(selected.value);
-  //   });
-  // }
+ 
 
   private bindCategoryChange(): void {
     this.formGroup.get('category')?.valueChanges.pipe(filter(value => !!value)).subscribe(selected => {
-      this.formGroup.patchValue({ product: null });
-      this.updateFieldOptions('product', []);
+      this.formGroup.patchValue({ productCategory: null });
+      this.updateFieldOptions('productCategory', []);
       if (selected?.value) this.loadProducts(selected.value);
     });
   }
 
-  // private bindProductChange(): void {
-  //   this.formGroup.get('product')?.valueChanges
-  //     .pipe(filter((value) => !!value))
-  //     .subscribe((selected) => {
-  //       const patchedValue = { key: selected.key, value: selected.value ?? 0 };
-  //       this.formGroup.patchValue({ product: patchedValue }, { emitEvent: true });
-  //       // this.updateFieldOptions('product', [patchedValue]);
-  //     });
-  // }
-
+ 
 
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
@@ -329,9 +313,6 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.commonService.showSuccess('New Product created.');
           this.ngOnInit();
         }
-      },
-      error: (err) => {
-        console.error('Failed to create product:', err);
       }
     });
 
@@ -345,8 +326,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.commonService.showSuccess('Product updated.');
         this.resetForm();
         this.router.navigate(['/product-list']);
-      },
-      error: err => console.error('Failed to update product:', err)
+      }
     });
   }
 
@@ -369,20 +349,19 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   private buildProductRequest(value: any): ProductRequest {
-    const { company, category, product } = value;
-    // const productName = [company?.key, category?.key, product?.key].filter(Boolean).join(' ');
+    const { company, category, product, productCategory } = value; 
     const productName = product?.key ? product.key : `${company?.key ?? ''} ${category?.key ?? ''}`.trim();
     return {
-      productCategoryId: product?.value ?? null,
+      productCategoryId: productCategory?.value ?? null,
       categoryId: category?.value,
-      companyId: company?.value,
-      // description: value.description,
+      companyId: company?.value, 
       mrp: value.mrp,
       productName,
       totalQuantity: value.quantity,
       salesPrice: value.salesPrice,
       isActive: !!value.isActive,
-      landingPrice: value.landingPrice
+      landingPrice: value.landingPrice,
+      serialNo: value.serialNo
     };
   }
 
@@ -423,7 +402,7 @@ function landingPriceLessThanSalesPriceValidator(): ValidatorFn {
     if (salesPrice != null && landingPrice != null && Number(landingPrice) > Number(salesPrice)) {
       return {
         salesPriceExceedsMRP: {
-          message: 'Landing Price should not Sales Price'
+          message: 'Landing Price should not Exceed Sales Price'
         }
       };
     }

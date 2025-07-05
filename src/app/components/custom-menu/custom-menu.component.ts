@@ -30,8 +30,7 @@ export class CustomMenuComponent implements OnInit {
     this.role = this.authService.hasRole(["Admin"]) ? 'Admin' :'User';
 
     this.userService.getUserMenu(+userId).subscribe({
-      next: (items) => this.menuItems.set(items),
-      error: (err) => console.error('Failed to load menu', err)
+      next: (items) => this.menuItems.set(items)
     });
   }
 

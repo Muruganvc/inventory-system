@@ -11,4 +11,5 @@ export interface GetProductCategoryQueryResponse extends TableRow {
   isActive: boolean;
   createdAt: Date;
   username: string;
+  productFullName: string;
 }
