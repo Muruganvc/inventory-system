@@ -1,28 +1,23 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { FormBuilder, FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActionButtons } from '../../../../shared/common/ActionButton';
-import { DynamicFormComponent } from '../../../../shared/components/dynamic-form/dynamic-form.component';
-import { SalesConfirmDialogComponent } from '../../../sales/sales-confirm-dialog/sales-confirm-dialog.component';
+import { DynamicFormComponent } from "../../../../shared/components/dynamic-form/dynamic-form.component";
+
 @Component({
   selector: 'app-advanced-filter-dialog',
   standalone: true,
-  imports: [MatInputModule, DynamicFormComponent, MatFormFieldModule, MatButtonModule, FormsModule, MatDialogModule],
+  imports: [DynamicFormComponent],
   templateUrl: './advanced-filter-dialog.component.html',
   styleUrl: './advanced-filter-dialog.component.scss'
 })
 export class AdvancedFilterDialogComponent {
-  filterForm: FormGroup;
+filterForm: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<SalesConfirmDialogComponent>,
+    public dialogRef: MatDialogRef<AdvancedFilterDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.filterForm = new FormGroup({

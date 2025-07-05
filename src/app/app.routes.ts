@@ -26,14 +26,14 @@ import { UserMenuPermissionComponent } from './components/settings/user-menu-per
 import { CompanyComponent } from './components/inventory/company/company.component';
 import { CategoryComponent } from './components/inventory/category/category.component';
 import { ProductCategoryComponent } from './components/inventory/product-category/product-category.component';
-import { DashboardGridviewComponent } from './components/dashboard/dashboard-gridview/product-quantity-wise';
+import { ProductAvailableQauntityComponent } from './components/dashboard/product-available-qauntity/product-available-qauntity.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent }, {
         path: '', component: LayoutComponent, canActivate: [authGuard], children: [
             { path: 'dashboard', component: DashboardComponent },
-             { path: 'dashboard-gridview', component: DashboardGridviewComponent },
+            { path: 'product-availability', component: ProductAvailableQauntityComponent },
             { path: 'product-list', component: ProductListComponent },
             { path: 'product', component: ProductComponent },
             {
@@ -58,7 +58,7 @@ export const routes: Routes = [
                     { path: 'change-password', component: PasswordChangeComponent },
                     { path: 'user-permission', component: UserPermissionComponent },
                     { path: 'user-list', component: UserListComponent },
-                     { path: 'user', component: NewUserComponent },
+                    { path: 'user', component: NewUserComponent },
                     { path: 'profile', component: ProfileComponent },
                     { path: 'user-menu-permission', component: UserMenuPermissionComponent }
                 ]

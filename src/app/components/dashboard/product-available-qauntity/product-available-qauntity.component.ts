@@ -1,35 +1,33 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-
 import { ProductQuantities } from '../../../models/ProductQuantities';
 import { DashboardService } from '../../../services/dashboard.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdvancedFilterDialogComponent } from './advanced-filter-dialog/advanced-filter-dialog.component';
 
 @Component({
-  selector: 'app-dashboard-gridview',
+  selector: 'app-product-available-qauntity',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCardModule,
-    MatMenuModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatProgressBarModule
-  ],
-  templateUrl: './product-quantity-wise.component.html',
-  styleUrl: './product-quantity-wise.component.scss'
+    imports: [
+      CommonModule,
+      FormsModule,
+      MatCardModule,
+      MatMenuModule,
+      MatInputModule,
+      MatFormFieldModule,
+      MatProgressBarModule
+    ],
+  templateUrl: './product-available-qauntity.component.html',
+  styleUrl: './product-available-qauntity.component.scss'
 })
-export class DashboardGridviewComponent implements OnInit {
-  searchText: string = '';
+export class ProductAvailableQauntityComponent {
+searchText: string = '';
   productList: ProductQuantities[] = [];
   allProducts: ProductQuantities[] = [];
 

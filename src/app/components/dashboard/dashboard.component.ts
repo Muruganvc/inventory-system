@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -15,7 +15,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { CompanyWiseIncomeComponent } from "./company-wise-income/company-wise-income.component";
 import { DashboardService } from '../../services/dashboard.service';
 import { TotalProductQueryResponse } from '../../models/CompanyWiseIncomeQueryResponse';
-import { DashboardGridviewComponent } from "./dashboard-gridview/product-quantity-wise";
+import { ProductAvailableQauntityComponent } from "./product-available-qauntity/product-available-qauntity.component"; 
 
 @Component({
   selector: 'app-dashboard',
@@ -28,12 +28,11 @@ import { DashboardGridviewComponent } from "./dashboard-gridview/product-quantit
     DaywiseComponent,
     WeekwiseComponent,
     MonthwiseComponent,
-    YearwiseComponent,
-    CompayWiseBalanceComponent,
+    YearwiseComponent, 
     MatMenuModule,
     MatButtonModule,
     CompanyWiseIncomeComponent,
-    DashboardGridviewComponent
+    ProductAvailableQauntityComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'

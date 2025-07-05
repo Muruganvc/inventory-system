@@ -32,7 +32,7 @@ export class LayoutComponent implements OnInit {
   userName : string ='';
   role : string ='';
 
-  dashBoardView: string = 'Dashboard Card view';
+  dashBoardView: string = 'Product Availability';
 
   isAdmin = (): boolean => {
     return this.authService.hasRole(["Admin"])
@@ -119,10 +119,10 @@ export class LayoutComponent implements OnInit {
   }
 
   onGridView(): void {
-    const isGridView = this.router.url === '/dashboard-gridview';
+    const isGridView = this.router.url === '/product-availability';
 
-    this.dashBoardView = !isGridView ? 'Dashboard Modern view' : 'Dashboard Card view';
-    this.router.navigate([isGridView ? '/dashboard' : '/dashboard-gridview']);
+    this.dashBoardView = !isGridView ? 'Dashboard' : 'Product Availability';
+    this.router.navigate([isGridView ? '/dashboard' : '/product-availability']);
   }
 
 
