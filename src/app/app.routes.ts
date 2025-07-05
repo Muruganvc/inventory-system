@@ -26,7 +26,7 @@ import { UserMenuPermissionComponent } from './components/settings/user-menu-per
 import { CompanyComponent } from './components/inventory/company/company.component';
 import { CategoryComponent } from './components/inventory/category/category.component';
 import { ProductCategoryComponent } from './components/inventory/product-category/product-category.component';
-import { DashboardGridviewComponent } from './components/dashboard/dashboard-gridview/dashboard-gridview.component';
+import { DashboardGridviewComponent } from './components/dashboard/dashboard-gridview/product-quantity-wise';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },

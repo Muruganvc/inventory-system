@@ -19,8 +19,6 @@ export class AuthService {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
 
-
-
   login(login: LoginRequest): Observable<LoginResponse> {
     return this.api
       .post<LoginRequest, LoginResponse>('user-login', login)
@@ -105,6 +103,18 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     return decoded?.userId ?? decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
   }
+
+  getUserRoles(): string[] {
+    const decoded = this.getDecodedToken();
+    if (!decoded) return [];
+
+    const roleClaimKey = Object.keys(decoded).find(k => k.endsWith('/identity/claims/role'));
+    if (!roleClaimKey) return [];
+
+    const roles = decoded[roleClaimKey];
+    return Array.isArray(roles) ? roles : [roles];
+  }
+
 
 
     hasRole(requiredRoles: string[]): boolean {

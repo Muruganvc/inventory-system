@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,15 +20,17 @@ import { ConfigService } from '../../shared/services/config.service';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
   private readonly authService = inject(AuthService);
-  configService = inject(ConfigService);
+  // configService = inject(ConfigService); 
 
+  companyName : string='';
   isMobileDevice = false;
   sidebarExpanded = true;
-
+  userName : string ='';
+  role : string ='';
 
   dashBoardView: string = 'Dashboard Card view';
 
@@ -36,12 +38,17 @@ export class LayoutComponent {
     return this.authService.hasRole(["Admin"])
   }
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog,private configService: ConfigService) {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobileDevice = result.matches;
         if (this.isMobileDevice) this.sidebarExpanded = false;
-      });
+      }); 
+  }
+  ngOnInit(): void {
+      this.companyName = this.configService.companyName;
+      this.userName= this.authService.getUserName();
+      this.role = this.authService.getUserRoles()[0];
   }
 
   isMobile(): boolean {

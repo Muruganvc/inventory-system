@@ -15,6 +15,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { CompanyWiseIncomeComponent } from "./company-wise-income/company-wise-income.component";
 import { DashboardService } from '../../services/dashboard.service';
 import { TotalProductQueryResponse } from '../../models/CompanyWiseIncomeQueryResponse';
+import { DashboardGridviewComponent } from "./dashboard-gridview/product-quantity-wise";
 
 @Component({
   selector: 'app-dashboard',
@@ -31,8 +32,9 @@ import { TotalProductQueryResponse } from '../../models/CompanyWiseIncomeQueryRe
     CompayWiseBalanceComponent,
     MatMenuModule,
     MatButtonModule,
-    CompanyWiseIncomeComponent
-  ],
+    CompanyWiseIncomeComponent,
+    DashboardGridviewComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

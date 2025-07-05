@@ -83,3 +83,103 @@ mat-sidenav {
   border-radius: 50%;
   object-fit: cover;
 }
+
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, green, red);
+
+  /* Vendor prefixing for background-clip */
+  -webkit-background-clip: text;     // Required for Chrome, Safari
+  background-clip: text;             // Standard — may be ignored by some browsers
+
+  /* Required for gradient text effect in WebKit browsers */
+  -webkit-text-fill-color: transparent;
+  color: transparent;                // Fallback for non-WebKit browsers
+
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+    &:hover {
+   
+    filter: brightness(1.2); // slightly brighter on hover
+    transform: scale(1.02); // subtle zoom-in
+    text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25); // deeper shadow
+  }
+}
+
+@mixin gradient-text($gradient) {
+  background: $gradient;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  @include gradient-text(linear-gradient(to right, green, red));
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  // padding: 12px 24px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+  font-size: 0.9rem;
+  color: #444;
+
+  .footer-left,
+  .footer-center,
+  .footer-right {
+    margin: 4px 0;
+    flex: 1 1 100%; // Full width by default (mobile-first)
+    text-align: center;
+  }
+
+  a {
+    color: #d32f2f;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: #b71c1c;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  @media (min-width: 768px) {
+    flex-wrap: nowrap;
+
+    .footer-left {
+      text-align: left;
+      flex: 1;
+    }
+
+    .footer-center {
+      text-align: center;
+      flex: 2;
+    }
+
+    .footer-right {
+      text-align: right;
+      flex: 1.5;
+    }
+  }
+}

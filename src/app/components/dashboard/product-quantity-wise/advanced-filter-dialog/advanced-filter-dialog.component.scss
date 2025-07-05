@@ -1,0 +1,15 @@
+
+.form-scroll-container {
+  max-height: 80vh; /* or 100%, or any fixed height */
+  overflow-y: auto;
+  padding: 16px; 
+  // margin-bottom: 5px;
+}
+
+.border{
+  border: 2px solid;
+  border-left-color: green;
+  border-top-color: green;
+  border-right-color:red;
+  border-bottom-color: red;
+}
