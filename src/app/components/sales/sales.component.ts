@@ -321,7 +321,7 @@ export class SalesComponent implements OnInit {
         orderItemRequests: result.orderItems,
         givenAmount: result.givenAmount,
         gstNumber : result.gstNumber,
-        isGst : result.isGst
+        isGst : !!result.isGst
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {

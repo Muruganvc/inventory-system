@@ -130,6 +130,25 @@ tfoot {
     page-break-before: avoid;
     page-break-after: always;
   }
+
+  .summary-table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+} 
+.summary-table td {
+  padding: 3px 6px;
+  vertical-align: top;
+}
+
+.text-alg {
+  text-align: right;
+}
+.centered-cell {
+  vertical-align: middle;
+  text-align: center;
+}
+
             .invoice-title {
                 text-align: center;
                 margin: 20px 0;

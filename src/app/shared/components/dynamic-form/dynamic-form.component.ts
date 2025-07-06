@@ -46,7 +46,9 @@ export class DynamicFormComponent {
   isMobileView: boolean = false;
   @Input() isPopup : boolean = false;
   constructor(private breakpointObserver: BreakpointObserver) { }
-
+get form() {
+  return this.formGroup;
+}
   ngOnInit(): void {
     this.breakpointObserver
       .observe([Breakpoints.Handset])

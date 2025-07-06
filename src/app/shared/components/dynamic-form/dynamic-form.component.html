@@ -20,7 +20,9 @@
                         <mat-form-field *ngSwitchCase="'input'" appearance="outline">
                             <mat-label>{{ field.label }}</mat-label>
                             <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name" [readonly]="field.isReadOnly"
-                                [attr.maxlength]="field.maxLength || null" appAppSentenceCase />
+                                [attr.maxlength]="field.maxLength || null" appAppSentenceCase  [ngClass]="{
+    'highlight-disabled': formGroup.get(field.name)?.disabled
+  }" />
                             <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                                 {{ field.label }} is required
                             </mat-error>

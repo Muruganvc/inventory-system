@@ -4,21 +4,26 @@
       <h1>{{ company.name }}</h1>
     </div>
 
-  <div class="row-content">
-    <div class="company-info">
-      <p>{{ company.tagline }}</p>
-      <div class="contact">
-        <p>{{ company.address }}</p>
-        <p>Tel: {{ company.phone }} | Email: {{ company.email }}</p>
-        <p>GSTIN: {{ company.gstin }}</p>
+    <div class="row-content">
+      <div class="company-info">
+        <p>{{ company.tagline }}</p>
+        <div class="contact">
+          <p>{{ company.address }}</p>
+          <p>Tel: {{ company.phone }} | Email: {{ company.email }}</p>
+          <p>GSTIN: {{ company.gstin }}</p>
+        </div>
+      </div>
+
+      <div class="company-logo">
+        <!-- <img src="public/TheeranChinnamalai.jfif" alt="Company Logo" /> -->
+        <div class="right-details">
+          <p><strong>User:</strong> {{ invoice.user }}</p>
+          <p><strong>Invoice No:</strong> {{ invoice.invoiceNo }}</p>
+          <p><strong>Invoice Date:</strong> {{ invoice.invoiceDate }}</p>
+        </div>
       </div>
     </div>
-  
-    <div class="company-logo">
-      <img src="../../../../../public/TheeranChinnamalai.jfif" alt="Company Logo" />
-    </div>
-  </div>
-  
+
   </div>
 
 
@@ -31,14 +36,19 @@
   <!-- Customer and Invoice Details -->
   <div class="details">
     <div class="left-details">
-      <p><strong>M/S:</strong> {{ customer.name }}</p>
+      <p><strong>Mr./Mrs.:</strong> {{ customer.name }}</p>
       <p><strong>Address:</strong> {{ customer.address }}</p>
       <p><strong>Phone:</strong> {{ customer.phone }}</p>
+      <p *ngIf="invoice.isGst"><strong>GST Number:</strong> {{ customer.phone }}</p>
     </div>
-    <div class="right-details">
-      <p><strong>User:</strong> {{ invoice.user }}</p>
+    <div class="right-details" style="border: 1px solid;">
+      <!-- <p><strong>User:</strong> {{ invoice.user }}</p>
       <p><strong>Invoice No:</strong> {{ invoice.invoiceNo }}</p>
-      <p><strong>Invoice Date:</strong> {{ invoice.invoiceDate }}</p>
+      <p><strong>Invoice Date:</strong> {{ invoice.invoiceDate }}</p> -->
+      <!-- <img src="public/TheeranChinnamalai.jfif" alt="Company Logo" /> -->
+      <img
+        src=""
+        alt="Embedded Image">
     </div>
   </div>
 
@@ -48,6 +58,7 @@
       <tr>
         <th>#</th>
         <th>Name of Product(s)</th>
+        <th>Serial No</th>
         <th>Qty</th>
         <th>Rate</th>
         <th>Total</th>
@@ -57,6 +68,7 @@
       <tr *ngFor="let item of invoice.items; let i = index">
         <td>{{ i + 1 }}</td>
         <td>{{ item.name }}</td>
+        <td>{{ item.serialNo }}</td>
         <td>{{ item.qty }}</td>
         <td class="text-alg">{{ item.rate | currency:'INR':'symbol':'1.2-2' }}</td>
         <td class="text-alg">{{ item.total | currency:'INR':'symbol':'1.2-2' }}</td>
@@ -64,7 +76,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="4"><strong>Grand Total</strong></td>
+        <td colspan="5"><strong>Sub Total</strong></td>
         <td class="text-alg">
           <strong>{{ getInvoiceTotal(invoice.items) | currency:'INR':'symbol':'1.2-2' }}</strong>
         </td>
@@ -73,37 +85,32 @@
   </table>
 
   <!-- Summary (Shown Once) -->
-  <div class="invoice-summary" style="page-break-inside: avoid; margin-top: 1rem;">
+  <div *ngIf="!invoice.isGst" class="invoice-summary" style="page-break-inside: avoid; margin-top: 1rem;">
     <table class="summary-table">
-      <tr>
-        <td><strong>Original Price (Before Discount):</strong></td>
-        <td class="text-alg">{{ invoice.totalAmount | currency:'INR':'symbol':'1.2-2' }}</td>
-      </tr>
-      <tr>
-        <td><strong>Discount %:</strong></td>
-        <td class="text-alg">{{ invoice.disCountPercent }}%</td>
-      </tr>
-      <tr>
-        <td><strong>Discount Amount:</strong></td>
+
+      <!-- Discount % with rowspan + vertical centering -->
+      <tr *ngIf="invoice.disCountPercent > 0">
+        <td rowspan="2" class="centered-cell"><strong>Discount %:</strong></td>
+        <td rowspan="2" class="centered-cell text-alg">{{ invoice.disCountPercent }}%</td>
+
+        <td><strong>Discount Amt:</strong></td>
         <td class="text-alg">
           {{ calculateDiscount(invoice.totalAmount, invoice.disCountPercent) | currency:'INR':'symbol':'1.2-2' }}
         </td>
       </tr>
+
+      <!-- Given Amount row -->
       <tr>
-        <td><strong>Sub Total:</strong></td>
+        <td [attr.colspan]="invoice.disCountPercent > 0 ? 1 : 2"><strong>Given Amount:</strong></td>
         <td class="text-alg">
-          {{
-          invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)
-          | currency:'INR':'symbol':'1.2-2'
-          }}
+          {{ givenAmount | currency:'INR':'symbol':'1.2-2' }}
         </td>
       </tr>
+
+      <!-- Final Amount -->
       <tr>
-        <td><strong>Given Amount:</strong></td>
-        <td class="text-alg">{{ givenAmount | currency:'INR':'symbol':'1.2-2' }}</td>
-      </tr>
-      <tr>
-        <td><strong>Final Amount:</strong></td>
+        <td *ngIf="invoice.disCountPercent > 0" [attr.colspan]="invoice.disCountPercent > 0 ? 2 : 4"></td>
+        <td [attr.colspan]="invoice.disCountPercent > 0 ? 1 : 2"><strong>Grand Amount:</strong></td>
         <td class="text-alg">
           {{
           (invoice.totalAmount - calculateDiscount(invoice.totalAmount, invoice.disCountPercent)) - givenAmount
@@ -111,8 +118,49 @@
           }}
         </td>
       </tr>
+
     </table>
   </div>
+  <div *ngIf="invoice.isGst" class="invoice-summary" style="page-break-inside: avoid; margin-top: 1rem;">
+    <table class="summary-table">
+
+      <!-- Discount % with rowspan + vertical centering -->
+      <tr>
+        <td colspan="3" class="text-alg"><strong>CGST 9%:</strong></td>
+        <td class="text-alg">{{calculateGST(invoice.totalAmount,9).gstAmount}}</td>
+      </tr>
+      <tr>
+        <td colspan="3" class="text-alg"><strong>SGST 9%:</strong></td>
+        <td class="text-alg">{{calculateGST(invoice.totalAmount,9).gstAmount}}</td>
+      </tr>
+
+
+      <!-- Given Amount row -->
+      <tr>
+        <td colspan="3" class="text-alg"><strong>Total Amount(include GST):</strong></td>
+        <td class="text-alg">
+          {{calculateGST(invoice.totalAmount,18).totalAmount}}
+        </td>
+      </tr>
+
+      <!-- Final Amount -->
+      <tr>
+        <td colspan="3" class="text-alg"><strong>Given Amount:</strong></td>
+        <td class="text-alg">
+          {{ givenAmount | currency:'INR':'symbol':'1.2-2'
+          }}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" class="text-alg"><strong>Grand Amount:</strong></td>
+        <td class="text-alg">
+          {{ (calculateGST(invoice.totalAmount,18).totalAmount) - givenAmount  | currency:'INR':'symbol':'1.2-2' }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
 
   <!-- Amount in Words -->
   <div class="in-words">

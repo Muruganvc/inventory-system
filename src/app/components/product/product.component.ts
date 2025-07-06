@@ -101,7 +101,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 2, isReadOnly: true, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 2, isReadOnly: false, isNumberOnly: true },
       {
         type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: isAdmin,
         options: [

@@ -43,6 +43,7 @@ export class InvoiceComponent implements OnInit {
     user: '',
     disCountPercent: 0,
     balanceAmount: 0,
+    isGst: false
   };
 
   // Static Company Info
@@ -91,6 +92,7 @@ export class InvoiceComponent implements OnInit {
           igstAmount: 10, // Hardcoded for now
           igstPercent: 18,
           taxableValue: 18,
+          serialNo : a.serialNo
         })),
         user: firstItem.user,
         disCountPercent: firstItem.discountPercent,
@@ -98,6 +100,7 @@ export class InvoiceComponent implements OnInit {
 
       this.invoice.totalAmount = this.getInvoiceTotal(this.invoice.items);
       this.invoice.amountInWords = this.numberToWords(Math.round(this.invoice.totalAmount)) + ' rupees only';
+      this.invoice.isGst = firstItem.isGst; 
 
       this.givenAmount = firstItem.finalAmount - firstItem.balanceAmount;
 
@@ -107,6 +110,24 @@ export class InvoiceComponent implements OnInit {
         phone: firstItem.phone,
       };
     }
+  }
+  calculateGST(amount: number, gstRate: number): {
+    gstAmount: number,
+    cgst: number,
+    sgst: number,
+    totalAmount: number
+  } {
+    const gstAmount = (amount * gstRate) / 100;
+    const cgst = gstAmount / 2;
+    const sgst = gstAmount / 2;
+    const totalAmount = amount + gstAmount;
+
+    return {
+      gstAmount,
+      cgst,
+      sgst,
+      totalAmount
+    };
   }
 
   async getContentHtml(orderId: number): Promise<string> {

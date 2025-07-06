@@ -1,12 +1,12 @@
 export interface CustomerSalesOrder {
-    productName: string;
-    qty: number;
-    rate: number;
-    total: number;
+  productName: string;
+  qty: number;
+  rate: number;
+  total: number;
 }
 
 export interface InvoiceItem {
-  productId:number;
+  productId: number;
   name: string;
   qty: number;
   unit: string;
@@ -15,6 +15,7 @@ export interface InvoiceItem {
   igstPercent: number;
   igstAmount: number;
   total: number;
+  serialNo: string;
 }
 
 export interface Invoice {
@@ -24,7 +25,8 @@ export interface Invoice {
   totalTaxable: number;
   totalAmount: number;
   amountInWords: string;
-  user:string;
-  disCountPercent : number;
-  balanceAmount:number;
+  user: string;
+  disCountPercent: number;
+  balanceAmount: number;
+  isGst: boolean;
 }

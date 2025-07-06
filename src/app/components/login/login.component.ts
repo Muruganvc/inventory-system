@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +13,7 @@ import { LoginRequest } from '../../models/LoginRequest';
 import { CommonService } from '../../shared/services/common.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
+import { ConfigService } from '../../shared/services/config.service';
 
 @Component({
   selector: 'app-login',
@@ -30,18 +31,23 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   private readonly auth = inject(AuthService);
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  companyName : string='';
+
+  constructor(private fb: FormBuilder, private router: Router,private configService: ConfigService) {
     this.auth.logout();
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+  }
+  ngOnInit(): void {
+    this.companyName = this.configService.companyName;
   }
 
   onSubmit(): void {

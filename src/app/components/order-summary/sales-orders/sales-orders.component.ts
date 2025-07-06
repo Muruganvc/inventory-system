@@ -103,6 +103,11 @@ columns: {
                 font-size: 12px;
                 margin: 0; padding: 0;
               }
+                .centered-cell {
+  vertical-align: middle;
+ 
+}
+
               .invoice-title {
                 text-align: center;
                 margin: 20px 0;
