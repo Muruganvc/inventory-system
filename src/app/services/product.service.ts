@@ -55,4 +55,9 @@ export class ProductService {
     return this.api.put<null,boolean>(`product/activate/${productId}`,null)
       .pipe(map((res: ApiResponse<boolean>) => res.data));
   }
+
+  updateProductQty = (productId: number, qty: number): Observable<boolean> => {
+    return this.api.put<null, boolean>(`product/${productId}/${qty}`, null)
+      .pipe(map((res: ApiResponse<boolean>) => res.data));
+  }
 }

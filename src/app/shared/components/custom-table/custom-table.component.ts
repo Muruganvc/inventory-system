@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, input, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, EventEmitter, input, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -13,6 +13,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NumberOnlyDirective } from '../../services/NumberOnlyDirective ';
 
 export interface TableRow {
   id: string | number;
@@ -45,7 +46,7 @@ export interface TableColumn {
     MatCardModule,
     MatButtonModule, MatIconModule,
     LayoutModule, MatExpansionModule, MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,NumberOnlyDirective
   ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
@@ -92,7 +93,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 }[] = [];
   @Output() actionClick = new EventEmitter<{ row: any; action: string }>(); 
 
-  constructor(private breakpointObserver: BreakpointObserver) {
+  constructor(private breakpointObserver: BreakpointObserver, private cd: ChangeDetectorRef) {
     this.breakpointObserver.observe([
       '(max-width: 699px)',                                 // Mobile
       '(min-width: 700px) and (max-width: 1024px)',         // Tablet
@@ -172,54 +173,38 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     // if (this.showActions) this.displayedColumns.push('actions');
     // if (this.showCheckbox) this.displayedColumns.unshift('select');
   }
+ trackByKey(index: number, item: any): string {
+  return item.key;
+}
 
-
-  // ngOnChanges() {
-  //   this.dataSource = new MatTableDataSource(this.data || []);
-  //   this.dataSource.paginator = this.paginator;
-  //   this.displayedColumns = this.columns.map(c => c.key);
-  //   if (this.showActions) this.displayedColumns.push('actions');
-  //   if (this.showCheckbox) this.displayedColumns.unshift('select');
-  // }
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] && this.data) {
+  ngOnChanges(changes: SimpleChanges): void { 
+    if (changes['columns'] && changes['columns'].currentValue) {
+      this.columns = [...changes['columns'].currentValue];  
+       this.cd.detectChanges(); 
+    }
+ 
+    if (changes['data'] && changes['data'].currentValue) {
+      this.data = [...changes['data'].currentValue];  
       this.dataSource = new MatTableDataSource<T>(this.data);
 
-      // Ensure paginator is attached after view init
       setTimeout(() => {
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
         }
       });
-
-      // Dynamically build displayed columns
-      this.displayedColumns = this.columns
-        .filter(col => !col.isHidden)
-        .map(col => col.key);
-
-      if (this.showActions) {
-        this.displayedColumns.push('actions');
-      }
-
-      if (this.showCheckbox) {
-        this.displayedColumns.unshift('select');
-      }
-
     }
+ 
+    this.displayedColumns = this.columns
+      ?.filter(col => !col.isHidden)
+      .map(col => col.key) ?? [];
 
-    //this.displayedColumns = this.columns.filter(col => !col.isHidden).map(col => col.key);
+    if (this.showActions && !this.displayedColumns.includes('actions')) {
+      this.displayedColumns.push('actions');
+    }
+ 
+    this.displayedColumns = [...new Set(this.displayedColumns)];
   }
 
-
-  // ngAfterViewInit() {
-  //   setTimeout(() => {
-  //     if (this.paginator) {
-  //       this.dataSource.paginator = this.paginator;
-  //     }
-  //   });
-  // }
 
 
   ngAfterViewInit() {
@@ -257,7 +242,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   }
 
   isEditing(row: T) {
-    return this.editRowId === row.id;
+    return this.editRowId === row.id
 
   }
   getIconClass(type: string): string {

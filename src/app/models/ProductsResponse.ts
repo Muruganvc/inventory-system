@@ -18,4 +18,5 @@ export interface ProductsResponse extends TableRow {
   isActive: boolean;
   userName?: string | null;
   serialNo: string;
+  isEditing: boolean;
 }

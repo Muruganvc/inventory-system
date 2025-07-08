@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { filter, merge } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,11 +16,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { OrderService } from '../../services/order.service';
 import { OrderCreateRequest } from '../../models/CustomerRequest';
 import { CommonService } from '../../shared/services/common.service';
+import { InvoiceComponent } from "../order-summary/invoice/invoice.component";
 
 @Component({
   selector: 'app-sales',
   standalone: true,
-  imports: [DynamicFormComponent, CustomTableComponent],
+  imports: [DynamicFormComponent, CustomTableComponent, InvoiceComponent],
   templateUrl: './sales.component.html',
   styleUrl: './sales.component.scss'
 })
@@ -30,6 +31,10 @@ export class SalesComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
+
+  @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
+  @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
+  isPrint: boolean;
 
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -57,7 +62,7 @@ export class SalesComponent implements OnInit {
     this.initActionButtons();
     this.getProducts();
     this.bindProductChange();
-    this.bindTotalAmountChange(); 
+    this.bindTotalAmountChange();
   }
 
   /** -------------------- INIT -------------------- */
@@ -285,7 +290,7 @@ export class SalesComponent implements OnInit {
       this.dialog.open(ConfirmDialogComponent, {
         width: '100%',
         maxWidth: '400px',
-        
+
         disableClose: true,
         data: {
           title: 'Sale Items',
@@ -320,12 +325,37 @@ export class SalesComponent implements OnInit {
         customer: result.customer,
         orderItemRequests: result.orderItems,
         givenAmount: result.givenAmount,
-        gstNumber : result.gstNumber,
-        isGst : !!result.isGst
+        gstNumber: result.gstNumber,
+        isGst: !!result.isGst
       };
       this.orderService.createOrder(request).subscribe({
         next: response => {
           if (response > 0) {
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+              width: '100%',
+              maxWidth: '400px',
+              disableClose: true,
+              data: {
+                title: 'Print Invoice',
+                message: 'Do you want to print invoice..',
+                okBtn: {
+                  title: 'Yes, Confirm',
+                  isHiden: true
+                },
+                cancel: {
+                  title: 'No',
+                  isHiden: true
+                }
+              }
+            });
+            dialogRef.afterClosed().subscribe({
+              next: result => {
+                if (result) {
+                    this.onPrint(response);
+                }
+              }
+            });
+
             this.commonService.showSuccess('Order created successfully.');
             this.formGroup.reset();
             this.productSales = [];
@@ -416,5 +446,12 @@ export class SalesComponent implements OnInit {
         }
       }
     });
+  }
+
+  async onPrint(oderId: number): Promise<void> {
+    this.isPrint = true;
+    const frame: HTMLIFrameElement = this.printFrame.nativeElement;
+    const doc = frame.contentWindow?.document!;
+    await this.commonService.onPrint(oderId, this.invoiceComponent, this.printFrame);
   }
 }

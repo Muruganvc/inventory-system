@@ -4,7 +4,7 @@
     <ng-container *ngIf="!!addBtnTitle()">
       <button mat-flat-button (click)="openNew()" class="add-button">
         <i class="fas fa-circle-plus" style="font-size: 18px;" matTooltip="Add"></i>
-         &nbsp; {{ addBtnTitle() }}
+        &nbsp; {{ addBtnTitle() }}
       </button>
     </ng-container>
 
@@ -19,56 +19,68 @@
 <div class="mat-elevation-z8">
   <!-- Desktop/tablet view -->
   <div *ngIf="!isMobile; else mobileView" class="table-scroll">
-    <table mat-table [dataSource]="dataSource"  class="full-width-table" matSort>
+    <table mat-table [dataSource]="dataSource" class="full-width-table" matSort>
 
       <!-- Dynamic columns -->
-      <ng-container *ngFor="let col of columns" [matColumnDef]="col.key">
+      <ng-container *ngFor="let col of columns trackBy: trackByKey" [matColumnDef]="col.key">
         <th mat-header-cell *matHeaderCellDef [style.text-align]="col.align || 'left'">
           {{ col.label }}
-        </th> 
+        </th>
 
         <td mat-cell *matCellDef="let row" [style.text-align]="col.align || 'left'" [ngClass]="getRowClass(row)">
           <ng-container *ngIf="!isEditing(row); else editField">
             <ng-container *ngIf="col.type === 'checkbox' && !col.isHidden; else defaultView">
-               
               <mat-checkbox (change)="onFieldChange(row, col.key, $event.checked)" [checked]="row[col.key]">
               </mat-checkbox>
             </ng-container>
-            <!-- <ng-template [style.highlight-cell]="col.highLight" #defaultView>{{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}</ng-template> -->
             <ng-template #defaultView>
-              <span [ngClass]="getCellClasses(col, row)">
-                {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
-              </span>
+              <ng-container *ngIf=" row.isEditing && col.type === 'textbox'; else noTextbox">
+                <input [appNumberOnly]="true" [(ngModel)]="row[col.key]" class="custom-input" maxlength="8" />
+              </ng-container>
+              <ng-template #noTextbox>
+                <span [ngClass]="getCellClasses(col, row)">
+                  {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
+                </span>
+              </ng-template>
             </ng-template>
           </ng-container>
 
           <ng-template #editField>
-           
-            <ng-container *ngIf="col.type === 'checkbox' && col.isHidden; else defaultEdit">
+            <ng-container *ngIf="col.type === 'checkbox' && col.isHidden; else editSwitch">
               <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
             </ng-container>
-            <ng-template #defaultEdit>
-              <input [(ngModel)]="editedRow[col.key]" class="custom-input" />
+            <ng-template #editSwitch>
+              <ng-container *ngIf="row.isEditing && col.type === 'textbox'; else readOnlyView">
+                <input [appNumberOnly]="true" [(ngModel)]="editedRow[col.key]" class="custom-input" maxlength="8" />
+              </ng-container>
+              <ng-template #readOnlyView>
+                <span class="non-editable">
+                  {{ col.pipe === 'date' ? (editedRow[col.key] | date: 'dd-MM-yyyy') : editedRow[col.key] }}
+                </span>
+              </ng-template>
             </ng-template>
           </ng-template>
         </td>
+
       </ng-container>
-    
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Actions</th>
-        <td mat-cell *matCellDef="let row" style="text-align: center;">
-          <ng-container *ngFor="let btn of actions">
-            <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })" [matTooltip]="btn.tooltip">
-              <i class="{{ btn.iconClass }}" [ngStyle]="{
-                  'font-size.px': 15,
-                  color: btn.color,
-                  cursor: 'pointer'
-                }"></i>
-            </button>
-          </ng-container>
-        </td>
-      </ng-container> 
-     
+<ng-container matColumnDef="actions">
+  <th mat-header-cell *matHeaderCellDef style="text-align: center;">Actions</th>
+  <td mat-cell *matCellDef="let row" style="text-align: center;">
+    <ng-container *ngFor="let btn of actions">
+      <ng-container *ngIf="btn.condition?.(row)">
+        <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })" [matTooltip]="btn.tooltip">
+          <i class="{{ btn.iconClass }}" [ngStyle]="{
+              'font-size.px': 15,
+              color: btn.color,
+              cursor: 'pointer'
+            }"></i>
+        </button>
+      </ng-container>
+    </ng-container>
+  </td>
+</ng-container>
+
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
@@ -95,15 +107,16 @@
           </div>
 
           {{actions.length}}
-      <div class="actions">
-        <ng-container *ngFor="let btn of actions">
-          <ng-container *ngIf="btn.condition(row)">
-            <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })" [matTooltip]="btn.tooltip">
-              <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 15, color: btn.color }"></i>
-            </button>
-          </ng-container>
-        </ng-container>
-      </div>
+          <div class="actions">
+            <ng-container *ngFor="let btn of actions">
+              <ng-container *ngIf="btn.condition(row)">
+                <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })"
+                  [matTooltip]="btn.tooltip">
+                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 15, color: btn.color }"></i>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
@@ -112,16 +125,9 @@
       showFirstLastButtons (page)="onPageChange($event)">
     </mat-paginator>
   </ng-template>
- 
-
-<mat-paginator
-  *ngIf="!isMobile && dataSource.data?.length"
-  [length]="dataSource.filteredData.length"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5, 10, 20]"
-  showFirstLastButtons
-  (page)="onPageChange($event)">
-</mat-paginator>
 
 
+  <mat-paginator *ngIf="!isMobile && dataSource.data?.length" [length]="dataSource.filteredData.length"
+    [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">
+  </mat-paginator>
 </div>

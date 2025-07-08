@@ -1,4 +1,7 @@
 {
   "apiBaseUrl": "https://localhost:7012/",
-  "companyName": "VENNILA ELECTRICALS"
+  "companyName": "VENNILA ELECTRICALS",
+  "apiVersion": "1.0.3",
+  "uiVersion": "3.0.0",
+  "dbName": "InventorySystem"
 }

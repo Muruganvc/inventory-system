@@ -1,95 +1,90 @@
 <mat-toolbar color="primary" class="top-toolbar custom-shadow">
-    <button mat-icon-button (click)="sidenav.toggle()">
-        <i class="fas fa-bars"></i>
+  <button mat-icon-button (click)="sidenav.toggle()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+ 
+   <span class="toolbar-title">{{ companyName }}</span>
+
+  <span class="spacer"></span>
+
+  <img
+    width="20"
+    height="20"
+    [matMenuTriggerFor]="userMenu"
+    class="double-border"
+    src="TheeranChinnamalai.jfif"
+  />
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="onGridView()">
+      <i class="fas fa-border-all pd-10-rt"></i>
+      <span>{{ dashBoardView }}</span>
     </button>
 
-    <span class="toolbar-title toolbar-title">{{companyName}}</span>
-    <span class="spacer"></span>
+    <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
+      <i class="fas fa-user-plus pd-10-rt"></i>
+      <span>Add New User</span>
+    </button>
 
-     <img width="20" height="20" [matMenuTriggerFor]="userMenu" class="double-border" src="TheeranChinnamalai.jfif" />
+    <button *ngIf="isAdmin()" mat-menu-item (click)="onMenuPermission()">
+      <i class="fas fa-user-lock pd-10-rt"></i>
+      <span>User Permission</span>
+    </button>
 
-    <!-- <button mat-icon-button [matMenuTriggerFor]="userMenu">
-        <i class="fas fa-user-circle"></i>
-    </button> -->
+    <button mat-menu-item (click)="onProfile()">
+      <i class="fas fa-user pd-10-rt"></i>
+      <span>Profile</span>
+    </button>
 
-    <mat-menu #userMenu="matMenu">
+    <button mat-menu-item (click)="onChangePassword()">
+      <i class="fas fa-lock pd-10-rt"></i>
+      <span>Change Password</span>
+    </button>
 
-        <button mat-menu-item (click)="onGridView()">
-            <i class="fas fa-border-all pd-10-rt"></i>
-            <span>{{dashBoardView}}</span>
-        </button>
-
-        <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
-            <i class="fas fa-user-plus pd-10-rt"></i>
-            <span>Add New User</span>
-        </button>
-
-        <button *ngIf="isAdmin()" mat-menu-item (click)="onMenuPermission()">
-            <i class="	fas fa-user-lock pd-10-rt"></i>
-            <span>User Permission</span>
-        </button>
-
-        <button mat-menu-item (click)="onProfile()">
-            <i class="fas fa-user pd-10-rt"></i>
-            <span>Profile</span>
-        </button>
-        <button mat-menu-item (click)="onChangePassword()">
-            <i class="fas fa-lock pd-10-rt"></i>
-            <span>Change Password</span>
-        </button>
-        <button mat-menu-item (click)="onLogout()">
-            <i class="fas fa-sign-out-alt pd-10-rt"></i>
-            <span>Logout</span>
-        </button>
-    </mat-menu>
-
-
-    <!-- <button mat-icon-button matTooltip="Sign Out" (click)="logout()" aria-label="input">
-        <i class="fas fa-sign-out-alt"></i>
-    </button> -->
-
+    <button mat-menu-item (click)="onLogout()">
+      <i class="fas fa-sign-out-alt pd-10-rt"></i>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 
 <mat-sidenav-container class="main-container">
-    <mat-sidenav #sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" class="sidenav">
-        <app-custom-menu></app-custom-menu>
-    </mat-sidenav>
-    <mat-sidenav-content class="content">
-        <router-outlet />
-    </mat-sidenav-content>
+  <mat-sidenav #sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="!isMobile()" class="sidenav">
+    <app-custom-menu></app-custom-menu>
+  </mat-sidenav>
+  <mat-sidenav-content class="content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>
-<!-- Footer -->
- 
 
 <footer class="footer">
-
   <div class="footer-section footer-left">
     <span>Support: <strong>Muruganvc</strong></span>
     <a href="tel:+919994277980">
       <i class="fas fa-phone-alt"></i> +91-99942-77980
     </a>
     <a href="mailto:vcmuruganmca@gmail.com">
-      <i class="fas fa-envelope"></i> vcmuruganmca.com
+      <i class="fas fa-envelope"></i> vcmuruganmca&#64;gmail.com
     </a>
   </div>
 
   <div class="footer-section footer-right">
-    <span>
-        <strong>API Version: </strong>0.0.1
-    </span>
-     <span>
-        <strong>API Version: </strong>0.0.1
-    </span>
-     <span>
-        <strong>Database Name: </strong>0.0.1
-    </span>
-  </div> 
+    <span><strong>API Version:</strong> {{ apiVersion }}</span>
+    <span><strong>UI Version:</strong> {{ uiVersion }}</span>
+    <span><strong>Database Name:</strong> {{ databaseName }}</span>
+  </div>
 
-   <div class="footer-section footer-right">
-    <span>
-      Logged in as: <strong>{{ userName }}</strong> ({{ role }})
-    </span>
-  </div> 
-
+  <div class="footer-section footer-right">
+    <i class="fas fa-info-circle blink-info" title="More info here" (click)="openPopup()"></i>
+    <span>Logged in as: <strong>{{ userName }}</strong> ({{ role }})</span>
+  </div>
 </footer>
 
+<div class="popup-overlay" *ngIf="showPopup">
+  <div class="popup-content">
+    <span class="close-btn" (click)="closePopup()">&times;</span>
+    <h3>Information</h3>
+    <p>We're currently working on this feature. It is under development and will be available soon. Thank you for your patience!</p>
+  </div>
+</div>

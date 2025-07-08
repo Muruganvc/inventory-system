@@ -9,6 +9,7 @@ import { CustomTableComponent } from '../../../shared/components/custom-table/cu
 import { OrderService } from '../../../services/order.service';
 import { InvoiceComponent } from '../invoice/invoice.component';
 import { CustomerOrderList } from '../../../models/CustomerOrderList';
+import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-sales-orders',
@@ -25,6 +26,7 @@ export class SalesOrdersComponent implements OnInit {
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
 
   private readonly orderService = inject(OrderService);
+  private readonly commonService = inject(CommonService);
 
   ngOnInit(): void {
     this.getOrderSummary();
@@ -89,102 +91,103 @@ columns: {
     const frame: HTMLIFrameElement = this.printFrame.nativeElement;
     const doc = frame.contentWindow?.document!;
 
-    doc.open();
+    await this.commonService.onPrint(order.orderId,this.invoiceComponent,this.printFrame);
 
-    const html = `
-      <html>
-        <head>
-         <title>TAX INVOICE - ORIGINAL FOR RECIPIENT</title>
-          <style>
-            @media print {
-              @page { size: A4; margin: 20mm; }
-              body {
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-                margin: 0; padding: 0;
-              }
-                .centered-cell {
-  vertical-align: middle;
+    // doc.open();
+
+    // const html = `
+    //   <html>
+    //     <head>
+    //      <title>TAX INVOICE - ORIGINAL FOR RECIPIENT</title>
+    //       <style>
+    //         @media print {
+    //           @page { size: A4; margin: 20mm; }
+    //           body {
+    //             font-family: Arial, sans-serif;
+    //             font-size: 12px;
+    //             margin: 0; padding: 0;
+    //           }
+    //             .centered-cell {
+    //              vertical-align: middle;
  
-}
+    //           }
+    //           .invoice-title {
+    //             text-align: center;
+    //             margin: 20px 0;
+    //           }
+    //           .invoice-title .original {
+    //             font-size: 12px;
+    //             font-style: italic;
+    //           }
+    //           .details {
+    //             display: flex;
+    //             justify-content: space-between;
+    //             margin-bottom: 20px;
+    //             font-size: 14px;
+    //           }
+    //           .invoice-container {
+    //             width: 100%;
+    //             margin: 0 auto;
+    //           }
+    //           table {
+    //             width: 100%;
+    //             border-collapse: collapse;
+    //             margin-top: 10px;
+    //           }
+    //           th, td {
+    //             border: 1px solid black;
+    //             padding: 6px;
+    //             text-align: left;
+    //             vertical-align: top;
+    //           }
+    //           th {
+    //             background-color: #f2f2f2;
+    //           }
+    //           h1, h2, h3, h4, h5 {
+    //             margin: 0;
+    //             padding: 0;
+    //           }
+    //           .signature-block {
+    //             text-align: right;
+    //             font-style: italic;
+    //           }
+    //           .text-alg {
+    //             text-align: right;
+    //           }
+    //           .company-bank-row {
+    //             margin-bottom: 1rem;
+    //           }
+    //           .company-header {
+    //             text-align: center;
+    //             margin-bottom: 1rem;
+    //           }
+    //           .row-content {
+    //             display: flex;
+    //             justify-content: space-between;
+    //             gap: 2rem;
+    //           }
+    //           .company-info,
+    //           .bank-section {
+    //             flex: 1;
+    //             min-width: 45%;
+    //           }
+    //         }
+    //       </style>
+    //     </head>
+    //     <body>
+    //       <div class="invoice-container">
+    //         ${content}
+    //       </div>
+    //     </body>
+    //   </html>
+    // `;
+    // doc.write(html);
+    // doc.close();
 
-              .invoice-title {
-                text-align: center;
-                margin: 20px 0;
-              }
-              .invoice-title .original {
-                font-size: 12px;
-                font-style: italic;
-              }
-              .details {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 20px;
-                font-size: 14px;
-              }
-              .invoice-container {
-                width: 100%;
-                margin: 0 auto;
-              }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-              }
-              th, td {
-                border: 1px solid black;
-                padding: 6px;
-                text-align: left;
-                vertical-align: top;
-              }
-              th {
-                background-color: #f2f2f2;
-              }
-              h1, h2, h3, h4, h5 {
-                margin: 0;
-                padding: 0;
-              }
-              .signature-block {
-                text-align: right;
-                font-style: italic;
-              }
-              .text-alg {
-                text-align: right;
-              }
-              .company-bank-row {
-                margin-bottom: 1rem;
-              }
-              .company-header {
-                text-align: center;
-                margin-bottom: 1rem;
-              }
-              .row-content {
-                display: flex;
-                justify-content: space-between;
-                gap: 2rem;
-              }
-              .company-info,
-              .bank-section {
-                flex: 1;
-                min-width: 45%;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="invoice-container">
-            ${content}
-          </div>
-        </body>
-      </html>
-    `;
-    doc.write(html);
-    doc.close();
-
-    setTimeout(() => {
-      frame.contentWindow?.focus();
-      frame.contentWindow?.print();
-    }, 500);
+    // setTimeout(() => {
+    //   frame.contentWindow?.focus();
+    //   frame.contentWindow?.print();
+    // }, 500);
   }
 
   // Placeholder methods (can be removed if unused)

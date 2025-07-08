@@ -24,13 +24,15 @@ export class LayoutComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
   private readonly authService = inject(AuthService);
-  // configService = inject(ConfigService); 
 
-  companyName : string='';
+  companyName: string = '';
   isMobileDevice = false;
   sidebarExpanded = true;
-  userName : string ='';
-  role : string ='';
+  userName: string = '';
+  role: string = '';
+  apiVersion: string = '';
+  uiVersion: string = '';
+  databaseName: string = '';
 
   dashBoardView: string = 'Product Availability';
 
@@ -38,17 +40,20 @@ export class LayoutComponent implements OnInit {
     return this.authService.hasRole(["Admin"])
   }
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog,private configService: ConfigService) {
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog, private configService: ConfigService) {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobileDevice = result.matches;
         if (this.isMobileDevice) this.sidebarExpanded = false;
-      }); 
+      });
   }
   ngOnInit(): void {
-      this.companyName = this.configService.companyName;
-      this.userName= this.authService.getUserName();
-      this.role = this.authService.getUserRoles()[0];
+    this.companyName = this.configService.companyName;
+    this.userName = this.authService.getUserName();
+    this.role = this.authService.getUserRoles()[0];
+    this.apiVersion = this.configService.apiVersion;
+    this.uiVersion = this.configService.uiVersion;
+    this.databaseName = this.configService.dbName;
   }
 
   isMobile(): boolean {
@@ -125,70 +130,17 @@ export class LayoutComponent implements OnInit {
     this.router.navigate([isGridView ? '/dashboard' : '/product-availability']);
   }
 
+showPopup = false;
 
-  openAppInfoWindow() {
-  const htmlContent = `
-    <html>
-      <head>
-        <title>App Info</title>
-        <style>
-          body {
-            font-family: 'Segoe UI', sans-serif;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-          }
-          h2 {
-            color: #444;
-          }
-          .info-box {
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-          }
-          a {
-            color: #007bff;
-            text-decoration: none;
-          }
-        </style>
-      </head>
-      <body>
-        <h2>📦 Application Information</h2>
-
-        <div class="info-box">
-          <h4>🔧 Versions</h4>
-          <p><strong>API Version:</strong> 0.0.1</p>
-          <p><strong>UI Version:</strong> 0.0.1</p>
-          <p><strong>Database:</strong> Invenstory</p>
-        </div>
-
-        <div class="info-box">
-          <h4>👨‍💻 Developer Info</h4>
-          <p><strong>Name:</strong> Muruganvc</p>
-          <p><strong>Phone:</strong> <a href="tel:+919994277980">+91-99942-77980</a></p>
-          <p><strong>Email:</strong> <a href="mailto:vcmuruganmca@gmail.com">vcmuruganmca@gmail.com</a></p>
-        </div>
-
-        <div class="info-box">
-          <h4>🔐 User Session</h4>
-          <p><strong>User:</strong> ${this.userName}</p>
-          <p><strong>Role:</strong> ${this.role}</p>
-        </div>
-      </body>
-    </html>
-  `;
-
-  const infoWindow = window.open('', '_blank', 'width=400,height=400');
-  if (infoWindow) {
-    infoWindow.document.write(htmlContent);
-    infoWindow.document.close();
-  } else {
-    alert('Popup blocked. Please allow popups for this site.');
+  openPopup() {
+    this.showPopup = true;
   }
+
+  closePopup() {
+    this.showPopup = false;
+  }
+
+
 }
 
 
-
-}
