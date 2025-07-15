@@ -5,7 +5,7 @@ import { Subject, timer } from 'rxjs';
   providedIn: 'root'
 })
 export class IdleService {
-  private idleTimeout = 1 * 60 * 1000; // 5 minutes
+  private idleTimeout = 2 * 60 * 1000; // 5 minutes
   private idle$ = new Subject<void>();
   private timeoutId: any;
 
