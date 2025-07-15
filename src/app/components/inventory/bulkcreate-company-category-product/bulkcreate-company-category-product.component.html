@@ -1,0 +1,27 @@
+<div class="upload-container">
+  <label for="fileUpload" class="upload-label">
+    <i class="fas fa-file-upload"></i>
+    Upload Excel File
+  </label>
+
+  <input
+    id="fileUpload"
+    type="file"
+    (change)="onFileChange($event)"
+    accept=".xlsx, .xls"
+    class="upload-input"
+    #fileInput
+  />
+
+  <span class="upload-note">{{ selectedFileName }}</span>
+  <span class="upload-note">Accepted formats: .xlsx, .xls</span>
+
+  <!-- ✅ Reset Button -->
+  <button class="reset-btn" type="button" (click)="resetUpload(fileInput)">
+    Reset
+  </button>
+</div>
+
+<app-custom-table [data]="bulkCompnay" [title]="'Bulk Company Product'" [addBtnTitle]="'Upload'" [columns]="columns"
+    [showActions]="false" [actions]="[]" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
+</app-custom-table> 

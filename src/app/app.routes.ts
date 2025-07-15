@@ -27,6 +27,7 @@ import { CompanyComponent } from './components/inventory/company/company.compone
 import { CategoryComponent } from './components/inventory/category/category.component';
 import { ProductCategoryComponent } from './components/inventory/product-category/product-category.component';
 import { ProductAvailableQauntityComponent } from './components/dashboard/product-available-qauntity/product-available-qauntity.component';
+import { BulkcreateCompanyCategoryProductComponent } from './components/inventory/bulkcreate-company-category-product/bulkcreate-company-category-product.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -48,7 +49,8 @@ export const routes: Routes = [
                     { path: 'category-list', component: CategoryListComponent },
                     { path: 'category', component: CategoryComponent },
                     { path: 'product-category-list', component: ProductCategoryListComponent },
-                    { path: 'product-category', component: ProductCategoryComponent }
+                    { path: 'product-category', component: ProductCategoryComponent },
+                    { path: 'bulk-product-category', component: BulkcreateCompanyCategoryProductComponent }
                 ]
             },
             {

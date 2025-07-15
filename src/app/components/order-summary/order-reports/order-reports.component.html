@@ -1,1 +1,39 @@
-<p>order-eports works!</p>
+<div class="p-5">
+  <h2 class="text-xl font-semibold mb-4">Import Excel File</h2>
+  
+  <input
+    type="file"
+    (change)="onFileChange($event)"
+    accept=".xlsx, .xls"
+    class="block mb-6"
+  />
+
+  <div *ngIf="excelData.length > 0">
+    <h3 class="text-lg font-medium mb-3">Excel Data Preview</h3>
+    
+    <div class="overflow-auto border rounded">
+      <table class="min-w-full border-collapse text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th
+              *ngFor="let header of tableHeaders"
+              class="border px-3 py-2 text-left font-medium"
+            >
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of excelData" class="hover:bg-gray-50">
+            <td
+              *ngFor="let header of tableHeaders"
+              class="border px-3 py-2"
+            >
+            {{ getCellValue(row, header) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

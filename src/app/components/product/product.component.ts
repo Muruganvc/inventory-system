@@ -46,8 +46,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.initFields();
     this.loadAllCompanies();
     this.bindCompanyChange();
-    this.bindCategoryChange();
-    // this.bindProductChange();
+    this.bindCategoryChange(); 
     this.initActionButtons();
     this.bindQuantityChange();
   }
@@ -289,22 +288,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.commonService.showError(errorMessages.join('<br>'));
       return;
     }
-
-
-
+ 
     const request = this.buildProductRequest(params.form.value);
-
-
-    // if (request.salesPrice > request.mrp) {
-    //   this.commonService.showWarning('The sales price must not exceed the MRP');
-    //   return
-    // }
-
-    // if (request.landingPrice > request.salesPrice) {
-    //   this.commonService.showWarning('The landing price must not exceed the sales price');
-    //   return
-    // }
-
+ 
     this.productService.createProduct(request).subscribe({
       next: (result) => {
         if (result === 0) {

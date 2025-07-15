@@ -23,11 +23,14 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@ng-select/ng-select": "^13.9.1",
     "angular-highcharts": "^17.0.1",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "highcharts": "^12.3.0",
     "jwt-decode": "^4.0.0",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.10"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ import { ProductsResponse } from '../models/ProductsResponse';
 import { UpdateProductRequest } from '../models/UpdateProductRequest';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../shared/common/ApiResponse';
+import { BulkUpload, BulkUploadRequest } from '../models/BulkUpload';
 
 @Injectable({
   providedIn: 'root'
@@ -60,4 +61,10 @@ export class ProductService {
     return this.api.put<null, boolean>(`product/${productId}/${qty}`, null)
       .pipe(map((res: ApiResponse<boolean>) => res.data));
   }
+
+  bulkCreateCompany = (data: BulkUpload[]): Observable<boolean> => {
+    return this.api.post<BulkUpload[], boolean>(`bulk-company`, data)
+      .pipe(map((res: ApiResponse<boolean>) => res.data));
+  }
+
 }
