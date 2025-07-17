@@ -30,24 +30,45 @@ formGroup!: FormGroup;
     this.initFields();
     this.initActionButtons(); 
   }
+private readonly PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
 
-  update = (form: any): void => {
+private validatePassword(password: string): boolean {
+  return this.PASSWORD_PATTERN.test(password);
+}
+
+  update(form: any): void {
+    const { password, currentPassword, confirmPassword } = form.form.value;
     const userId = this.authService.getUserId();
 
+    if (password !== confirmPassword) {
+      this.commonService.showWarning("Password and Confirm Password do not match.");
+      return;
+    }
+
+    if (!this.validatePassword(password)) {
+      this.commonService.showWarning("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.")
+      return;
+    }
+
     const userUpdate: ChangePasswordRequest = {
-      passwordHash: form.form.value.password,
-      currentPassword: form.form.value.currentPassword, 
+      passwordHash: password,
+      currentPassword: currentPassword,
     };
 
     this.userService.updatePassword(Number(userId), userUpdate).subscribe({
       next: (result) => {
         if (result) {
-          this.commonService.showSuccess("Successfully password Changed");
+          this.commonService.showSuccess("Password changed successfully.");
           this.authService.logout();
+        } else {
+          this.commonService.showError("Failed to update password.");
         }
-      } 
+      },
+      error: (err) => {
+        this.commonService.showError("Failed to update password.");
+      }
     });
-  };
+  }
 
   private initForm(): void {
     this.formGroup = new FormGroup({

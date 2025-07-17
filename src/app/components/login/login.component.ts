@@ -61,7 +61,11 @@ export class LoginComponent implements OnInit {
       userName: username
     }
     this.auth.login(loginRequest).subscribe({
-      next: () => {
+      next: (user) => {
+        if (user == null) {
+          this.commonService.showError("Invalid credentials");
+          return;
+        }
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
       },
