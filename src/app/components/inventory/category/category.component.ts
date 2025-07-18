@@ -136,7 +136,7 @@ export class CategoryComponent implements OnInit {
   }
 
   private loadAllCompanies(): void {
-    this.companyService.getCompanies().subscribe({
+    this.companyService.getCompanies(false).subscribe({
       next: res => {
         const options: KeyValuePair[] = res.map(company => ({
           key: company.companyName,
@@ -160,7 +160,7 @@ export class CategoryComponent implements OnInit {
     const request: CategoryCreateRequest = {
       companyId: formValue.company.value,
       categoryName: formValue.categoryName,
-      isActive: formValue.isActive,
+      isActive: !!formValue.isActive,
       description: formValue.description
     };
 
@@ -172,9 +172,6 @@ export class CategoryComponent implements OnInit {
         } else {
           this.commonService.showInfo('New Category not created.');
         }
-      },
-      error: () => {
-        this.commonService.showError('New Category not created.');
       }
     });
   }
@@ -198,9 +195,6 @@ export class CategoryComponent implements OnInit {
         } else {
           this.commonService.showInfo('Selected category not updated.');
         }
-      },
-      error: () => {
-        this.commonService.showError('Error while updating.');
       }
     });
   }

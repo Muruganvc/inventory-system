@@ -167,10 +167,6 @@ export class SalesComponent implements OnInit {
           value: p.productId
         }));
         this.updateFieldOptions('product', this.productsList);
-      },
-      error: err => {
-        this.commonService.showError('Failed to load products');
-        this.productsList = [];
       }
     });
   }
@@ -351,7 +347,7 @@ export class SalesComponent implements OnInit {
             dialogRef.afterClosed().subscribe({
               next: result => {
                 if (result) {
-                    this.onPrint(response);
+                  this.onPrint(response);
                 }
               }
             });
@@ -360,9 +356,6 @@ export class SalesComponent implements OnInit {
             this.formGroup.reset();
             this.productSales = [];
           }
-        },
-        error: error => {
-          this.commonService.showError('Order creation failed');
         }
       });
     });

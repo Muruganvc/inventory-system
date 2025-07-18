@@ -16,7 +16,7 @@ export class ProductCategoryListComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
   ngOnInit(): void {
-    this.companyService.getProductCategories().subscribe({
+    this.companyService.getProductCategories(true).subscribe({
       next: result => {
         if (!!result) {
              this.productCategories = result.map(a => ({

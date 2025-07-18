@@ -78,24 +78,24 @@ export class SalesConfirmDialogComponent implements OnInit {
         this.customers = result;
         result.map(m => {
           this.customerDropDown.push({
-            key: m.customerName,
+            key: m.phone,
             value: m.customerId
           });
         });
-        this.updateFieldOptions('customerName', this.customerDropDown)
+        this.updateFieldOptions('mobileNo', this.customerDropDown)
       }
     })
   }
 
 
   bindCustomerEvent = (): void => {
-    const customerNameControl = this.userForm.get('customerName');
+    const customerNameControl = this.userForm.get('mobileNo');
     if (!customerNameControl) return;
     merge(customerNameControl.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         const cust = this.customers.find(a => a.customerId == result.value);
-        this.userForm.get('mobileNo')?.setValue(cust?.phone, { emitEvent: false });
+        this.userForm.get('customerName')?.setValue(cust?.customerName, { emitEvent: false });
         this.userForm.get('address')?.setValue(cust?.address, { emitEvent: false });
       });
   }
@@ -129,40 +129,47 @@ export class SalesConfirmDialogComponent implements OnInit {
 
   private handleSave(params: any): void {
     const formValue = params.form.value;
-    const hasCustomerId = typeof formValue.customerName?.value !== 'undefined';
 
+    // Check for customerId presence
+    const hasCustomerId = formValue.customerName !== undefined;
+
+    // Validate GST
     if (formValue.isGst && !formValue.gstNumber?.trim()) {
       this.commonService.showInfo('GST Number is required.');
       return;
     }
 
-
+    // Prepare Customer Request
     const customer: CustomerRequest = {
       address: formValue.address,
-      customerId: hasCustomerId ? formValue.customerName.value : 0,
-      customerName: formValue.customerName.key,
-      phone: formValue.mobileNo
+      customerId: hasCustomerId ? formValue.mobileNo?.value ?? 0 : 0,
+      customerName: formValue.customerName,
+      phone: formValue.mobileNo?.key ?? ''
     };
 
-    const givenAmount: number = +formValue.givenAmount || 0;
+    // Convert amount safely
+    const givenAmount: number = Number(formValue.givenAmount) || 0;
 
+    // Build order items array
     const orderItems: OrderItemRequest[] = this.data.orderItems.map((item: ProductEntry) => ({
-      discountPercent: Number(formValue.disCountPercent),
+      discountPercent: Number(formValue.disCountPercent) || 0,
       productId: item.productId,
-      quantity: Number(item.quantity),
-      remarks: formValue.remarks,
-      unitPrice: Number(item.price)
+      quantity: Number(item.quantity) || 0,
+      remarks: formValue.remarks || '',
+      unitPrice: Number(item.price) || 0
     }));
 
+    // Final result object
     const result = {
-      ...this.userForm.value,
+      ...this.userForm.value, // If this has overlapping keys, consider removing
       customer,
       orderItems,
       givenAmount,
       isGst: formValue.isGst,
-      GstNumber: formValue.gstNumber
+      gstNumber: formValue.gstNumber?.trim() || null
     };
 
+    // Close dialog and return result
     this.dialogRef.close(result);
   }
 
@@ -195,10 +202,10 @@ export class SalesConfirmDialogComponent implements OnInit {
   initFields = (): void => {
     this.fields = [
       {
-        type: 'searchable-select', name: 'customerName', label: 'Customer Name', colSpan: 6, options: [],
+        type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6,maxLength: 10, options: [],
         addTag: true,
       },
-      { type: 'input', name: 'mobileNo', label: 'Mobile No.', colSpan: 6, isNumOnly: true, maxLength: 10 },
+      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 10 },
       { type: 'input', name: 'address', label: 'Address', colSpan: 12 },
       { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, isNumOnly: true, maxLength: 2 },
       { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },

@@ -1,25 +1,31 @@
-import { inject, Injectable } from '@angular/core';
-import { DatabaseBackupResponse } from '../shared/common/DatabaseBackupResponse';
-import { map, Observable } from 'rxjs';
-import { ApiResponse } from '../shared/common/ApiResponse';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
+
 import { ApiService } from '../shared/services/api.service';
+import { DatabaseBackupResponse } from '../shared/common/DatabaseBackupResponse';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BackupService {
+  private readonly api = inject(ApiService);
 
-  private readonly api = inject(ApiService)
-
-  createBackup = (userName: string): Observable<DatabaseBackupResponse[]> => {
+  createBackup(userName: string): Observable<DatabaseBackupResponse[]> {
     return this.api
-      .post<{ userName: string }, DatabaseBackupResponse[]>(`database-backup?userName=${userName}`, { userName: userName })
-      .pipe(map((res: ApiResponse<DatabaseBackupResponse[]>) => res.data));
+      .post<{ userName: string }, DatabaseBackupResponse[]>(
+        `database-backup?userName=${encodeURIComponent(userName)}`,
+        { userName }
+      )
+      .pipe(
+        map(res => this.api.handleResult(res))
+      );
   }
 
-  getBackUp = (): Observable<DatabaseBackupResponse[]> => {
+  getBackUp(): Observable<DatabaseBackupResponse[]> {
     return this.api
-      .get<DatabaseBackupResponse[]>(`backup`)
-      .pipe(map((res: ApiResponse<DatabaseBackupResponse[]>) => res.data));
+      .get<DatabaseBackupResponse[]>('backup')
+      .pipe(
+        map(res => this.api.handleResult(res))
+      );
   }
 }

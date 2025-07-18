@@ -152,7 +152,7 @@ export class ProductCategoryComponent {
   }
 
   private loadAllCompanies(): void {
-    this.companyService.getCompanies().subscribe({
+    this.companyService.getCompanies(false).subscribe({
       next: res => {
         const options: KeyValuePair[] = res.map(company => ({
           key: company.companyName,
@@ -201,7 +201,7 @@ export class ProductCategoryComponent {
     const request: ProductCategoryCreateCommand = {
       categoryId: formValue.category.value,
       categoryProductName: formValue.productCategoryName,
-      isActive: formValue.isActive,
+      isActive: !!formValue.isActive,
       description: formValue.description
     };
 
@@ -213,9 +213,6 @@ export class ProductCategoryComponent {
         } else {
           this.commonService.showInfo('New Product Category not created.');
         }
-      },
-      error: () => {
-        this.commonService.showError('New Product Category not created.');
       }
     });
   }
@@ -238,9 +235,6 @@ export class ProductCategoryComponent {
         } else {
           this.commonService.showInfo('Selected Product category not updated.');
         }
-      },
-      error: () => {
-        this.commonService.showError('Error while updating.');
       }
     });
   }

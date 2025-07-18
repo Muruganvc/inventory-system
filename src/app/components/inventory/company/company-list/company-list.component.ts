@@ -19,7 +19,7 @@ export class CompanyListComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
 
   ngOnInit(): void {
-    this.companyService.getCompanies().subscribe({
+    this.companyService.getCompanies(true).subscribe({
       next: result => {
         this.companies = result;
       }

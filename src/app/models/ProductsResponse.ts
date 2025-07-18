@@ -19,4 +19,6 @@ export interface ProductsResponse extends TableRow {
   userName?: string | null;
   serialNo: string;
   isEditing: boolean;
+  companyCategoryProductName: string;
+  companyCategoryProductNameId: string;
 }

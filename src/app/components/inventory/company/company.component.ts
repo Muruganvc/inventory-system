@@ -147,9 +147,6 @@ export class CompanyComponent implements OnInit {
         }else{
            this.commonService.showInfo('Selected company not updated.');
         }
-      },
-      error: () => {
-        this.commonService.showError('Error while updating.');
       }
     });
   }

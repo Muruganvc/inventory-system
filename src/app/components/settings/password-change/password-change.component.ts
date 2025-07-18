@@ -17,7 +17,7 @@ import { ChangePasswordRequest } from '../../../models/ChangePasswordRequest';
   styleUrl: './password-change.component.scss'
 })
 export class PasswordChangeComponent {
-formGroup!: FormGroup;
+  formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
   private readonly authService = inject(AuthService);
@@ -28,13 +28,13 @@ formGroup!: FormGroup;
     this.initForm();
     this.initFields();
     this.initFields();
-    this.initActionButtons(); 
+    this.initActionButtons();
   }
-private readonly PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
+  private readonly PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
 
-private validatePassword(password: string): boolean {
-  return this.PASSWORD_PATTERN.test(password);
-}
+  private validatePassword(password: string): boolean {
+    return this.PASSWORD_PATTERN.test(password);
+  }
 
   update(form: any): void {
     const { password, currentPassword, confirmPassword } = form.form.value;
@@ -63,9 +63,6 @@ private validatePassword(password: string): boolean {
         } else {
           this.commonService.showError("Failed to update password.");
         }
-      },
-      error: (err) => {
-        this.commonService.showError("Failed to update password.");
       }
     });
   }

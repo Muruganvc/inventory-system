@@ -43,68 +43,14 @@
                             <mat-label>{{ field.label }}</mat-label>
                             <input matInput type="password" [formControlName]="field.name" />
                         </mat-form-field>
-
-                        <!-- Searchable Select -->
-                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
-                            <div class="ng-select-wrapper">
-                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
-                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                    [class.ng-touched]="formGroup.get(field.name)?.touched"
-                                    [addTag]="field.addTag"
-                                    (add)="field.add"
-                                    (clear)="field.clear"
-                                    placeholder="Select {{ field.label }}"></ng-select>
-                                <div class="mat-error force-error-style"
-                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
-                                    {{ field.label }} is required
-                                </div>
-                            </div>
-                        </ng-container> -->
-                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
-                            <div class="ng-select-wrapper">
-                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key"
-                                    bindValue="value" [addTag]="field.addTag ? field.add : false"
-                                    (add)="field.add && field.add($event)" (clear)="field.clear && field.clear()"
-                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                    [class.ng-touched]="formGroup.get(field.name)?.touched"
-                                    placeholder="Select {{ field.label }}">
-                                </ng-select>
-
-                                <div class="mat-error force-error-style"
-                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
-                                    {{ field.label }} is required
-                                </div>
-                            </div>
-                        </ng-container> -->
-
-
-                        <!-- <ng-container *ngSwitchCase="'searchable-select'">
-                            <div class="ng-select-wrapper">
-                                <ng-select [formControlName]="field.name" [items]="field.options" bindLabel="key" [addTag]="field.addTag"
-                                    (add)="field.add($event)" (clear)="field.clear && field.clear()"
-                                    placeholder="Select {{ field.label }}" [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                    [class.ng-touched]="formGroup.get(field.name)?.touched"></ng-select>
-                        
-                                <div class="mat-error force-error-style"
-                                    *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
-                                    {{ field.label }} is required
-                                </div>
-                            </div>
-                        </ng-container> -->
-
+ 
 
                         <ng-container *ngSwitchCase="'searchable-select'">
                             <div class="ng-select-wrapper">
-                                <ng-select 
-                                        [formControlName]="field.name" 
-                                        [items]="field.options"
-                                        bindLabel="key"
-                                        [compareWith]="compareFn"
-                                        [addTag]="field.addTag"
-                                        (clear)="field.clear?.(field.name)"
-                                        placeholder="Select {{ field.label }}"
-                                        [class.ng-invalid]="formGroup.get(field.name)?.invalid"
-                                        [class.ng-touched]="formGroup.get(field.name)?.touched">
+                                <ng-select #ngSelectRef [formControlName]="field.name" [items]="field.options" bindLabel="key" [compareWith]="compareFn"
+                                    [addTag]="field.addTag" (clear)="field.clear?.(field.name)" placeholder="Select {{ field.label }}"
+                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid" [class.ng-touched]="formGroup.get(field.name)?.touched"
+                                    (open)="setMaxLength(ngSelectRef, field.maxLength || 100)">
                                 </ng-select>
 
                                 <div class="mat-error force-error-style"

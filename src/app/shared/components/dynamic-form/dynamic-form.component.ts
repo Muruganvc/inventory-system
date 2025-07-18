@@ -11,9 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { ActionButtons } from '../../common/ActionButton';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'; 
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { NumberOnlyDirective } from '../../services/NumberOnlyDirective ';
 @Component({
   selector: 'app-dynamic-form',
@@ -44,17 +44,17 @@ export class DynamicFormComponent {
   @Input({ required: true }) title!: string;
   @Input({ required: true }) buttons: ActionButtons[] = [];
   isMobileView: boolean = false;
-  @Input() isPopup : boolean = false;
+  @Input() isPopup: boolean = false;
   constructor(private breakpointObserver: BreakpointObserver) { }
-get form() {
-  return this.formGroup;
-}
+  get form() {
+    return this.formGroup;
+  }
   ngOnInit(): void {
     this.breakpointObserver
       .observe([Breakpoints.Handset])
       .subscribe(result => {
-        this.isMobileView = result.matches; 
-      }); 
+        this.isMobileView = result.matches;
+      });
     this.fields.forEach(field => {
       if (!this.formGroup.get(field.name)) {
         this.formGroup.addControl(field.name, new FormControl(null));
@@ -79,4 +79,14 @@ get form() {
       }
     });
   }
+
+  setMaxLength(ngSelectRef: NgSelectComponent, maxLength: number) {
+    setTimeout(() => {
+      const input: HTMLInputElement | null = ngSelectRef.element?.querySelector('input');
+      if (input) {
+        input.setAttribute('maxlength', maxLength.toString());
+      }
+    });
+  }
+
 }

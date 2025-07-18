@@ -68,8 +68,7 @@ export class LoginComponent implements OnInit {
         }
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
-      },
-      error: () => this.commonService.showError("Invalid credentials")
+      }
     });
 
   }

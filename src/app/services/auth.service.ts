@@ -2,9 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../shared/services/api.service';
 import { LoginRequest, LoginResponse } from '../models/LoginRequest';
 import { map, Observable, tap } from 'rxjs';
-import { ApiResponse } from '../shared/common/ApiResponse';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { Result } from '../shared/common/ApiResponse';
 export interface DecodedToken {
   exp: number;
   role: string | string[];
@@ -19,18 +19,19 @@ export class AuthService {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
 
-  login(login: LoginRequest): Observable<LoginResponse> {
-    return this.api
-      .post<LoginRequest, LoginResponse>('user-login', login)
-      .pipe(
-        map((res: ApiResponse<LoginResponse>) => res.data),
-        tap((response: LoginResponse) => {
-          if (response?.token) {
-            this.setToken(response.token);
-          }
-        })
-      );
-  }
+login(login: LoginRequest): Observable<LoginResponse> {
+  return this.api
+    .post<LoginRequest, LoginResponse>('user-login', login)
+    .pipe(
+      map(res => this.api.handleResult(res)), // safely unwrap or throw
+      tap(response => {
+        if (response.token) {
+          this.setToken(response.token);
+        }
+      })
+    );
+}
+
 
 
   logout(redirectTo: string = '/login'): void {
@@ -94,7 +95,7 @@ export class AuthService {
     return decoded?.name ?? decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
   }
 
-  getEmail(): string{
+  getEmail(): string {
     const decoded = this.getDecodedToken();
     return decoded?.email ?? decoded?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
   }
@@ -117,7 +118,7 @@ export class AuthService {
 
 
 
-    hasRole(requiredRoles: string[]): boolean {
+  hasRole(requiredRoles: string[]): boolean {
     const decoded = this.getDecodedToken();
     if (!decoded) return false;
 

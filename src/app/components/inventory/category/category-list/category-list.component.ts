@@ -16,7 +16,7 @@ export class CategoryListComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
   categories: GetCategoryQueryResponse[] = [];
   ngOnInit(): void {
-    this.companyService.getCategories().subscribe({
+    this.companyService.getCategories(true).subscribe({
       next: result => {
         if (result && Array.isArray(result)) {
           this.categories = result.map(a => ({

@@ -7,7 +7,7 @@ import { catchError, throwError } from 'rxjs';
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
 
-  // Skip error toast if the request has a skip header
+  // Check if the request has opted out of error toasts
   const skipErrorToastr = req.headers.get('X-Skip-Error-Toastr') === 'true';
 
   return next(req).pipe(
@@ -15,16 +15,17 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
       if (!skipErrorToastr) {
         let message = 'Something went wrong.';
 
-        if (error?.error?.message) {
+        // Extract a meaningful message from the error response
+        if (error?.error?.error) {
+          message = error.error.error; // For API responses with "error" field
+        } else if (error?.error?.message) {
           message = error.error.message;
         } else if (error?.message) {
           message = error.message;
         }
-
-        // toastr.error(message, 'Error');
-        console.error(message);
+        // Show error toast
+        toastr.error(message, 'Error');
       }
-
       return throwError(() => error);
     })
   );

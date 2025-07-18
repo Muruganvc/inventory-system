@@ -1,127 +1,170 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
-import { ApiResponse } from '../common/ApiResponse';
-import { ConfigService } from './config.service';
 
+import { ConfigService } from './config.service';
+import { Result } from '../common/ApiResponse';
+import { CommonService } from './common.service';
+
+// Type aliases for optional request headers and query parameters
 export type ApiHeaders = Record<string, string>;
-export type ApiParams = Record<string, string | number | boolean | Array<string | number | boolean>>;
+export type ApiParams = Record<
+  string,
+  string | number | boolean | Array<string | number | boolean>
+>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class ApiService{ 
+export class ApiService {
+  // Inject HttpClient and ConfigService using Angular's inject() API
   private readonly http = inject(HttpClient);
-  private readonly configService = inject(ConfigService);
+  private readonly config = inject(ConfigService);
+  private readonly commonService = inject(CommonService);
 
- 
+  /**
+   * Builds HttpHeaders with optional custom headers and Authorization token.
+   */
   private createHeaders(headers?: ApiHeaders): HttpHeaders {
     let httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    // Attach JWT token from local storage, if available
     const token = localStorage.getItem('token');
     if (token) {
       httpHeaders = httpHeaders.set('Authorization', `Bearer ${token}`);
     }
 
-    // Add any additional headers
+    // Add any custom headers provided
     if (headers) {
-      Object.entries(headers).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(headers)) {
         httpHeaders = httpHeaders.set(key, value);
-      });
+      }
     }
 
     return httpHeaders;
   }
 
-
-
+  /**
+   * Converts object-based query parameters to HttpParams.
+   */
   private createParams(params?: ApiParams): HttpParams {
     let httpParams = new HttpParams();
 
     if (params) {
-      Object.entries(params).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(params)) {
         if (Array.isArray(value)) {
-          value.forEach(val => httpParams = httpParams.append(key, String(val)));
+          // Append multiple values for array-based params
+          value.forEach(val => {
+            httpParams = httpParams.append(key, String(val));
+          });
         } else {
           httpParams = httpParams.set(key, String(value));
         }
-      });
+      }
     }
 
     return httpParams;
   }
 
+  /**
+   * Centralized HTTP error handling. Can be extended for logging or retry logic.
+   */
   private handleError(error: HttpErrorResponse): Observable<never> {
-    // You can extend this to include error logging or custom formatting
     return throwError(() => error);
   }
 
-  get<TResponse>(
+  /**
+   * HTTP GET request
+   */
+  get<T>(
     url: string,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> { 
+  ): Observable<Result<T>> {
     return this.http
-      .get<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, {
+      .get<Result<T>>(`${this.config.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));
   }
 
+  /**
+   * HTTP POST request
+   */
   post<TRequest, TResponse>(
     url: string,
     body?: TRequest,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> {
+  ): Observable<Result<TResponse>> {
     return this.http
-      .post<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body ?? {}, {
+      .post<Result<TResponse>>(`${this.config.baseUrl}${url}`, body ?? {}, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));
   }
 
+  /**
+   * HTTP PUT request
+   */
   put<TRequest, TResponse>(
     url: string,
     body: TRequest,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> {
-    const options = {
-      headers: this.createHeaders(headers),
-      params: this.createParams(params),
-    };
-
+  ): Observable<Result<TResponse>> {
     return this.http
-      .put<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body ?? {}, options)
+      .put<Result<TResponse>>(`${this.config.baseUrl}${url}`, body, {
+        headers: this.createHeaders(headers),
+        params: this.createParams(params),
+      })
       .pipe(catchError(this.handleError));
   }
 
+  /**
+   * HTTP PATCH request
+   */
   patch<TRequest, TResponse>(
     url: string,
     body: TRequest,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> {
+  ): Observable<Result<TResponse>> {
     return this.http
-      .patch<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, body, {
+      .patch<Result<TResponse>>(`${this.config.baseUrl}${url}`, body, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));
   }
 
+  /**
+   * HTTP DELETE request
+   */
   delete<TResponse>(
     url: string,
     params?: ApiParams,
     headers?: ApiHeaders
-  ): Observable<ApiResponse<TResponse>> {
+  ): Observable<Result<TResponse>> {
     return this.http
-      .delete<ApiResponse<TResponse>>(`${this.configService.baseUrl}${url}`, {
+      .delete<Result<TResponse>>(`${this.config.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Unwraps a Result<T> type. Throws if the result is an error.
+   * Usage: .pipe(map(res => this.handleResult(res)))
+   */
+  public handleResult<T>(res: Result<T>): T {
+    if (!res.isSuccess) {
+       this.commonService.showWarning(res.error);
+      throw new Error(res.error || 'Unexpected error');
+    }
+    return res.value;
   }
 }
