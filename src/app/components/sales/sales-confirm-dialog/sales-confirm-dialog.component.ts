@@ -155,8 +155,8 @@ export class SalesConfirmDialogComponent implements OnInit {
       discountPercent: Number(formValue.disCountPercent) || 0,
       productId: item.productId,
       quantity: Number(item.quantity) || 0,
-      remarks: formValue.remarks || '',
-      unitPrice: Number(item.price) || 0
+      unitPrice: Number(item.price) || 0,
+      serialNo: item.serialNo
     }));
 
     // Final result object
@@ -205,7 +205,7 @@ export class SalesConfirmDialogComponent implements OnInit {
         type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6,maxLength: 10, options: [],
         addTag: true,
       },
-      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 10 },
+      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 50 },
       { type: 'input', name: 'address', label: 'Address', colSpan: 12 },
       { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, isNumOnly: true, maxLength: 2 },
       { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },

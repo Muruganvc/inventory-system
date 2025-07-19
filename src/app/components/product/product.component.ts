@@ -65,8 +65,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       landingPrice: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
-      isActive: new FormControl(null),
-      serialNo: new FormControl(null)
+      isActive: new FormControl(null)
     }, {
       validators: [
         salesPriceLessThanMRPValidator(),
@@ -79,23 +78,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   private initFields(): void {
     const isAdmin = !this.authService.hasRole(["Admin"])
     this.fields = [
-      {
-        type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [],
-      },
-      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 3, isNumOnly: true, maxLength: 15 },
+      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [] },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 3, isReadOnly: false, isNumberOnly: true },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 2, isReadOnly: false, isNumberOnly: true },
-      {
-        type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: isAdmin,
-        options: [
-          { label: 'Admin', value: 'admin' },
-          { label: 'User', value: 'user' },
-        ]
-      },
-      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12, isHidden: true }
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: isAdmin }
     ];
   }
   createNewProduct(term: string) {
@@ -155,8 +144,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       landingPrice: product.landingPrice,
       quantity: product.quantity,
       availableQuantity: product.quantity,
-      isActive: product.isActive,
-      serialNo: product.serialNo
+      isActive: product.isActive
     });
   }
 
@@ -273,7 +261,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: value.mrp,
       salesPrice: value.salesPrice,
       landingPrice: value.landingPrice,
-      serialNo: value.serialNo,
       totalQuantity: value.quantity,
       isActive: !!value.isActive
     };

@@ -16,8 +16,7 @@ export interface ProductsResponse extends TableRow {
   landingPrice: number;
   quantity: number;
   isActive: boolean;
-  userName?: string | null;
-  serialNo: string;
+  userName?: string | null; 
   isEditing: boolean;
   companyCategoryProductName: string;
   companyCategoryProductNameId: string;

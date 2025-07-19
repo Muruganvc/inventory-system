@@ -2,59 +2,44 @@
 
   <!-- 🔷 Info Cards -->
   <div class="info-cards">
-    <div class="card bg-teal">
+
+    <!-- Card: Total Revenue -->
+    <div class="card bg-purple">
       <div class="card-content">
-        <i class="fas fa-crosshairs icon"></i>
-        <div class="text-base leading-7">
-          <div>
-            <span class="tooltip">
-              <i class="fas fa-sack-dollar"></i>
-              <span class="tooltiptext">Total Amount</span>
-            </span>
-            500000
-          </div>
-          <div>
-            <span class="tooltip">
-              <i class="fas fa-wallet"></i>
-              <span class="tooltiptext">Balance Amount</span>
-            </span>
-            10000
-          </div>
-          <p>Lisha</p>
+        <i class="fas fa-money-bill-wave icon"></i>
+        <div>
+          <h2>₹{{ productSoldOut.totalNetAmount | number: '1.2-2' }}</h2>
+          <p>Total Revenue</p>
         </div>
       </div>
     </div>
 
+    <!-- Card: Outstanding Balance -->
     <div class="card bg-orange">
       <div class="card-content">
         <i class="fas fa-credit-card icon"></i>
         <div>
-          <h2>₹{{ productSoldOut?.balanceAmount ?? 0 | number:'1.2-2' }}</h2>
+          <h2>₹{{ productSoldOut.balanceAmount | number: '1.2-2' }}</h2>
           <p>Total Outstanding Balance</p>
         </div>
       </div>
     </div>
 
+    <!-- Card: Products Sold -->
     <div class="card bg-red">
       <div class="card-content">
         <i class="fas fa-boxes icon"></i>
         <div>
-          <h2>₹{{ productSoldOut?.totalQuantity ?? 0 | number:'1.2-2' }}</h2>
+          <h2>{{ productSoldOut.totalQuantity | number: '1.2-2' }}</h2>
           <p>Products Sold</p>
         </div>
       </div>
     </div>
+ 
 
-    <div class="card bg-purple">
-      <div class="card-content">
-        <i class="fas fa-money-bill-wave icon"></i>
-        <div>
-          <h2>₹{{ productSoldOut?.totalNetAmount ?? 0 | number:'1.2-2' }}</h2>
-          <p>Total Revenue</p>
-        </div>
-      </div>
-    </div>
   </div>
+
+  <!-- 🔷 Product Availability -->
   <div class="chart-wrapper">
     <div class="large-chart-card">
       <h3>Available Quantity</h3>
@@ -62,17 +47,16 @@
     </div>
   </div>
 
-
-
   <!-- 📊 Mixed Chart Layout -->
   <div class="chart-wrapper">
-    <!-- Left: Large Chart -->
+
+    <!-- Month Wise Chart -->
     <div class="large-chart-card">
-      <h3>Month Wise Sales</h3>
-      <app-monthwise></app-monthwise>
+      <h3>Company Wise Sales</h3>
+      <app-monthwise [companyWiseData]="productSoldOut.companyWiseSales"></app-monthwise>
     </div>
 
-    <!-- Right: Stacked Small Charts -->
+    <!-- Week & Day Wise Charts -->
     <div class="small-chart-column">
       <div class="small-chart-card">
         <h3>Week Wise</h3>
@@ -85,16 +69,14 @@
     </div>
   </div>
 
-
+  <!-- 👨‍💼 Company-Wise Income -->
   <div class="small-chart-column">
     <div class="small-chart-card" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
       <app-company-wise-income></app-company-wise-income>
-
     </div>
   </div>
 
-
-  <!-- 🟩 Full Width Charts Grid -->
+  <!-- 🟩 Full Width Charts -->
   <div class="charts-grid">
     <div class="chart-card">
       <h3>Category Wise Sales</h3>
@@ -102,7 +84,7 @@
     </div>
     <div class="chart-card">
       <h3>Top 3 Products</h3>
-      <!-- <app-daywise></app-daywise> -->
+      <!-- Future component or placeholder -->
     </div>
     <div class="chart-card">
       <h3>Recent Transactions</h3>
@@ -110,11 +92,11 @@
     </div>
   </div>
 
+  <!-- 🕵️‍♂️ Audit Logs -->
   <div class="chart-wrapper">
     <div class="large-chart-card" *ngFor="let log of auditLog">
       <app-audit [auditLog]="log"></app-audit>
     </div>
   </div>
-
 
 </div>

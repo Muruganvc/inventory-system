@@ -3,6 +3,39 @@
         <i class="bi bi-clock-history me-2"></i> Audit Logs
     </h4>
 
+   <div class="row mb-3 gx-3 gy-2 align-items-end">
+  <div class="col-lg-4 col-md-4 col-sm-12">
+    <label class="form-label">Table</label>
+    <select class="form-select form-select-sm" [(ngModel)]="selectedTable" (change)="applyFilters()">
+      <option value="">All</option>
+      <option *ngFor="let table of getUniqueValues('tableName')" [value]="table">{{ table }}</option>
+    </select>
+  </div>
+
+  <div class="col-lg-4 col-md-4 col-sm-12">
+    <label class="form-label">Action</label>
+    <select class="form-select form-select-sm" [(ngModel)]="selectedAction" (change)="applyFilters()">
+      <option value="">All</option>
+      <option value="Added">Added</option>
+      <option value="Modified">Modified</option>
+      <option value="Deleted">Deleted</option>
+    </select>
+  </div>
+
+  <div class="col-lg-4 col-md-4 col-sm-12">
+    <label class="form-label">Changed By</label>
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      [(ngModel)]="changedByFilter"
+      (input)="applyFilters()"
+      placeholder="Search user..."
+    />
+  </div>
+</div>
+
+
+
     <div class="table-responsive">
         <table class="table table-hover align-middle audit-log-table">
             <thead class="table-light">
@@ -15,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let audit of auditLogs; let i = index">
+                <ng-container *ngFor="let audit of filteredAuditLogs; let i = index">
                     <!-- Main Row -->
                     <tr>
                         <td>{{ audit.tableName }}</td>
@@ -29,22 +62,32 @@
                                     {{ expandedIndex === i ? 'Hide' : 'View' }}
                                 </span>
                             </button>
-
                         </td>
                     </tr>
 
                     <!-- Expanded Detail Row -->
                     <tr *ngIf="expandedIndex === i">
                         <td colspan="5">
+                            <!-- Show Key Values -->
+                            <div *ngIf="parseJson(audit.keyValues) | keyvalue as keyVals" class="mb-3">
+                                <h6 class="fw-bold text-muted mb-2">Key Values</h6>
+                                <ul class="mb-0 ps-3">
+                                    <li *ngFor="let kv of keyVals">
+                                        <strong>{{ kv.key }}:</strong> {{ kv.value }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Show Field Changes -->
                             <ng-container
                                 *ngIf="getChangedKeys(parseJson(audit.oldValues), parseJson(audit.newValues)).length > 0; else noChanges">
-                                <div class="table-responsive mt-3">
+                                <div class="table-responsive mt-2">
                                     <table class="table table-sm table-bordered">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Field</th>
-                                                <th>Old Value</th>
-                                                <th>New Value</th>
+                                                <th *ngIf="audit.action !== 'Added'">Old Value</th>
+                                                <th *ngIf="audit.action !== 'Deleted'">New Value</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,6 +104,7 @@
                                 </div>
                             </ng-container>
 
+                            <!-- No Changes -->
                             <ng-template #noChanges>
                                 <p class="text-muted fst-italic mb-0">No field-level changes were detected.</p>
                             </ng-template>

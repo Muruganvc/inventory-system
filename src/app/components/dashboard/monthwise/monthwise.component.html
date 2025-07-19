@@ -1,1 +1,7 @@
-<div [chart]="chart"></div>
+ <div style="max-width: 800px; margin: auto;">
+  <canvas baseChart
+          [data]="{ labels: barChartLabels, datasets: barChartData }"
+          [options]="barChartOptions"
+          [type]="barChartType">
+  </canvas>
+</div>

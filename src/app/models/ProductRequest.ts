@@ -9,5 +9,4 @@ export interface ProductRequest {
     landingPrice:number;
     totalQuantity: number;
     isActive: boolean;
-    serialNo : string;
 }

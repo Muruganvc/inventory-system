@@ -8,6 +8,5 @@ export interface UpdateProductRequest {
     mrp: number;
     salesPrice: number;
     totalQuantity: number;
-    isActive: boolean;
-    serialNo : string;
+    isActive: boolean; 
 }

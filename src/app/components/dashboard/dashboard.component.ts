@@ -47,6 +47,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   productSoldOut: TotalProductQueryResponse;
   auditLog: AuditLog[] = [];
   companyData: CompanyGroup[] = [];
+ 
 
   companies = [
     {
@@ -84,11 +85,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   ];
 
-  ngOnInit(): void {
-    this.startAutoSlider();
-    this.getProductSoldOut();
-    this.getAuditLogs();
-  }
+ngOnInit(): void {
+  this.productSoldOut = {
+    totalQuantity: 0,
+    totalNetAmount: 0,
+    balanceAmount: 0,
+    companyWiseSales: []
+  };
+
+  this.startAutoSlider();
+  this.getProductSoldOut();
+  this.getAuditLogs();
+}
 
   ngOnDestroy(): void {
     this.stopAutoSlider();

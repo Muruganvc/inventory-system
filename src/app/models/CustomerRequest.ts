@@ -10,7 +10,7 @@ export interface OrderItemRequest {
   quantity: number;
   unitPrice: number;
   discountPercent: number;
-  remarks?: string;
+  serialNo?: string;
 }
 
 export interface OrderCreateRequest {
