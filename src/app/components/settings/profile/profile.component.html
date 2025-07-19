@@ -1,2 +1,11 @@
-<app-dynamic-form [formGroup]="formGroup" [isPopup]="true" [fields]="fields" [buttons]="actionButtons"
-    [title]="'User Profile'"></app-dynamic-form>
+<div class="row">
+    <div class="col-30">
+        <input id="fileUpload" type="file" accept="image/*" (change)="onFileSelected($event)" />
+        <div *ngIf="imagePreview" class="preview-container">
+            <img [src]="imagePreview" alt="Preview" />
+        </div>
+    </div>
+    <div class="col-70"><app-dynamic-form [formGroup]="formGroup" [isPopup]="true" [fields]="fields"
+            [buttons]="actionButtons" [title]="'User Profile'">
+        </app-dynamic-form></div>
+</div>

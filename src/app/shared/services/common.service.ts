@@ -2,6 +2,7 @@ import { ElementRef, inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { InvoiceComponent } from '../../components/order-summary/invoice/invoice.component';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -129,4 +130,11 @@ export class CommonService {
     }, 500);
   }
 
+
+  private dataSubject = new BehaviorSubject<string>(''); // Or any default
+  sharedProfileImageData$ = this.dataSubject.asObservable();
+
+  setProfileImageData(data: string) {
+    this.dataSubject.next(data);
+  }
 }

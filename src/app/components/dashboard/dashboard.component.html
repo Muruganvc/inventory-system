@@ -109,4 +109,12 @@
       <app-weekwise></app-weekwise>
     </div>
   </div>
+
+  <div class="chart-wrapper">
+    <div class="large-chart-card" *ngFor="let log of auditLog">
+      <app-audit [auditLog]="log"></app-audit>
+    </div>
+  </div>
+
+
 </div>

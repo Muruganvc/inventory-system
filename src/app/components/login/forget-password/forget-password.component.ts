@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
 import { ActionButtons } from '../../../shared/common/ActionButton';
+import { UserService } from '../../../services/user.service';
+import { CommonService } from '../../../shared/services/common.service';
 
 @Component({
   selector: 'app-forget-password',
@@ -15,8 +17,9 @@ export class ForgetPasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<ForgetPasswordComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private userService: UserService,
+    private commonService: CommonService,
+    public dialogRef: MatDialogRef<ForgetPasswordComponent>
   ) {
 
     this.userForm = new FormGroup({
@@ -30,7 +33,7 @@ export class ForgetPasswordComponent implements OnInit {
     });
 
   }
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.initFields();
     this.initActionButtons();
   }
@@ -67,10 +70,26 @@ export class ForgetPasswordComponent implements OnInit {
     ];
   }
 
-  handleSave() {
+  handleSave(form: any): void {
+    const { userName, mobileNo } = form.form.value;
 
+    if (!userName || !mobileNo) {
+      this.commonService.showError("Username and Mobile No are required.");
+      return;
+    }
+
+    this.userService.forgetPassword(userName, mobileNo).subscribe({
+      next: (result) => {
+        if (result) {
+          this.commonService.showSuccess("Password has been changed. Please contact the support team.");
+          this.userForm.reset();
+          this.dialogRef.close(null);
+        }
+      }
+    });
   }
-   handleCancel = (): void => {
+
+  handleCancel = (): void => {
     this.dialogRef.close(this.userForm.value);
   }
 

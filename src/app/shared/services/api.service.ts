@@ -25,24 +25,28 @@ export class ApiService {
   /**
    * Builds HttpHeaders with optional custom headers and Authorization token.
    */
-  private createHeaders(headers?: ApiHeaders): HttpHeaders {
-    let httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private createHeaders(headers?: ApiHeaders, isFormData: boolean = false): HttpHeaders {
+    let httpHeaders = new HttpHeaders();
 
-    // Attach JWT token from local storage, if available
+    // ❗️Only set Content-Type to application/json if not sending FormData
+    if (!isFormData) {
+      httpHeaders = httpHeaders.set('Content-Type', 'application/json');
+    }
+
     const token = localStorage.getItem('token');
     if (token) {
       httpHeaders = httpHeaders.set('Authorization', `Bearer ${token}`);
     }
 
-    // Add any custom headers provided
     if (headers) {
       for (const [key, value] of Object.entries(headers)) {
         httpHeaders = httpHeaders.set(key, value);
       }
     }
 
-    return httpHeaders;
-  }
+  return httpHeaders;
+}
+
 
   /**
    * Converts object-based query parameters to HttpParams.
@@ -113,11 +117,12 @@ export class ApiService {
     url: string,
     body: TRequest,
     params?: ApiParams,
-    headers?: ApiHeaders
+    headers?: ApiHeaders,
+    isFormData?: boolean
   ): Observable<Result<TResponse>> {
     return this.http
       .put<Result<TResponse>>(`${this.config.baseUrl}${url}`, body, {
-        headers: this.createHeaders(headers),
+        headers: this.createHeaders(headers, isFormData),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));

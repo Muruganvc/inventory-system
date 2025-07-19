@@ -3,4 +3,6 @@ export interface LoginUserResponse {
     lastName: string;
     userName: string;
     email: string;
+    profileImageBase64?: string;
+    mobileNo: string;
 }

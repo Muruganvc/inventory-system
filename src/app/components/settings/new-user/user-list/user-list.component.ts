@@ -41,21 +41,27 @@ export class UserListComponent implements OnInit {
       next: result => {
         if (!!result) {
           this.users = result;
+
+          const isAdmin = this.authService.hasRole(["Admin"]);
           const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
-          const isAdmin = this.authService.hasRole(["Admin"])
+
           if (isAdmin && !hasIsActiveColumn) {
-            this.columns.push({
-              key: 'isActive',
-              label: 'Active',
-              align: 'right',
-              type: 'checkbox',
-              isHidden: false
-            });
+            this.columns = [
+              ...this.columns,
+              {
+                key: 'isActive',
+                label: 'Active',
+                align: 'right',
+                type: 'checkbox',
+                isHidden: false
+              }
+            ];
           }
         }
       }
     });
   }
+
   handleFieldChange(event: { row: UserListResponse; key: string; value: any }) {
     this.userService.setActiveUser(event.row.userId ?? 0).subscribe({
       next: result => {

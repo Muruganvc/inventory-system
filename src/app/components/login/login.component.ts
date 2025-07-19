@@ -77,12 +77,6 @@ export class LoginComponent implements OnInit {
       width: '100%',
       maxWidth: '400px',
       disableClose: true,
-      data: {
-        title: 'Sale Items',
-        message: 'No sales item found. Please add.',
-        okBtn: { title: 'Ok', isHiden: true },
-        cancel: { title: 'Cancel', isHiden: false }
-      }
     }).afterClosed().subscribe();
   }
 

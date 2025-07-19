@@ -1,10 +1,13 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
+import { signal } from '@angular/core';
+
 import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { MenuItem } from '../../shared/common/MenuItem';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { CommonService } from '../../shared/services/common.service';
 
 @Component({
   selector: 'app-custom-menu',
@@ -14,63 +17,38 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './custom-menu.component.scss'
 })
 export class CustomMenuComponent implements OnInit {
-  ngOnInit(): void {
-    this.getMenus();
-  }
-  fullName: string;
-  role : string;
-  private readonly authService = inject(AuthService);
-  private readonly userService = inject(UserService);
+
+  fullName: string = '';
+  role: string = '';
+  imagePreview: string | ArrayBuffer | null = null;
   readonly menuItems = signal<MenuItem[]>([]);
 
-  getMenus() {
+  private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  private readonly commonService = inject(CommonService);
+
+  ngOnInit(): void {
+    this.setUserDetails();
+    this.loadMenus();
+    this.subscribeToProfileImage();
+  }
+
+  private setUserDetails(): void {
     this.fullName = this.authService.getUserName();
+    this.role = this.authService.hasRole(['Admin']) ? 'Admin' : 'User';
+  }
+
+  private loadMenus(): void {
     const userId = this.authService.getUserId();
-
-    this.role = this.authService.hasRole(["Admin"]) ? 'Admin' :'User';
-
     this.userService.getUserMenu(+userId).subscribe({
-      next: (items) => this.menuItems.set(items)
+      next: (items) => this.menuItems.set(items),
+      error: (err) => console.error('Failed to load menus', err)
     });
   }
 
-  readonly menuItems1 = signal<MenuItem[]>([
-    {
-      icon: 'dashboard',
-      label: 'Dashboard',
-      route: 'dashboard'
-    },
-    {
-      icon: 'settings',
-      label: 'Settings',
-      route: 'setting',
-      subMenuItem: [
-        {
-          icon: 'person',
-          label: 'Add new user',
-          route: 'user-list'
-        },
-        {
-          icon: 'add_shopping_cart',
-          label: 'Password change',
-          route: 'change-password'
-        },
-        {
-          icon: 'person',
-          label: 'User Permission',
-          route: 'user-permission'
-        },
-      ]
-    },
-    {
-      icon: 'add_shopping_cart',
-      label: 'Product',
-      route: 'product-list'
-    },
-    {
-      icon: 'remove_shopping_cart',
-      label: 'Sales',
-      route: 'sales'
-    },
-  ]);
+  private subscribeToProfileImage(): void {
+    this.commonService.sharedProfileImageData$.subscribe(value => {
+      this.imagePreview = value;
+    });
+  }
 }

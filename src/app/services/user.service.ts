@@ -53,6 +53,12 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
+  updateUserWithImage = (userId: number, update: FormData): Observable<number> => {
+    return this.api
+      .put<FormData, number>(`update/${userId}`, update, undefined, undefined, true)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
   updatePassword = (userId: number, updatePwd: ChangePasswordRequest): Observable<number> => {
     return this.api
       .put<ChangePasswordRequest, number>(`password-change/${userId}`, updatePwd)
@@ -80,6 +86,12 @@ export class UserService {
   addOrRemoveUserMenuItem = (userId: number, menuId: number): Observable<boolean> => {
     return this.api
       .post<null, boolean>(`menu/${userId}/${menuId}`, null)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  forgetPassword = (userName: string, mobileNo: string): Observable<boolean> => {
+    return this.api
+      .put<null, boolean>(`forget-password?userName=${userName}&mobileNo=${mobileNo}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

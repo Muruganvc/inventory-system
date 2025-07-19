@@ -3,23 +3,23 @@
     <i class="fas fa-bars"></i>
   </button>
 
- 
-   <span class="toolbar-title">{{ companyName }}</span>
+
+  <span class="toolbar-title">{{ companyName }}</span>
 
   <span class="spacer"></span>
 
-  <img
-    width="20"
-    height="20"
-    [matMenuTriggerFor]="userMenu"
-    class="double-border"
-    src="TheeranChinnamalai.jfif"
-  />
+  <img width="20" height="20" [matMenuTriggerFor]="userMenu" class="double-border"
+    [src]="imagePreview || 'TheeranChinnamalai.jfif'" />
 
   <mat-menu #userMenu="matMenu">
     <button mat-menu-item (click)="onGridView()">
       <i class="fas fa-border-all pd-10-rt"></i>
       <span>{{ dashBoardView }}</span>
+    </button>
+
+    <button mat-menu-item (click)="onAuditTableView()">
+      <i class="fas fa-clipboard-list me-2 pd-10-rt"></i>
+      <span>Audit Table View</span>
     </button>
 
     <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
@@ -81,10 +81,27 @@
   </div>
 </footer>
 
+
 <div class="popup-overlay" *ngIf="showPopup">
   <div class="popup-content">
-    <span class="close-btn" (click)="closePopup()">&times;</span>
-    <h3>Information</h3>
-    <p>We're currently working on this feature. It is under development and will be available soon. Thank you for your patience!</p>
+    <span class="close-btn" (click)="closePopup()" title="Close">&times;</span>
+    <h3 class="popup-title">Feature Under Development</h3>
+    <p class="popup-message">
+      We're currently working on this feature. It is under development and will be available soon.<br>
+      Thank you for your patience!
+    </p>
+
+    <!-- Social Media Icons -->
+    <div class="social-icons">
+      <a href="https://www.facebook.com/vcmuruganmca" target="_blank" aria-label="Facebook" class="facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://www.instagram.com/_murugan_vc_" target="_blank" aria-label="Instagram" class="instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/muruganvc" target="_blank" aria-label="LinkedIn" class="linkedin">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </div>
   </div>
 </div>

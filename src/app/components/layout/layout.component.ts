@@ -13,6 +13,8 @@ import { AuthService } from '../../services/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../shared/services/config.service';
+import { UserService } from '../../services/user.service';
+import { CommonService } from '../../shared/services/common.service';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -24,6 +26,8 @@ export class LayoutComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
   private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
+  private readonly commonService = inject(CommonService);
 
   companyName: string = '';
   isMobileDevice = false;
@@ -54,6 +58,7 @@ export class LayoutComponent implements OnInit {
     this.apiVersion = this.configService.apiVersion;
     this.uiVersion = this.configService.uiVersion;
     this.databaseName = this.configService.dbName;
+    this.loadUser();
   }
 
   isMobile(): boolean {
@@ -123,6 +128,10 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/setting/user-menu-permission']);
   }
 
+  onAuditTableView =():void =>{
+    this.router.navigate(['/setting/audit-table-view']);
+  }
+
   onGridView(): void {
     const isGridView = this.router.url === '/product-availability';
 
@@ -130,7 +139,7 @@ export class LayoutComponent implements OnInit {
     this.router.navigate([isGridView ? '/dashboard' : '/product-availability']);
   }
 
-showPopup = false;
+  showPopup = false;
 
   openPopup() {
     this.showPopup = true;
@@ -140,7 +149,18 @@ showPopup = false;
     this.showPopup = false;
   }
 
+  imagePreview: string | ArrayBuffer | null = null;
 
+  private loadUser(): void {
+     this.commonService.setProfileImageData('')
+    const userName = this.authService.getUserName();
+    this.userService.getUser(userName).subscribe({
+      next: user => {
+        if (user.profileImageBase64) {
+          this.imagePreview = user.profileImageBase64;
+          this.commonService.setProfileImageData(user.profileImageBase64);
+        }
+      }
+    });
+  }
 }
-
-

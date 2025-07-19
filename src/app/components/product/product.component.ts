@@ -42,9 +42,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (this.productResponse) {
       this.patchForm(this.productResponse);
       this.pageHeader = 'Update Product';
+    } else {
+      this.pageHeader = 'New Product';
     }
+
     this.initFields();
-    this.loadCompanyCategoryProduct();
+    this.loadCompanyCategoryProduct(); 
     this.initActionButtons();
     this.bindQuantityChange();
   }
@@ -226,6 +229,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   private handleUpdate(params: any): void {
     const request = this.buildUpdateProductRequest(params.form.value);
+    request.totalQuantity = +this.formGroup.get('availableQuantity')?.value;
     this.productService.updateProduct(request.productId, request).subscribe({
       next: () => {
         this.commonService.showSuccess('Product updated.');

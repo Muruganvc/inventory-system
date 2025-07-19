@@ -1,0 +1,80 @@
+<div class="card shadow-sm p-4 bg-white">
+    <h4 class="text-primary mb-3">
+        <i class="bi bi-clock-history me-2"></i> Audit Logs
+    </h4>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle audit-log-table">
+            <thead class="table-light">
+                <tr>
+                    <th>Table</th>
+                    <th>Action</th>
+                    <th>Changed By</th>
+                    <th>Changed At</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let audit of auditLogs; let i = index">
+                    <!-- Main Row -->
+                    <tr>
+                        <td>{{ audit.tableName }}</td>
+                        <td><span class="badge bg-info text-dark">{{ audit.action }}</span></td>
+                        <td>{{ audit.changedBy }}</td>
+                        <td>{{ audit.changedAt | date: 'dd-MM-yyyy, hh:mm a' }}</td>
+                        <td>
+                            <button class="toggle-btn" (click)="toggleDetails(i)">
+                                <i class="bi" [ngClass]="expandedIndex === i ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                <span class="d-none d-sm-inline">
+                                    {{ expandedIndex === i ? 'Hide' : 'View' }}
+                                </span>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                    <!-- Expanded Detail Row -->
+                    <tr *ngIf="expandedIndex === i">
+                        <td colspan="5">
+                            <ng-container
+                                *ngIf="getChangedKeys(parseJson(audit.oldValues), parseJson(audit.newValues)).length > 0; else noChanges">
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Field</th>
+                                                <th>Old Value</th>
+                                                <th>New Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let key of getChangedKeys(parseJson(audit.oldValues), parseJson(audit.newValues))">
+                                                <td class="fw-semibold">{{ key }}</td>
+                                                <td *ngIf="audit.action !== 'Added'">{{ parseJson(audit.oldValues)[key]
+                                                    ?? '-' }}</td>
+                                                <td *ngIf="audit.action !== 'Deleted'">{{
+                                                    parseJson(audit.newValues)[key] ?? '-' }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ng-container>
+
+                            <ng-template #noChanges>
+                                <p class="text-muted fst-italic mb-0">No field-level changes were detected.</p>
+                            </ng-template>
+                        </td>
+                    </tr>
+
+                    <!-- Horizontal Divider -->
+                    <tr class="row-divider">
+                        <td colspan="5">
+                            <hr class="my-1" />
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>

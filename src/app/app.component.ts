@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     private readonly idleService = inject(IdleService); 
     ngOnInit(): void {
         this.idleService.onIdle().subscribe(() => {
-            alert('You have been idle for 2 minutes!');
+            // alert('You have been idle for 2 minutes!');
             this.authService.logout();
         });
     }

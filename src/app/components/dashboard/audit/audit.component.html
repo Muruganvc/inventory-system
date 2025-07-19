@@ -1,0 +1,45 @@
+<div class="audit-detail shadow-sm border rounded p-4 mb-4 bg-white">
+  <div class="mb-3">
+    <h4 class="text-primary mb-1">
+      <i class="bi bi-clock-history me-2"></i>
+      Audit Log - {{ auditLog.action }} <small class="text-muted">({{ auditLog.tableName }})</small>
+    </h4>
+    <p class="mb-0">
+      <strong>Changed By:</strong>
+      <span class="text-dark">{{ auditLog.changedBy }}</span>
+    </p>
+    <p>
+      <strong>Changed At:</strong>
+      <span class="text-dark">{{ auditLog.changedAt | date: 'dd-MM-yyyy' }}</span>
+    </p>
+  </div>
+
+  <div *ngIf="changedKeys.length > 0; else noChanges">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th class="text-nowrap">Field</th>
+            <th *ngIf="auditLog.action !== 'Added'" class="text-nowrap">Old Value</th>
+            <th *ngIf="auditLog.action !== 'Deleted'" class="text-nowrap">New Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let key of changedKeys">
+            <td class="fw-semibold">{{ key }}</td>
+            <td *ngIf="auditLog.action !== 'Added'">
+              {{ oldValues[key] ?? '-' }}
+            </td>
+            <td *ngIf="auditLog.action !== 'Deleted'">
+              {{ newValues[key] ?? '-' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <ng-template #noChanges>
+    <p class="text-muted fst-italic">No field-level changes were detected.</p>
+  </ng-template>
+</div>

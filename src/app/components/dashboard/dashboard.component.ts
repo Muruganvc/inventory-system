@@ -1,21 +1,22 @@
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { DaywiseComponent } from './daywise/daywise.component';
 import { WeekwiseComponent } from './weekwise/weekwise.component';
 import { MonthwiseComponent } from './monthwise/monthwise.component';
 import { YearwiseComponent } from './yearwise/yearwise.component';
-import { CompayWiseBalanceComponent } from './compay-wise-balance/compay-wise-balance.component';
+import { CompanyWiseIncomeComponent } from './company-wise-income/company-wise-income.component';
+import { ProductAvailableQauntityComponent } from './product-available-qauntity/product-available-qauntity.component';
 
-import { ProductSummary, CompanyGroup } from '../../models/ProductSummary';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { CompanyWiseIncomeComponent } from "./company-wise-income/company-wise-income.component";
 import { DashboardService } from '../../services/dashboard.service';
 import { TotalProductQueryResponse } from '../../models/CompanyWiseIncomeQueryResponse';
-import { ProductAvailableQauntityComponent } from "./product-available-qauntity/product-available-qauntity.component"; 
+import { CompanyGroup } from '../../models/ProductSummary';
+import { AuditLog } from '../../models/AuditLog';
+import { AuditComponent } from "./audit/audit.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -25,25 +26,27 @@ import { ProductAvailableQauntityComponent } from "./product-available-qauntity/
     FormsModule,
     ReactiveFormsModule,
     NgSelectModule,
+    MatButtonModule,
+    MatMenuModule,
     DaywiseComponent,
     WeekwiseComponent,
     MonthwiseComponent,
-    YearwiseComponent, 
-    MatMenuModule,
-    MatButtonModule,
+    YearwiseComponent,
     CompanyWiseIncomeComponent,
-    ProductAvailableQauntityComponent
+    ProductAvailableQauntityComponent,
+    AuditComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  currentCompanyIndex = 0;
-  private autoSlideInterval: any;
   private readonly dashBoardService = inject(DashboardService);
-  productSoldOut :TotalProductQueryResponse;
+  private autoSlideInterval: any;
 
-
+  currentCompanyIndex = 0;
+  productSoldOut: TotalProductQueryResponse;
+  auditLog: AuditLog[] = [];
+  companyData: CompanyGroup[] = [];
 
   companies = [
     {
@@ -71,7 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     {
       name: 'Company C',
       id: 3,
-      partyName: 'kalaiyarsan',
+      partyName: 'Kalaiyarsan',
       totalBalanceAmount: 90000,
       balanceAmount: 80000,
       transactions: [
@@ -80,17 +83,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       ]
     }
   ];
- 
-
-  companyData: CompanyGroup[] = [];
 
   ngOnInit(): void {
     this.startAutoSlider();
     this.getProductSoldOut();
+    this.getAuditLogs();
   }
 
   ngOnDestroy(): void {
-    clearInterval(this.autoSlideInterval);
+    this.stopAutoSlider();
   }
 
   nextCompany(): void {
@@ -127,13 +128,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.startAutoSlider();
   }
 
-  getProductSoldOut = (): void => {
+  getProductSoldOut(): void {
     this.dashBoardService.getProductSoldOut().subscribe({
-      next: result => {
-        this.productSoldOut = result;
-      }
+      next: result => (this.productSoldOut = result)
     });
   }
 
-
+  getAuditLogs(): void {
+    this.dashBoardService.getAuditLogs().subscribe({
+      next: result => (this.auditLog = result)
+    });
+  }
 }
