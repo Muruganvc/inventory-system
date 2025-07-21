@@ -3,6 +3,7 @@ import { CustomTableComponent } from "../../../../shared/components/custom-table
 import { Router } from '@angular/router';
 import { CompanyService } from '../../../../services/company.service';
 import { GetCompanyQueryResponse } from '../../../../models/GetCompanyQueryResponse';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-company-list',
@@ -17,6 +18,7 @@ export class CompanyListComponent implements OnInit {
 
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
+    private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
     this.companyService.getCompanies(true).subscribe({
@@ -24,6 +26,10 @@ export class CompanyListComponent implements OnInit {
         this.companies = result;
       }
     });
+  }
+
+  isUser = (): boolean => {
+    return !this.authService.hasRole(["Admin"]);
   }
 
 

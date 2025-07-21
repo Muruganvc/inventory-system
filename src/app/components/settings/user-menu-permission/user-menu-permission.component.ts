@@ -21,7 +21,7 @@ export class UserMenuPermissionComponent {
 
   private readonly userService = inject(UserService);
   private readonly commonService = inject(CommonService);
-  
+
   screenHeight: number = window.innerHeight;
   users: {
     id: number,
@@ -40,7 +40,7 @@ export class UserMenuPermissionComponent {
         this.flatMenu = [];
         this.originalMenu = menu;
         this.flattenMenu(menu);
-      } 
+      }
     });
 
     this.updateHeight();
@@ -96,7 +96,7 @@ export class UserMenuPermissionComponent {
       next: permissionResult => {
         this.flatMenu = [];
         this.flattenMenu(this.originalMenu, permissionResult);
-      } 
+      }
     });
   }
 
@@ -108,9 +108,8 @@ export class UserMenuPermissionComponent {
           }
         }
       });
-    }else{
+    } else {
       this.commonService.showWarning("Must be select user.");
     }
-   
   }
 }

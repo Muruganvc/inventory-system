@@ -22,7 +22,7 @@
       <span>Audit Table View</span>
     </button>
 
-    <button *ngIf="isAdmin()" mat-menu-item (click)="onNewUser()">
+    <button *ngIf="isSuperAdmin()" mat-menu-item (click)="onNewUser()">
       <i class="fas fa-user-plus pd-10-rt"></i>
       <span>Add New User</span>
     </button>
@@ -42,7 +42,7 @@
       <span>Change Password</span>
     </button>
 
-    <button mat-menu-item (click)="onInventoryCompanyIfoView()">
+    <button *ngIf="isSuperAdmin()" mat-menu-item (click)="onInventoryCompanyIfoView()">
       <i class="fas fa-box me-2 pd-10-rt"></i>
       <span>Inventory Company Info</span>
     </button>

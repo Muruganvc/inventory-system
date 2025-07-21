@@ -1,6 +1,6 @@
 
 
-<app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="'Add Product'" [columns]="columns"
-  [showActions]="true" [actions]="tableActions" (actionClick)="onAction($event)" (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
+<app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="!isUser() ? 'Add Product' : null" [columns]="columns"
+  [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)" (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
 </app-custom-table> 
 

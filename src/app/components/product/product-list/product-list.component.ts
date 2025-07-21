@@ -51,6 +51,10 @@ export class ProductListComponent implements OnInit {
     this.resetTableActions();
   }
 
+  isUser = (): boolean => {
+    return !this.authService.hasRole(["Admin"]);
+  }
+
   getProducts(): void {
     this.productService.getProducts('product').subscribe({
       next: (result) => {
@@ -71,14 +75,19 @@ export class ProductListComponent implements OnInit {
     const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
     const isAdmin = this.authService.hasRole(["Admin"]);
     if (isAdmin && !hasIsActiveColumn) {
-      this.columns.push({
-        key: 'isActive',
-        label: 'Active',
-        align: 'right',
-        type: 'checkbox',
-        isHidden: false
-      });
+      this.columns = [
+        ...this.columns,
+        {
+          key: 'isActive',
+          label: 'Active',
+          align: 'right',
+          type: 'checkbox',
+          isHidden: false
+        }
+      ];
     }
+
+
   }
 
   onAction(event: { row: ProductsResponse; action: string }) {

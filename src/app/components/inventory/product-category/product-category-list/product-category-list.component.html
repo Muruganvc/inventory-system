@@ -1,3 +1,4 @@
-<app-custom-table [data]="productCategories" [title]="'Product Category List'" [addBtnTitle]="'Add Product Category'" [columns]="columns"
-    [showActions]="true" [actions]="tableActions" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
+<app-custom-table [data]="productCategories" [title]="'Product Category List'"
+    [addBtnTitle]=" !isUser() ? 'Add Product Category' : null" [columns]="columns" [showActions]="!isUser()"
+    [actions]="tableActions" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
 </app-custom-table> `

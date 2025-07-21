@@ -120,15 +120,19 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     if (!decoded) return false;
 
-    const roleClaimKey = Object.keys(decoded).find(k => k.endsWith('/identity/claims/role'));
-
+    const roleClaimKey = Object.keys(decoded).find(key =>
+      key.endsWith('/identity/claims/role')
+    );
     if (!roleClaimKey) return false;
 
     const roles = decoded[roleClaimKey];
     const userRoles = Array.isArray(roles) ? roles : [roles];
 
+    if (userRoles.includes('SuperAdmin')) return true;
+
     return requiredRoles.some(role => userRoles.includes(role));
   }
+
   getClaim(decoded: any, shortName: string): any {
     const key = Object.keys(decoded).find(k => k.endsWith(`/identity/claims/${shortName}`));
     return key ? decoded[key] : null;

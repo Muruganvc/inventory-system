@@ -48,6 +48,10 @@ export class LayoutComponent implements OnInit {
     return this.authService.hasRole(["Admin"])
   }
 
+  isSuperAdmin = (): boolean => {
+    return this.authService.hasRole(["SuperAdmin"])
+  }
+
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog, private configService: ConfigService) {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
@@ -63,13 +67,18 @@ export class LayoutComponent implements OnInit {
     this.uiVersion = this.configService.uiVersion;
     this.databaseName = this.configService.dbName;
     this.loadUser();
-    this.getInvCompanyInfo();
+    this.loadCompanyInfo();
   }
+ 
 
-  getInvCompanyInfo(): void {
-    this.commonService.sharedInvCompanyInfoData$
-      .pipe(filter((info): info is GetInventoryCompanyInfo => !!info))
-      .subscribe(info => this.invCompanyInfo = info);
+  private loadCompanyInfo(): void {
+    this.userService.getInventoryCompanyInfo().subscribe({
+      next: info => {
+        if (info) {
+          this.invCompanyInfo = info
+        }
+      }
+    });
   }
 
   isMobile(): boolean {

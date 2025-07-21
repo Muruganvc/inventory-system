@@ -3,6 +3,7 @@ import { CustomTableComponent } from "../../../../shared/components/custom-table
 import { GetProductCategoryQueryResponse } from '../../../../models/GetProductCategoryQueryResponse';
 import { CompanyService } from '../../../../services/company.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-product-category-list',
@@ -15,6 +16,7 @@ export class ProductCategoryListComponent implements OnInit {
   productCategories: GetProductCategoryQueryResponse[] = [];
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   ngOnInit(): void {
     this.companyService.getProductCategories(true).subscribe({
       next: result => {
@@ -56,6 +58,11 @@ export class ProductCategoryListComponent implements OnInit {
     { key: 'createdAt', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'username', label: 'Created By', align: 'left', isHidden: false },
   ];
+
+   isUser = (): boolean => {
+    return !this.authService.hasRole(["Admin"]);
+  }
+
 
 
   onAction(event: { row: any; action: string }) {

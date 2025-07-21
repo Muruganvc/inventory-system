@@ -1,3 +1,4 @@
-<app-custom-table [data]="companies" [title]="'Company List'" [addBtnTitle]="'Add Company'" [columns]="columns"
-    [showActions]="true" [actions]="tableActions" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
+<app-custom-table [data]="companies" [title]="'Company List'" [addBtnTitle]="!isUser() ? 'Add Company' : null"
+    [columns]="columns" [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)"
+    (newOpen)="newOpen($event)">
 </app-custom-table> `

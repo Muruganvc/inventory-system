@@ -3,6 +3,7 @@ import { CustomTableComponent } from "../../../../shared/components/custom-table
 import { Router } from '@angular/router';
 import { GetCategoryQueryResponse } from '../../../../models/GetCategoryQueryResponse';
 import { CompanyService } from '../../../../services/company.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-category-list',
@@ -14,6 +15,7 @@ import { CompanyService } from '../../../../services/company.service';
 export class CategoryListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
+  private readonly authService = inject(AuthService);
   categories: GetCategoryQueryResponse[] = [];
   ngOnInit(): void {
     this.companyService.getCategories(true).subscribe({
@@ -28,6 +30,11 @@ export class CategoryListComponent implements OnInit {
     });
 
   }
+
+  isUser = (): boolean => {
+    return !this.authService.hasRole(["Admin"]);
+  }
+
 
   tableActions =
     [
