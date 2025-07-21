@@ -29,6 +29,7 @@ import { ProductCategoryComponent } from './components/inventory/product-categor
 import { ProductAvailableQauntityComponent } from './components/dashboard/product-available-qauntity/product-available-qauntity.component';
 import { BulkcreateCompanyCategoryProductComponent } from './components/inventory/bulkcreate-company-category-product/bulkcreate-company-category-product.component';
 import { AuditTableViewComponent } from './components/dashboard/audit-table-view/audit-table-view.component';
+import { InventoryCompanyInfoComponent } from './components/inventory-company-info/inventory-company-info.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -64,7 +65,8 @@ export const routes: Routes = [
                     { path: 'user', component: NewUserComponent },
                     { path: 'profile', component: ProfileComponent },
                     { path: 'user-menu-permission', component: UserMenuPermissionComponent },
-                    { path: 'audit-table-view', component: AuditTableViewComponent }
+                    { path: 'audit-table-view', component: AuditTableViewComponent },
+                    { path: 'inventory-company-info', component: InventoryCompanyInfoComponent }
                 ]
             },
             {

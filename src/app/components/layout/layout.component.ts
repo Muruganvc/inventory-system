@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../shared/services/config.service';
 import { UserService } from '../../services/user.service';
 import { CommonService } from '../../shared/services/common.service';
+import { GetInventoryCompanyInfo } from '../../models/GetInventoryCompanyInfo';
+import { filter } from 'rxjs';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -40,6 +42,8 @@ export class LayoutComponent implements OnInit {
 
   dashBoardView: string = 'Product Availability';
 
+  invCompanyInfo : GetInventoryCompanyInfo;
+
   isAdmin = (): boolean => {
     return this.authService.hasRole(["Admin"])
   }
@@ -59,6 +63,13 @@ export class LayoutComponent implements OnInit {
     this.uiVersion = this.configService.uiVersion;
     this.databaseName = this.configService.dbName;
     this.loadUser();
+    this.getInvCompanyInfo();
+  }
+
+  getInvCompanyInfo(): void {
+    this.commonService.sharedInvCompanyInfoData$
+      .pipe(filter((info): info is GetInventoryCompanyInfo => !!info))
+      .subscribe(info => this.invCompanyInfo = info);
   }
 
   isMobile(): boolean {
@@ -128,8 +139,11 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/setting/user-menu-permission']);
   }
 
-  onAuditTableView =():void =>{
+  onAuditTableView = (): void => {
     this.router.navigate(['/setting/audit-table-view']);
+  }
+  onInventoryCompanyIfoView = (): void => {
+    this.router.navigate(['/setting/inventory-company-info']);
   }
 
   onGridView(): void {

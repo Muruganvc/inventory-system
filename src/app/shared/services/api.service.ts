@@ -100,11 +100,12 @@ export class ApiService {
     url: string,
     body?: TRequest,
     params?: ApiParams,
-    headers?: ApiHeaders
+    headers?: ApiHeaders,
+    isFormData?: boolean
   ): Observable<Result<TResponse>> {
     return this.http
       .post<Result<TResponse>>(`${this.config.baseUrl}${url}`, body ?? {}, {
-        headers: this.createHeaders(headers),
+        headers: this.createHeaders(headers,isFormData),
         params: this.createParams(params),
       })
       .pipe(catchError(this.handleError));

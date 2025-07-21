@@ -19,20 +19,18 @@ export class AuthService {
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
 
-login(login: LoginRequest): Observable<LoginResponse> {
-  return this.api
-    .post<LoginRequest, LoginResponse>('user-login', login)
-    .pipe(
-      map(res => this.api.handleResult(res)), // safely unwrap or throw
-      tap(response => {
-        if (response.token) {
-          this.setToken(response.token);
-        }
-      })
-    );
-}
-
-
+  login(login: LoginRequest): Observable<LoginResponse> {
+    return this.api
+      .post<LoginRequest, LoginResponse>('user-login', login)
+      .pipe(
+        map(res => this.api.handleResult(res)),
+        tap(response => {
+          if (response.token) {
+            this.setToken(response.token);
+          }
+        })
+      );
+  }
 
   logout(redirectTo: string = '/login'): void {
     this.removeToken();

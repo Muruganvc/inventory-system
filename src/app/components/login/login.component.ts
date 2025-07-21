@@ -66,11 +66,11 @@ export class LoginComponent implements OnInit {
           this.commonService.showError("Invalid credentials");
           return;
         }
+        this.commonService.setInvCompanyInfoData(user.invCompanyInfo);
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
       }
     });
-
   }
   forgetPassword = (): void => {
     this.dialog.open(ForgetPasswordComponent, {

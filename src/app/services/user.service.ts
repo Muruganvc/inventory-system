@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from '../shared/services/api.service';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { MenuItem } from '../shared/common/MenuItem';
 import { Customer } from '../models/Customer';
 import { LoginUserResponse } from '../models/LoginUser';
@@ -9,6 +9,7 @@ import { ChangePasswordRequest } from '../models/ChangePasswordRequest';
 import { NewUserRequest } from '../models/NewUserRequest';
 import { UserListResponse } from '../models/UserListResponse';
 import { GetMenuItemPermissionQueryResponse } from '../models/GetMenuItemPermissionQueryResponse';
+import { GetInventoryCompanyInfo } from '../models/GetInventoryCompanyInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -92,6 +93,27 @@ export class UserService {
   forgetPassword = (userName: string, mobileNo: string): Observable<boolean> => {
     return this.api
       .put<null, boolean>(`forget-password?userName=${userName}&mobileNo=${mobileNo}`, null)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  createInventoryCompanyInfo = (companyInfo: FormData): Observable<number> => {
+    return this.api
+      .post<FormData, number>(`inventory-company-info`, companyInfo, undefined, undefined, true)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  getInventoryCompanyInfo = (): Observable<GetInventoryCompanyInfo | null> => {
+    return this.api.get<GetInventoryCompanyInfo>('inventory-company-info').pipe(
+      map(res => this.api.handleResult(res)),
+      catchError(error => {
+        return of(null);
+      })
+    );
+  };
+
+  updateInventoryCompanyInfo = (invCompanyInfoId: number, companyInfo: FormData): Observable<number> => {
+    return this.api
+      .post<FormData, number>(`inventory-company-info/${invCompanyInfoId}`, companyInfo, undefined, undefined, true)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

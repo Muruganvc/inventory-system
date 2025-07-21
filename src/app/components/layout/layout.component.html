@@ -42,6 +42,11 @@
       <span>Change Password</span>
     </button>
 
+    <button mat-menu-item (click)="onInventoryCompanyIfoView()">
+      <i class="fas fa-box me-2 pd-10-rt"></i>
+      <span>Inventory Company Info</span>
+    </button>
+
     <button mat-menu-item (click)="onLogout()">
       <i class="fas fa-sign-out-alt pd-10-rt"></i>
       <span>Logout</span>
@@ -70,10 +75,13 @@
   </div>
 
   <div class="footer-section footer-right">
-    <span><strong>API Version:</strong> {{ apiVersion }}</span>
-    <span><strong>UI Version:</strong> {{ uiVersion }}</span>
+    <ng-container *ngIf="invCompanyInfo as info">
+      <span><strong>API Version:</strong> {{ info.apiVersion }}</span>
+      <span><strong>UI Version:</strong> {{ info.uiVersion }}</span>
+    </ng-container>
     <span><strong>Database Name:</strong> {{ databaseName }}</span>
   </div>
+
 
   <div class="footer-section footer-right">
     <i class="fas fa-info-circle blink-info" title="More info here" (click)="openPopup()"></i>

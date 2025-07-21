@@ -7,10 +7,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
+import { filter, firstValueFrom } from 'rxjs';
 
 import { OrderService } from '../../../services/order.service';
 import { Invoice } from '../../../models/CustomerSalesOrder';
+import { UserService } from '../../../services/user.service';
+import { GetInventoryCompanyInfo } from '../../../models/GetInventoryCompanyInfo';
 
 @Component({
   selector: 'app-invoice',
@@ -24,14 +26,14 @@ export class InvoiceComponent implements OnInit {
 
   private readonly orderService = inject(OrderService);
   private readonly cdr = inject(ChangeDetectorRef);
-
+  private readonly userService = inject(UserService);
+  invCompanyInfo: GetInventoryCompanyInfo;
   // Customer Info
   customer = {
     name: '',
     address: '',
     phone: '',
   };
-
   // Invoice Info
   invoice: Invoice = {
     invoiceNo: '',
@@ -45,35 +47,18 @@ export class InvoiceComponent implements OnInit {
     balanceAmount: 0,
     isGst: false
   };
-
-  // Static Company Info
-  company = {
-    name: 'VENNILA ELECTRICAL',
-    tagline: 'Electrical and rewinding service',
-    address: 'Theerthamalai, Harur - 636906',
-    phone: '+91-9994277980',
-    email: 'info@gftools.com',
-    gstin: '24HDE7487RE5RT4',
-  };
-
-  // Static Bank Info
-  bank = {
-    name: 'State Bank of India',
-    branch: 'Harur',
-    accountNumber: '3615678789',
-    ifsc: 'SBIN0000997',
-  };
+ 
 
   givenAmount = 0;
+  qrCodePreview: string | ArrayBuffer | null = null;
 
   ngOnInit(): void {
-    // No-op
+    this.getInvCompanyInfo();
   }
 
   async getOrder(orderId: number): Promise<void> {
-
+    this.getInvCompanyInfo();
     const result = await firstValueFrom(this.orderService.getOrderSummaries(orderId));
-
     if (result?.length) {
       const [firstItem] = result;
 
@@ -92,7 +77,7 @@ export class InvoiceComponent implements OnInit {
           igstAmount: 10, // Hardcoded for now
           igstPercent: 18,
           taxableValue: 18,
-          serialNo : a.serialNo
+          serialNo: a.serialNo
         })),
         user: firstItem.user,
         disCountPercent: firstItem.discountPercent,
@@ -100,7 +85,7 @@ export class InvoiceComponent implements OnInit {
 
       this.invoice.totalAmount = this.getInvoiceTotal(this.invoice.items);
       this.invoice.amountInWords = this.numberToWords(Math.round(this.invoice.totalAmount)) + ' rupees only';
-      this.invoice.isGst = firstItem.isGst; 
+      this.invoice.isGst = firstItem.isGst;
 
       this.givenAmount = firstItem.finalAmount - firstItem.balanceAmount;
 
@@ -185,5 +170,12 @@ export class InvoiceComponent implements OnInit {
     if (hundredAndBelow) result += getThreeDigitWords(hundredAndBelow);
 
     return result.trim();
+  }
+
+  async getInvCompanyInfo(): Promise<void> {
+    const info = await firstValueFrom(this.userService.getInventoryCompanyInfo());
+    if (!info) return;
+    this.invCompanyInfo = info;
+    this.qrCodePreview = info.qrCodeBase64 ?? null;
   }
 }

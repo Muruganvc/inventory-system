@@ -68,3 +68,18 @@
   vertical-align: middle;
   text-align: center;
 }
+
+
+.preview-container {
+    border: 1px #aaa;
+    border-radius: 6px;
+    background-color: #fff;
+    text-align: center;
+}
+.preview-container img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover; /* Crop and center the image */
+  border-radius: 8px; /* Optional: rounded corners */
+  border: 1px solid #ccc;
+}

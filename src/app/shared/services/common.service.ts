@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { InvoiceComponent } from '../../components/order-summary/invoice/invoice.component';
 import { BehaviorSubject } from 'rxjs';
+import { GetInventoryCompanyInfo } from '../../models/GetInventoryCompanyInfo';
 @Injectable({
   providedIn: 'root'
 })
@@ -123,7 +124,6 @@ export class CommonService {
      `;
     doc.write(html);
     doc.close();
-
     setTimeout(() => {
       frame.contentWindow?.focus();
       frame.contentWindow?.print();
@@ -131,10 +131,18 @@ export class CommonService {
   }
 
 
-  private dataSubject = new BehaviorSubject<string>(''); // Or any default
+  private dataSubject = new BehaviorSubject<string>('');
   sharedProfileImageData$ = this.dataSubject.asObservable();
 
   setProfileImageData(data: string) {
     this.dataSubject.next(data);
   }
+
+
+  private readonly invCompanyDataSubject = new BehaviorSubject<GetInventoryCompanyInfo | null>(null);
+  readonly sharedInvCompanyInfoData$ = this.invCompanyDataSubject.asObservable();
+  setInvCompanyInfoData(data: GetInventoryCompanyInfo | undefined): void {
+    this.invCompanyDataSubject.next(data ?? null); // Assuming you use null as fallback
+  }
+
 }

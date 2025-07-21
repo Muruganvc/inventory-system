@@ -165,8 +165,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (field) field.options = options;
   }
 
-
-
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
     const availableControl = this.formGroup.get('availableQuantity');

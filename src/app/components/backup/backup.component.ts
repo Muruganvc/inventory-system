@@ -25,7 +25,7 @@ export class BackupComponent implements OnInit {
       class: string,
       condition: (row: any) => boolean;
     } }[] = [
-    { key: 'backupNo', label: 'Backup No', align: 'left', isHidden: false },
+    { key: 'backupNo', label: '#', align: 'left', isHidden: false },
     { key: 'creator', label: 'Created By', align: 'left', isHidden: false },
     { key: 'backUpDate', label: 'BackUp Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'fileName', label: 'File Name', align: 'left', isHidden: false },
