@@ -128,7 +128,17 @@ export class SalesConfirmDialogComponent implements OnInit {
   }
 
   private handleSave(params: any): void {
+
+    // if (params.form.invalid) return;
+
+    
+
     const formValue = params.form.value;
+
+    if (!formValue.customerName?.trim() || !formValue.mobileNo?.key?.trim()) {
+      return;
+    }
+
 
     // Check for customerId presence
     const hasCustomerId = formValue.customerName !== undefined;

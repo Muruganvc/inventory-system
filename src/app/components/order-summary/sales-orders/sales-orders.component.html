@@ -1,4 +1,33 @@
-<app-custom-table [data]="customerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns"
+<div class="filter-row">
+  <div class="left-column">
+    <mat-form-field appearance="outline" class="date-range-field custom-subscript-fix">
+      <mat-label>Filter date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date" [(ngModel)]="startDate" name="startDate" />
+        <input matEndDate placeholder="End date" [(ngModel)]="endDate" name="endDate" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+
+  </div>
+
+  <div class="right-column">
+    <button mat-flat-button class="btn-filter" (click)="filterByDateRange()">
+      <i class="fas fa-search"></i>&nbsp;Search
+    </button>
+  </div>
+
+   <div class="right-column">
+    <button mat-flat-button class="btn-reset" (click)="resetFilter()">
+      <i class="fas fa-undo"></i>&nbsp;Reset
+    </button>
+  </div>
+</div>
+
+
+
+<app-custom-table [data]="filteredCustomerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns"
   [actions]="tableActions" (actionClick)="onAction($event)" [showActions]="true"
   (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)" (newOpen)="newOpen($event)">
 </app-custom-table>

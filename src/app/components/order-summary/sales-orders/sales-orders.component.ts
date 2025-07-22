@@ -10,16 +10,32 @@ import { OrderService } from '../../../services/order.service';
 import { InvoiceComponent } from '../invoice/invoice.component';
 import { CustomerOrderList } from '../../../models/CustomerOrderList';
 import { CommonService } from '../../../shared/services/common.service';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { CUSTOM_DATE_FORMATS } from '../../../shared/services/CUSTOM_DATE_FORMATS';
+import { DateAdapter } from '@angular/material/core';
+import { CustomDateAdapter } from '../../../shared/services/CustomDateAdapter';
 @Component({
   selector: 'app-sales-orders',
   standalone: true,
-  imports: [CustomTableComponent, InvoiceComponent],
+  imports: [CustomTableComponent, CommonModule, FormsModule, MatButtonModule, InvoiceComponent, MatNativeDateModule, MatFormFieldModule, MatDatepickerModule],
   templateUrl: './sales-orders.component.html',
-  styleUrl: './sales-orders.component.scss'
+  styleUrl: './sales-orders.component.scss',
+  providers: [
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' }
+  ]
 })
 export class SalesOrdersComponent implements OnInit {
   customerOrderList: CustomerOrderList[] = [];
+  filteredCustomerOrderList: CustomerOrderList[] = [];
   isPrint: boolean;
 
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
@@ -28,11 +44,17 @@ export class SalesOrdersComponent implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
 
+  private readonly dateAdapter = inject(DateAdapter<Date>);
+
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+
   ngOnInit(): void {
+    this.dateAdapter.setLocale('en-US');
     this.getOrderSummary();
   }
 
-columns: {
+  columns: {
     key: string;
     label: string;
     align: 'left' | 'center' | 'right';
@@ -74,6 +96,7 @@ columns: {
     this.orderService.getCustomerOrders().subscribe({
       next: result => {
         this.customerOrderList = result;
+        this.filteredCustomerOrderList = [...result]; // default view
       }
     });
   }
@@ -91,12 +114,34 @@ columns: {
     const frame: HTMLIFrameElement = this.printFrame.nativeElement;
     const doc = frame.contentWindow?.document!;
 
-    await this.commonService.onPrint(order.orderId,this.invoiceComponent,this.printFrame);
+    await this.commonService.onPrint(order.orderId, this.invoiceComponent, this.printFrame);
 
-   }
+  }
 
   // Placeholder methods (can be removed if unused)
-  newOpen(_item: any): void {}
-  handleFieldChange(_change: any): void {}
-  onDelete(_order: CustomerOrderList): void {}
+  newOpen(_item: any): void { }
+  handleFieldChange(_change: any): void { }
+  onDelete(_order: CustomerOrderList): void { }
+
+  filterByDateRange(): void {
+    if (!this.startDate || !this.endDate) return;
+
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+
+    // Normalize end date to end of the day to include all orders on that day
+    end.setHours(23, 59, 59, 999);
+
+    this.filteredCustomerOrderList = this.customerOrderList.filter(order => {
+      const orderDate = new Date(order.orderDate);
+      return orderDate >= start && orderDate <= end;
+    });
+  }
+
+  resetFilter(): void {
+    this.startDate = null;
+    this.endDate = null;
+    this.filteredCustomerOrderList = [...this.customerOrderList]; // restore full list
+  }
+
 }
