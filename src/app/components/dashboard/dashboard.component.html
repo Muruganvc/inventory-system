@@ -35,12 +35,19 @@
         </div>
       </div>
     </div>
- 
-
   </div>
 
+  <div *ngIf="isAdmin()" class="chart-wrapper-default-hg large-chart-card-default-hg evaluation-summary">
+    <div class="large-chart-card">
+      <h3>Gained Details</h3>
+      <app-income-outcome-summary-report></app-income-outcome-summary-report>
+    </div>
+  </div>
+
+
+
   <!-- 🔷 Product Availability -->
-  <div class="chart-wrapper">
+  <div class="chart-wrapper-default-hg large-chart-card-default-hg evaluation-summary">
     <div class="large-chart-card">
       <h3>Available Quantity</h3>
       <app-product-available-qauntity></app-product-available-qauntity>

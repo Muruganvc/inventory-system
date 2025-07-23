@@ -201,7 +201,7 @@
 .dashboard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px; 
+  gap: 24px;
 
 }
 
@@ -261,7 +261,7 @@
   color: #007bff;
   font-size: 14px;
 }
- 
+
 @media (max-width: 480px) {
   .company-header {
     font-size: 16px;
@@ -281,4 +281,47 @@
     text-align: left;
   }
 }
-  
+
+.chart-wrapper-default-hg {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.large-chart-card-default-hg {
+  min-height: 100%;
+}
+
+.evaluation-summary {
+  margin-bottom: 0.5rem;
+  background-color: #f9f9f9;
+  // padding: 0.1rem 0.5rem;
+  // border-left: 5px solid #1976d2;
+  font-size: 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+
+  p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      color: #1976d2;
+    }
+
+    strong {
+      font-weight: 600;
+      color: #333;
+    }
+  }
+}

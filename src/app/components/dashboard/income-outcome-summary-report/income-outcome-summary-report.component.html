@@ -1,0 +1,71 @@
+<div class="summary-wrapper">
+  <div class="summary-box total-gained">
+    <strong>Total Gained:</strong> ₹{{ totalGainedAmount | number: '1.0-0' }}
+  </div>
+  <div class="summary-box total-quantity">
+    <strong>Total Quantity:</strong> {{ totalQuantity | number: '1.0-0' }}
+  </div>
+</div>
+
+<div class="filter-row">
+  <div class="left-column">
+    <mat-form-field appearance="outline" class="date-range-field custom-subscript-fix">
+      <mat-label>Filter date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date" [(ngModel)]="startDate" name="startDate" />
+        <input matEndDate placeholder="End date" [(ngModel)]="endDate" name="endDate" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
+  <div class="right-column">
+    <button mat-flat-button class="btn-filter" (click)="filterByDateRange()">
+      <i class="fas fa-search"></i>&nbsp;Search
+    </button>
+  </div>
+
+  <div class="right-column">
+    <button mat-flat-button class="btn-reset" (click)="resetFilter()">
+      <i class="fas fa-undo"></i>&nbsp;Reset
+    </button>
+  </div>
+
+    <div class="right-column">
+      <button mat-flat-button class="btn-export-excel" (click)="exportToExcel()">
+        <i class="fas fa-file-excel"></i> Export Excel
+      </button>
+    </div>
+
+</div>
+
+<div class="product-card-wrapper">
+  <mat-card *ngFor="let product of products; let i = index" class="product-card"
+    [ngStyle]="{ '--company-color': getDynamicColor(product.productName || i) }">
+
+    <div class="card-content">
+      <!-- Company Strip -->
+      <div class="company-strip">
+        <div><strong>Total Gained:</strong> <strong>₹{{
+            product.totalGainedAmount }}</strong> </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-details">
+        <h4 class="product-name" [ngStyle]="{ color: getDynamicColor(product.productName || i) }">
+          {{ product.productName }}
+        </h4>
+        <div class="product-info">
+          <div><strong>Sales Price:</strong> ₹{{ product.salesPrice }}</div>
+          <div><strong>Landing Price:</strong> ₹{{ product.landingPrice }}</div>
+          <div><strong>MRP:</strong> ₹{{ product.mrp }}</div>
+          <div><strong>Avg Unit Price:</strong> ₹{{ product.avgUnitPrice | number:'1.2-2' }}</div>
+          <div><strong>Total Quantity:</strong> {{ product.totalQuantity }}</div>
+        </div>
+      </div>
+
+    </div>
+
+  </mat-card>
+</div>

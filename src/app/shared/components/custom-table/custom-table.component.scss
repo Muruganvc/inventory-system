@@ -1,5 +1,5 @@
 .table-container {
-  padding: 1rem;
+  padding: 10px;
 }
 
 .full-width-table {
@@ -19,7 +19,7 @@
   gap: 1rem;
 
   mat-card {
-    padding: 1rem;
+     padding: 10px;
   }
 
   .action-buttons {
@@ -46,24 +46,13 @@
   overflow-x: auto;
   width: 100%;
 }
-
-.full-width-table {
-  min-width: 800px; // Adjust as needed based on column count
-  width: 100%;
-  table-layout: auto;
-}
-
+ 
 
 .table-scroll {
   overflow-x: auto;
   width: 100%;
 }
 
-.full-width-table {
-  min-width: 800px;
-  width: 100%;
-  table-layout: auto;
-}
 
 .search-box {
   width: 100%;

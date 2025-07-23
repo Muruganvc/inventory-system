@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { GetCategoryQueryResponse } from '../../../../models/GetCategoryQueryResponse';
 import { CompanyService } from '../../../../services/company.service';
 import { AuthService } from '../../../../services/auth.service';
+import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent, MatButtonModule],
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss'
 })
@@ -16,6 +18,7 @@ export class CategoryListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
   private readonly authService = inject(AuthService);
+  private readonly commonService = inject(CommonService);
   categories: GetCategoryQueryResponse[] = [];
   ngOnInit(): void {
     this.companyService.getCategories(true).subscribe({
@@ -45,13 +48,6 @@ export class CategoryListComponent implements OnInit {
         action: 'edit',
         condition: (row: any) => !row.isEditing
       },
-      // {
-      //   iconClass: 'fas fa-trash-alt',
-      //   color: 'red',
-      //   tooltip: 'Delete',
-      //   action: 'delete',
-      //   condition: (row: any) => !row.isEditing
-      // }
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
@@ -65,10 +61,7 @@ export class CategoryListComponent implements OnInit {
   onAction(event: { row: any; action: string }) {
     const { row, action } = event;
     switch (action) {
-      case 'edit': this.onEdit(row); break;
-      // case 'delete': this.deleteRow(row); break;
-      // case 'save': this.saveRow(row); break;
-      // case 'cancel': this.cancelEdit(row); break;
+      case 'edit': this.onEdit(row); break
     }
   }
   onEdit(company: GetCategoryQueryResponse) {
@@ -80,4 +73,31 @@ export class CategoryListComponent implements OnInit {
   newOpen(a: any) {
     this.router.navigate(['/inventory/category']);
   }
+
+  exportToExcel = (): void => {
+    const columns: ExcelColumn<GetCategoryQueryResponse>[] = [
+      { header: 'Company Category Name', key: 'companyCategoryName', width: 25 },
+      { header: 'Company ID', key: 'companyId', width: 12 },
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Category ID', key: 'categoryId', width: 12 },
+      { header: 'Category Name', key: 'categoryName', width: 25 },
+      {
+        header: 'Active Status',
+        key: 'isActive',
+        width: 15,
+        formatter: value => value ? 'Active' : 'Inactive'
+      },
+      {
+        header: 'Created At',
+        key: 'createdAt',
+        width: 20,
+        formatter: value => new Date(value).toLocaleDateString()
+      },
+      { header: 'Created By', key: 'createdBy', width: 20 }
+
+    ];
+    this.categories = this.commonService.sortByKey(this.categories, 'companyCategoryName', 'asc');
+    this.commonService.exportToExcel<GetCategoryQueryResponse>(this.categories, columns, 'Category', 'Category List');
+  }
+
 }

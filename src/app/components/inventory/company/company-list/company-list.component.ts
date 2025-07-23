@@ -4,11 +4,13 @@ import { CustomTableComponent } from '../../../../shared/components/custom-table
 import { CompanyService } from '../../../../services/company.service';
 import { AuthService } from '../../../../services/auth.service';
 import { GetCompanyQueryResponse } from '../../../../models/GetCompanyQueryResponse';
+import { MatButtonModule } from '@angular/material/button'; 
+import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
 
 @Component({
   selector: 'app-company-list',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent, MatButtonModule],
   templateUrl: './company-list.component.html',
   styleUrl: './company-list.component.scss',
 })
@@ -19,9 +21,10 @@ export class CompanyListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
   private readonly authService = inject(AuthService);
+  private readonly commonService = inject(CommonService);
 
   // Table column configuration
- columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
+  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
@@ -66,5 +69,17 @@ export class CompanyListComponent implements OnInit {
 
   newOpen(_: any): void {
     this.router.navigate(['/inventory/company']);
+  }
+
+  exportToExcel = (): void => {
+    const columns: ExcelColumn<GetCompanyQueryResponse>[] = [
+      { header: 'Company ID', key: 'companyId', width: 10 },
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Active Status', key: 'isActive', width: 15, formatter: value => value ? 'Active' : 'Inactive' },
+      { header: 'Created Date', key: 'createDate', width: 20, formatter: value => new Date(value).toLocaleDateString() },
+      { header: 'Created By', key: 'createdBy', width: 20 }
+    ];
+    this.companies = this.commonService.sortByKey(this.companies, 'companyName', 'asc');
+    this.commonService.exportToExcel<GetCompanyQueryResponse>(this.companies, columns, 'Companies', 'CompanyList');
   }
 }

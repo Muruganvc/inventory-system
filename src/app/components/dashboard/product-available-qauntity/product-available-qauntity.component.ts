@@ -10,24 +10,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdvancedFilterDialogComponent } from './advanced-filter-dialog/advanced-filter-dialog.component';
-
+import * as FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 @Component({
   selector: 'app-product-available-qauntity',
   standalone: true,
-    imports: [
-      CommonModule,
-      FormsModule,
-      MatCardModule,
-      MatMenuModule,
-      MatInputModule,
-      MatFormFieldModule,
-      MatProgressBarModule
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatMenuModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatProgressBarModule
+  ],
   templateUrl: './product-available-qauntity.component.html',
   styleUrl: './product-available-qauntity.component.scss'
 })
 export class ProductAvailableQauntityComponent {
-searchText: string = '';
+  searchText: string = '';
   productList: ProductQuantities[] = [];
   allProducts: ProductQuantities[] = [];
 
@@ -127,4 +128,73 @@ searchText: string = '';
     });
   }
 
+  exportToProductQuantitiesExcel(): void {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Product Quantities');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Category Name', key: 'categoryName', width: 25 },
+      { header: 'Product Category', key: 'productCategoryName', width: 25 },
+      { header: 'Available Quantity', key: 'quantity', width: 18 } 
+    ];
+
+    // Add data rows
+    this.productList.forEach(item => worksheet.addRow(item));
+
+    // Add total row
+    // const totalQuantity = this.productList.reduce(
+    //   (sum, item) => sum + (item.quantity || 0),
+    //   0
+    // );
+
+    worksheet.addRow([]);
+    // const totalRow = worksheet.addRow({
+    //   productCategoryName: 'Total',
+    //   quantity: totalQuantity
+    // });
+
+    // 🔶 Style Header
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell(cell => {
+      cell.font = { bold: true, color: { argb: 'FFFFFF00' } }; // Yellow
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFF0000' } // Red
+      };
+    });
+
+    // 🔶 Add Borders to All Rows
+    const applyBorders = (row: ExcelJS.Row) => {
+      row.eachCell(cell => {
+        cell.border = {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+    };
+
+    // Apply borders to all rows
+    for (let i = 1; i <= worksheet.rowCount; i++) {
+      applyBorders(worksheet.getRow(i));
+    }
+
+    // Bold total row
+    // totalRow.eachCell(cell => {
+    //   cell.font = { bold: true };
+    // });
+
+    // Save file
+    workbook.xlsx.writeBuffer().then(buffer => {
+      const blob = new Blob([buffer], {
+        type:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      FileSaver.saveAs(blob, 'ProductQuantities.xlsx');
+    });
+  }
 }

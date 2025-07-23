@@ -155,6 +155,10 @@ export class LayoutComponent implements OnInit {
     this.router.navigate(['/setting/inventory-company-info']);
   }
 
+  onSalesSummaryRepot = (): void => {
+    this.router.navigate(['/sales-summary-report']);
+  }
+
   onGridView(): void {
     const isGridView = this.router.url === '/product-availability';
 

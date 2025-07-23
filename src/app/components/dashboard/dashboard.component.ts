@@ -9,14 +9,14 @@ import { DaywiseComponent } from './daywise/daywise.component';
 import { WeekwiseComponent } from './weekwise/weekwise.component';
 import { MonthwiseComponent } from './monthwise/monthwise.component';
 import { YearwiseComponent } from './yearwise/yearwise.component';
-import { CompanyWiseIncomeComponent } from './company-wise-income/company-wise-income.component';
 import { ProductAvailableQauntityComponent } from './product-available-qauntity/product-available-qauntity.component';
 
 import { DashboardService } from '../../services/dashboard.service';
 import { TotalProductQueryResponse } from '../../models/CompanyWiseIncomeQueryResponse';
 import { CompanyGroup } from '../../models/ProductSummary';
 import { AuditLog } from '../../models/AuditLog';
-import { AuditComponent } from "./audit/audit.component";
+import { IncomeOutcomeSummaryReportComponent } from "./income-outcome-summary-report/income-outcome-summary-report.component";
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,15 +32,15 @@ import { AuditComponent } from "./audit/audit.component";
     WeekwiseComponent,
     MonthwiseComponent,
     YearwiseComponent,
-    CompanyWiseIncomeComponent,
     ProductAvailableQauntityComponent,
-    AuditComponent
+    IncomeOutcomeSummaryReportComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly dashBoardService = inject(DashboardService);
+  private readonly authService = inject(AuthService);
   private autoSlideInterval: any;
 
   currentCompanyIndex = 0;
@@ -48,7 +48,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   auditLog: AuditLog[] = [];
   companyData: CompanyGroup[] = [];
  
-
+  isAdmin = (): boolean => {
+    return this.authService.hasRole(["Admin"])
+  }
   companies = [
     {
       name: 'Company A',

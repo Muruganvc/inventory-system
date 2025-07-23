@@ -46,6 +46,7 @@ import { InvoiceComponent } from './components/order-summary/invoice/invoice.com
 
 // Misc
 import { BackupComponent } from './components/backup/backup.component';
+import { IncomeOutcomeSummaryReportComponent } from './components/dashboard/income-outcome-summary-report/income-outcome-summary-report.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -58,7 +59,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'product-availability', component: ProductAvailableQauntityComponent },
-
+      { path: 'sales-summary-report', component: IncomeOutcomeSummaryReportComponent },
       { path: 'product-list', component: ProductListComponent },
       { path: 'product', component: ProductComponent },
 

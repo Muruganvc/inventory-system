@@ -17,6 +17,12 @@
       <span>{{ dashBoardView }}</span>
     </button>
 
+    <button *ngIf="isAdmin()" mat-menu-item (click)="onSalesSummaryRepot()">
+      <i class="fas fa-file-invoice-dollar pd-10-rt"></i>
+      <span>Sales Summary Report</span>
+    </button>
+
+
     <button mat-menu-item (click)="onAuditTableView()">
       <i class="fas fa-clipboard-list me-2 pd-10-rt"></i>
       <span>Audit Table View</span>

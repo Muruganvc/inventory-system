@@ -4,16 +4,17 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { ProductService } from '../../../services/product.service';
 import { AuthService } from '../../../services/auth.service';
-import { CommonService } from '../../../shared/services/common.service';
+import { CommonService, ExcelColumn } from '../../../shared/services/common.service';
 
 import { ProductsResponse } from '../../../models/ProductsResponse';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent,MatButtonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
@@ -199,7 +200,7 @@ export class ProductListComponent implements OnInit {
   }
 
   onDelete(product: ProductsResponse): void {
-    alert('Not yet Implemented.'); 
+    alert('Not yet Implemented.');
   }
 
   openConfirm(key: string): void {
@@ -222,5 +223,30 @@ export class ProductListComponent implements OnInit {
 
   newOpen(_: any): void {
     this.router.navigate(['/product']);
+  }
+
+  exportToExcel = (): void => {
+    const columns: ExcelColumn<ProductsResponse>[] = [
+      { header: 'Product Full Name', key: 'productFullName', width: 30 },
+      { header: 'Product ID', key: 'productId', width: 12 },
+      { header: 'Product Name', key: 'productName', width: 25 },
+      { header: 'Product Category ID', key: 'productCategoryId', width: 20 },
+      { header: 'Product Category Name', key: 'productCategoryName', width: 25 },
+      { header: 'Category ID', key: 'categoryId', width: 15 },
+      { header: 'Category Name', key: 'categoryName', width: 25 },
+      { header: 'Company ID', key: 'companyId', width: 15 },
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Description', key: 'description', width: 30 },
+      { header: 'MRP', key: 'mrp', width: 12 },
+      { header: 'Sales Price', key: 'salesPrice', width: 15 },
+      { header: 'Landing Price', key: 'landingPrice', width: 15 },
+      { header: 'Quantity', key: 'quantity', width: 10 },
+      { header: 'Is Active', key: 'isActive', width: 10 },
+      { header: 'User Name', key: 'userName', width: 20 },
+      { header: 'Company Category Product Name', key: 'companyCategoryProductName', width: 30 },
+      { header: 'Company Category Product Name ID', key: 'companyCategoryProductNameId', width: 30 }
+    ];
+    this.products = this.commonService.sortByKey(this.products, 'productFullName', 'asc');
+    this.commonService.exportToExcel<ProductsResponse>(this.products, columns, 'Products', 'Products');
   }
 }

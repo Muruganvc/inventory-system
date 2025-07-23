@@ -4,11 +4,13 @@ import { GetProductCategoryQueryResponse } from '../../../../models/GetProductCa
 import { CompanyService } from '../../../../services/company.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
 
 @Component({
   selector: 'app-product-category-list',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [CustomTableComponent, MatButtonModule],
   templateUrl: './product-category-list.component.html',
   styleUrl: './product-category-list.component.scss'
 })
@@ -17,11 +19,12 @@ export class ProductCategoryListComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly commonService = inject(CommonService);
   ngOnInit(): void {
     this.companyService.getProductCategories(true).subscribe({
       next: result => {
         if (!!result) {
-             this.productCategories = result.map(a => ({
+          this.productCategories = result.map(a => ({
             ...a,
             productFullName: `${a.companyName} ${a.categoryName} ${a.productCategoryName}`
           }));
@@ -38,14 +41,7 @@ export class ProductCategoryListComponent implements OnInit {
         tooltip: 'Edit',
         action: 'edit',
         condition: (row: any) => !row.isEditing
-      },
-      // {
-      //   iconClass: 'fas fa-trash-alt',
-      //   color: 'red',
-      //   tooltip: 'Delete',
-      //   action: 'delete',
-      //   condition: (row: any) => !row.isEditing
-      // }
+      }
     ];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string }[] = [
@@ -59,7 +55,7 @@ export class ProductCategoryListComponent implements OnInit {
     { key: 'username', label: 'Created By', align: 'left', isHidden: false },
   ];
 
-   isUser = (): boolean => {
+  isUser = (): boolean => {
     return !this.authService.hasRole(["Admin"]);
   }
 
@@ -68,10 +64,7 @@ export class ProductCategoryListComponent implements OnInit {
   onAction(event: { row: any; action: string }) {
     const { row, action } = event;
     switch (action) {
-      case 'edit': this.onEdit(row); break;
-      // case 'delete': this.deleteRow(row); break;
-      // case 'save': this.saveRow(row); break;
-      // case 'cancel': this.cancelEdit(row); break;
+      case 'edit': this.onEdit(row); break; 
     }
   }
 
@@ -83,6 +76,35 @@ export class ProductCategoryListComponent implements OnInit {
 
   newOpen(a: any) {
     this.router.navigate(['/inventory/product-category']);
+  }
+
+  exportToExcel = (): void => {
+    const columns: ExcelColumn<GetProductCategoryQueryResponse>[] = [
+      { header: 'Product Full Name', key: 'productFullName', width: 30 },
+      { header: 'Company ID', key: 'companyId', width: 12 },
+      { header: 'Company Name', key: 'companyName', width: 25 },
+      { header: 'Category ID', key: 'categoryId', width: 12 },
+      { header: 'Category Name', key: 'categoryName', width: 25 },
+      { header: 'Product Category ID', key: 'productCategoryId', width: 18 },
+      { header: 'Product Category Name', key: 'productCategoryName', width: 30 },
+      {
+        header: 'Active Status',
+        key: 'isActive',
+        width: 15,
+        formatter: value => value ? 'Active' : 'Inactive'
+      },
+      {
+        header: 'Created At',
+        key: 'createdAt',
+        width: 20,
+        formatter: value => new Date(value).toLocaleDateString()
+      },
+      { header: 'Created By', key: 'username', width: 20 }
+    ];
+  
+    this.productCategories = this.commonService.sortByKey(this.productCategories, 'productFullName', 'asc');
+
+    this.commonService.exportToExcel<GetProductCategoryQueryResponse>(this.productCategories, columns, 'Company Category Product', 'Company Category Product');
   }
 
 }

@@ -4,6 +4,7 @@ import { ApiService } from '../shared/services/api.service';
 import { CompanyWiseIncomeQueryResponse, TotalProductQueryResponse } from '../models/CompanyWiseIncomeQueryResponse';
 import { ProductQuantities } from '../models/ProductQuantities';
 import { AuditLog } from '../models/AuditLog';
+import { IncomeOrOutcomeSummaryReportQueryResponse } from '../models/IncomeOrOutcomeSummaryReportQueryResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -37,4 +38,23 @@ export class DashboardService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
+  getIncomeOutcomeSummaryReport(
+    fromDate?: Date,
+    endDate?: Date
+  ): Observable<IncomeOrOutcomeSummaryReportQueryResponse[]> {
+    const params: Record<string, string> = {};
+
+    if (fromDate) {
+      params['fromDate'] = fromDate.toISOString();
+    }
+    if (endDate) {
+      params['endDate'] = endDate.toISOString();
+    }
+
+    const query = new URLSearchParams(params).toString();
+    const url = `income-outcome-summary-report${query ? `?${query}` : ''}`;
+
+    return this.api.get<IncomeOrOutcomeSummaryReportQueryResponse[]>(url)
+      .pipe(map(res => this.api.handleResult(res)));
+  }
 }

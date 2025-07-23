@@ -7,7 +7,6 @@
         &nbsp; {{ addBtnTitle() }}
       </button>
     </ng-container>
-
   </div>
 
   <mat-form-field appearance="outline" class="search-box">
@@ -63,22 +62,23 @@
         </td>
 
       </ng-container>
-<ng-container matColumnDef="actions">
-  <th mat-header-cell *matHeaderCellDef style="text-align: center;">Actions</th>
-  <td mat-cell *matCellDef="let row" style="text-align: center;">
-    <ng-container *ngFor="let btn of actions">
-      <ng-container *ngIf="btn.condition?.(row)">
-        <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })" [matTooltip]="btn.tooltip">
-          <i class="{{ btn.iconClass }}" [ngStyle]="{
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center;">Actions</th>
+        <td mat-cell *matCellDef="let row" style="text-align: center;">
+          <ng-container *ngFor="let btn of actions">
+            <ng-container *ngIf="btn.condition?.(row)">
+              <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })"
+                [matTooltip]="btn.tooltip">
+                <i class="{{ btn.iconClass }}" [ngStyle]="{
               'font-size.px': 15,
               color: btn.color,
               cursor: 'pointer'
             }"></i>
-        </button>
+              </button>
+            </ng-container>
+          </ng-container>
+        </td>
       </ng-container>
-    </ng-container>
-  </td>
-</ng-container>
 
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -125,7 +125,6 @@
       showFirstLastButtons (page)="onPageChange($event)">
     </mat-paginator>
   </ng-template>
-
 
   <mat-paginator *ngIf="!isMobile && dataSource.data?.length" [length]="dataSource.filteredData.length"
     [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">

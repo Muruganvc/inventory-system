@@ -1,4 +1,3 @@
- 
 <div class="filter-bar">
   <mat-form-field appearance="outline" class="filter-field">
     <mat-label>Search</mat-label>
@@ -21,9 +20,9 @@
     </button>
 
     <button mat-menu-item (click)="sortByCompanyDesc()">
-  <i class="fas fa-sort-alpha-up-alt"></i>
-  <span>&nbsp;Company: Z to A</span>
-</button>
+      <i class="fas fa-sort-alpha-up-alt"></i>
+      <span>&nbsp;Company: Z to A</span>
+    </button>
 
     <button mat-menu-item (click)="sortByQuantityAsc()">
       <i class="fas fa-sort-amount-up-alt"></i>
@@ -33,6 +32,11 @@
     <button mat-menu-item (click)="sortByQuantityDesc()">
       <i class="fas fa-sort-amount-down-alt"></i>
       <span>&nbsp;Quantity: High to Low</span>
+    </button>
+
+    <button mat-menu-item (click)="exportToProductQuantitiesExcel()">
+      <i class="fas fa-file-excel"></i>
+      <span>&nbsp;Export Excel</span>
     </button>
 
     <button mat-menu-item (click)="resetFilter()">
