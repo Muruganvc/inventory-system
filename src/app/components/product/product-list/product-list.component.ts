@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CustomTableComponent,MatButtonModule],
+  imports: [CustomTableComponent, MatButtonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
@@ -74,8 +74,8 @@ export class ProductListComponent implements OnInit {
 
   appendIsActiveColumnIfAdmin(): void {
     const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
-    const isAdmin = this.authService.hasRole(["Admin"]);
-    if (isAdmin && !hasIsActiveColumn) {
+    const IsProductActive = this.authService.hasRole(["ProductActive"]);
+    if (IsProductActive && !hasIsActiveColumn) {
       this.columns = [
         ...this.columns,
         {
@@ -87,8 +87,6 @@ export class ProductListComponent implements OnInit {
         }
       ];
     }
-
-
   }
 
   onAction(event: { row: ProductsResponse; action: string }) {

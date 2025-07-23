@@ -158,6 +158,9 @@ export class LayoutComponent implements OnInit {
   onSalesSummaryRepot = (): void => {
     this.router.navigate(['/sales-summary-report']);
   }
+  onUserRolePermission = (): void => {
+    this.router.navigate(['/setting/user-role-permission']);
+  }
 
   onGridView(): void {
     const isGridView = this.router.url === '/product-availability';

@@ -47,6 +47,7 @@ import { InvoiceComponent } from './components/order-summary/invoice/invoice.com
 // Misc
 import { BackupComponent } from './components/backup/backup.component';
 import { IncomeOutcomeSummaryReportComponent } from './components/dashboard/income-outcome-summary-report/income-outcome-summary-report.component';
+import { UserRoleMenuPermissionComponent } from './components/settings/user-role-menu-permission/user-role-menu-permission.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -90,7 +91,8 @@ export const routes: Routes = [
           { path: 'profile', component: ProfileComponent },
           { path: 'user-menu-permission', component: UserMenuPermissionComponent },
           { path: 'audit-table-view', component: AuditTableViewComponent },
-          { path: 'inventory-company-info', component: InventoryCompanyInfoComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } }
+          { path: 'inventory-company-info', component: InventoryCompanyInfoComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } },
+          { path: 'user-role-permission', component: UserRoleMenuPermissionComponent }
         ]
       },
 

@@ -76,7 +76,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
 
   private initFields(): void {
-    const isAdmin = !this.authService.hasRole(["Admin"])
+    const IsProductActive = !this.authService.hasRole(["ProductActive"]);
     this.fields = [
       { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [] },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
@@ -84,7 +84,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: isAdmin }
+      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
   createNewProduct(term: string) {

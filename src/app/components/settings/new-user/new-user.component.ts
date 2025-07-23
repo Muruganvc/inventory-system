@@ -63,8 +63,8 @@ export class NewUserComponent implements OnInit {
         colSpan: 6,
         isReadOnly: isAdmin,
         options: [
-          { label: 'Admin', value: 1 },
-          { label: 'User', value: 2 },
+          { label: 'Admin', value: 2 },
+          { label: 'User', value: 3 },
         ],
       },
     ];

@@ -10,6 +10,8 @@ import { NewUserRequest } from '../models/NewUserRequest';
 import { UserListResponse } from '../models/UserListResponse';
 import { GetMenuItemPermissionQueryResponse } from '../models/GetMenuItemPermissionQueryResponse';
 import { GetInventoryCompanyInfo } from '../models/GetInventoryCompanyInfo';
+import { Role } from '../models/Role';
+import { UserRole } from '../models/UserRole';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +116,25 @@ export class UserService {
   updateInventoryCompanyInfo = (invCompanyInfoId: number, companyInfo: FormData): Observable<number> => {
     return this.api
       .post<FormData, number>(`inventory-company-info/${invCompanyInfoId}`, companyInfo, undefined, undefined, true)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  getRoles = (): Observable<Role[]> => {
+    return this.api
+      .get<Role[]>(`all-roles`)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  getUserRoles = (): Observable<UserRole[]> => {
+    return this.api
+      .get<UserRole[]>(`user-roles`)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+
+  addOrRemoveUserRole = (userId: number, roleId: number): Observable<boolean> => {
+    return this.api
+      .post<null, boolean>(`add-or-remove-role/user/${userId}/role/${roleId}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
