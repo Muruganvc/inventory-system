@@ -71,18 +71,18 @@ export class InventoryCompanyInfoComponent implements OnInit {
 
   private initializeFields(): void {
     const fieldsConfig = [
-      { name: 'invCompanyName', label: 'Inventory Company Name', colSpan: 6 },
-      { name: 'description', label: 'Description', colSpan: 6 },
-      { name: 'address', label: 'Address' },
-      { name: 'email', label: 'Email', colSpan: 6 },
-      { name: 'mobileNo', label: 'Mobile No', colSpan: 6 },
-      { name: 'gstNo', label: 'GST Number' },
-      { name: 'apiVersion', label: 'API Version', colSpan: 6 },
-      { name: 'uiVersion', label: 'UI Version', colSpan: 6 },
-      { name: 'bankName', label: 'Bank Name', colSpan: 6 },
-      { name: 'bankBranchName', label: 'Bank Branch Name', colSpan: 6 },
-      { name: 'bankAccountNo', label: 'Bank Account No.', colSpan: 6 },
-      { name: 'bankBranchIFSC', label: 'Bank Branch IFSC', colSpan: 6 }
+      { name: 'invCompanyName', label: 'Inventory Company Name', colSpan: 6,maxLength: 100 },
+      { name: 'description', label: 'Description', colSpan: 6,maxLength: 100 },
+      { name: 'address', label: 'Address',maxLength: 100 },
+      { name: 'email', label: 'Email', colSpan: 6,maxLength: 50 },
+      { name: 'mobileNo', label: 'Mobile No', colSpan: 6,maxLength: 10 },
+      { name: 'gstNo', label: 'GST Number',maxLength: 15 },
+      { name: 'apiVersion', label: 'API Version', colSpan: 6,maxLength: 20 },
+      { name: 'uiVersion', label: 'UI Version', colSpan: 6 ,maxLength: 20},
+      { name: 'bankName', label: 'Bank Name', colSpan: 6,maxLength: 20 },
+      { name: 'bankBranchName', label: 'Bank Branch Name', colSpan: 6,maxLength: 20 },
+      { name: 'bankAccountNo', label: 'Bank Account No.', colSpan: 6,maxLength: 20 },
+      { name: 'bankBranchIFSC', label: 'Bank Branch IFSC', colSpan: 6,maxLength: 10 }
     ];
 
     this.fields = fieldsConfig.map(f => ({
@@ -90,7 +90,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
       name: f.name,
       label: f.label,
       colSpan: f.colSpan ?? 12,
-      maxLength: 100
+      maxLength: f.maxLength
     }));
   }
 
@@ -135,7 +135,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
   }
 
   private loadCompanyInfo(): void {
-    this.userService.getInventoryCompanyInfo().subscribe({
+    this.userService.getInventoryCompanyInfo(1).subscribe({
       next: info => {
         if (info) {
           this.formGroup.patchValue({
@@ -191,7 +191,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
     append('bankBranchIFSC', value.bankBranchIFSC);
 
     if (this.selectedFile) {
-      formData.append('QcCode', this.selectedFile);
+      formData.append('QrCode', this.selectedFile);
     }
 
     const request$ = this.invCompanyInfoId === 0

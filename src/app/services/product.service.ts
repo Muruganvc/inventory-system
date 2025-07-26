@@ -2,10 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { KeyValuePair } from '../shared/common/KeyValuePair';
 import { ApiService } from '../shared/services/api.service';
 import { ProductRequest } from '../models/ProductRequest';
-import { ProductsResponse } from '../models/ProductsResponse';
+import { ProductsResponse, UpdateProductQuantityPayload } from '../models/ProductsResponse';
 import { UpdateProductRequest } from '../models/UpdateProductRequest';
 import { map, Observable } from 'rxjs';
 import { BulkUpload, BulkUploadRequest } from '../models/BulkUpload';
+import { GetCategoryQueryResponse } from '../models/GetCategoryQueryResponse';
+import { GetCategoriesByCompanyQueryResponse } from '../models/GetCategoriesByCompanyQueryResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +16,15 @@ export class ProductService {
 
   private readonly api = inject(ApiService)
 
-  getCategories = (companyId: number): Observable<KeyValuePair[]> => {
+  getCategories = (companyId: number): Observable<GetCategoryQueryResponse[]> => {
     return this.api
-      .get<KeyValuePair[]>(`category/${companyId}`)
+      .get<GetCategoryQueryResponse[]>(`categories/${companyId}`)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
+  getCategoriesByCompany = (companyId: number): Observable<GetCategoriesByCompanyQueryResponse[]> => {
+    return this.api
+      .get<GetCategoriesByCompanyQueryResponse[]>(`categories/company/${companyId}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -50,9 +58,9 @@ export class ProductService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  updateProductQty = (productId: number, qty: number): Observable<boolean> => {
+  updateProductQty = (productId: number, update :  UpdateProductQuantityPayload): Observable<boolean> => {
     return this.api
-      .put<null, boolean>(`product/${productId}/${qty}`, null)
+      .put<UpdateProductQuantityPayload, boolean>(`product/${productId}/quantity`, update)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

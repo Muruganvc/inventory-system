@@ -42,7 +42,7 @@ export class UserListComponent implements OnInit {
         if (!!result) {
           this.users = result;
 
-          const isAdmin = this.authService.hasRole(["Admin"]);
+          const isAdmin = this.authService.hasRole(["ADMIN"]);
           const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
 
           if (isAdmin && !hasIsActiveColumn) {
@@ -63,7 +63,7 @@ export class UserListComponent implements OnInit {
   }
 
   handleFieldChange(event: { row: UserListResponse; key: string; value: any }) {
-    this.userService.setActiveUser(event.row.userId ?? 0).subscribe({
+    this.userService.setActiveUser(event.row.userId ?? 0, event.value).subscribe({
       next: result => {
         if (result) {
           this.getUsers();

@@ -3,4 +3,5 @@ export interface CategoryUpdateRequest {
   categoryName: string;
   description: string;
   isActive: boolean;
+  rowVersion: number;
 }

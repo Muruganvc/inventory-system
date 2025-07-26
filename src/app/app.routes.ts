@@ -69,13 +69,13 @@ export const routes: Routes = [
         component: InventoryComponent,
         children: [
           { path: '', redirectTo: 'company-list', pathMatch: 'full' },
-          { path: 'company-list', component: CompanyListComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'company', component: CompanyComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'category-list', component: CategoryListComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'category', component: CategoryComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'product-category-list', component: ProductCategoryListComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'product-category', component: ProductCategoryComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } },
-          { path: 'bulk-product-category', component: BulkcreateCompanyCategoryProductComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin', 'Admin'] } }
+          { path: 'company-list', component: CompanyListComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'company', component: CompanyComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'category-list', component: CategoryListComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'category', component: CategoryComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'product-category-list', component: ProductCategoryListComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'product-category', component: ProductCategoryComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } },
+          { path: 'bulk-product-category', component: BulkcreateCompanyCategoryProductComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN', 'ADMIN'] } }
         ]
       },
 
@@ -91,7 +91,7 @@ export const routes: Routes = [
           { path: 'profile', component: ProfileComponent },
           { path: 'user-menu-permission', component: UserMenuPermissionComponent },
           { path: 'audit-table-view', component: AuditTableViewComponent },
-          { path: 'inventory-company-info', component: InventoryCompanyInfoComponent, canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } },
+          { path: 'inventory-company-info', component: InventoryCompanyInfoComponent, canActivate: [RoleGuard], data: { roles: ['SUPERADMIN'] } },
           { path: 'user-role-permission', component: UserRoleMenuPermissionComponent }
         ]
       },

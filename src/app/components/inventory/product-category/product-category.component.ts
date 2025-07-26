@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 import { CompanyService } from '../../../services/company.service';
 import { ActionButtons } from '../../../shared/common/ActionButton';
 import { KeyValuePair } from '../../../shared/common/KeyValuePair';
@@ -90,7 +90,7 @@ export class ProductCategoryComponent {
         name: 'description',
         label: 'Description',
         colSpan: 10,
-        isHidden:true
+        isHidden: true
       }
     ];
   }
@@ -183,8 +183,16 @@ export class ProductCategoryComponent {
   }
 
   private loadCategories(companyId: number): void {
-    this.productService.getCategories(companyId).subscribe({
-      next: res => this.updateFieldOptions('category', res) 
+    this.productService.getCategoriesByCompany(companyId).subscribe({
+      next: result => {
+        if (!!result) {
+          const options: KeyValuePair[] = result.map(category => ({
+            key: category.categoryName,
+            value: category.categoryId
+          }));
+          this.updateFieldOptions('category', options)
+        }
+      }
     });
   }
 
@@ -220,10 +228,11 @@ export class ProductCategoryComponent {
   private updateProductCategory(): void {
     const formValue = this.formGroup.value;
     const request: ProductCategoryUpdateRequest = {
-      categoryId: formValue.category.value, 
+      categoryId: formValue.category.value,
       isActive: formValue.isActive,
       description: formValue.description,
-      productCategoryName : formValue.productCategoryName
+      productCategoryName: formValue.productCategoryName,
+      rowVersion: this.selectedProductCategory.rowVersion
     };
 
     this.companyService.updateProductCategory(this.selectedProductCategory.productCategoryId, request).subscribe({

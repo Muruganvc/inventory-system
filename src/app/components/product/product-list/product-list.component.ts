@@ -6,7 +6,7 @@ import { ProductService } from '../../../services/product.service';
 import { AuthService } from '../../../services/auth.service';
 import { CommonService, ExcelColumn } from '../../../shared/services/common.service';
 
-import { ProductsResponse } from '../../../models/ProductsResponse';
+import { ProductsResponse, UpdateProductQuantityPayload } from '../../../models/ProductsResponse';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,7 +38,7 @@ export class ProductListComponent implements OnInit {
       { key: 'salesPrice', label: 'Sales ₹', align: 'left', isHidden: false },
       { key: 'landingPrice', label: 'Landing', align: 'left', isHidden: false },
       { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
-      { key: 'userName', label: 'Created By', align: 'left', isHidden: false }
+      { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false }
     ];
 
   constructor(
@@ -53,7 +53,7 @@ export class ProductListComponent implements OnInit {
   }
 
   isUser = (): boolean => {
-    return !this.authService.hasRole(["Admin"]);
+    return !this.authService.hasRole(["ADMIN"]);
   }
 
   getProducts(): void {
@@ -129,7 +129,13 @@ export class ProductListComponent implements OnInit {
   }
 
   save(product: ProductsResponse): void {
-    this.productService.updateProductQty(product.productId, product.quantity).subscribe({
+
+    const updateQty: UpdateProductQuantityPayload = {
+      quantity: product.quantity,
+      rowVersion: product.rowVersion
+    }
+
+    this.productService.updateProductQty(product.productId, updateQty).subscribe({
       next: result => {
         if (result) {
           this.getProducts();

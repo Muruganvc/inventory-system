@@ -45,11 +45,11 @@ export class LayoutComponent implements OnInit {
   invCompanyInfo : GetInventoryCompanyInfo;
 
   isAdmin = (): boolean => {
-    return this.authService.hasRole(["Admin"])
+    return this.authService.hasRole(["ADMIN"])
   }
 
   isSuperAdmin = (): boolean => {
-    return this.authService.hasRole(["SuperAdmin"])
+    return this.authService.hasRole(["SUPERADMIN"])
   }
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router, private dialog: MatDialog, private configService: ConfigService) {
@@ -72,7 +72,7 @@ export class LayoutComponent implements OnInit {
  
 
   private loadCompanyInfo(): void {
-    this.userService.getInventoryCompanyInfo().subscribe({
+    this.userService.getInventoryCompanyInfo(1).subscribe({
       next: info => {
         if (info) {
           this.invCompanyInfo = info
@@ -183,8 +183,8 @@ export class LayoutComponent implements OnInit {
 
   private loadUser(): void {
      this.commonService.setProfileImageData('')
-    const userName = this.authService.getUserName();
-    this.userService.getUser(userName).subscribe({
+    const userId = +this.authService.getUserId();
+    this.userService.getUser(userId).subscribe({
       next: user => {
         if (user.profileImageBase64) {
           this.imagePreview = user.profileImageBase64;

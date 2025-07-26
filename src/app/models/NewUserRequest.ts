@@ -2,7 +2,7 @@ export interface NewUserRequest {
     firstName: string;
     lastName: string;
     userName: string;
-    emailId: string;
+    email: string;
     role: number;
     mobileNo:string;
 }

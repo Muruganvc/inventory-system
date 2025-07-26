@@ -56,11 +56,9 @@ export class ProductCategoryListComponent implements OnInit {
   ];
 
   isUser = (): boolean => {
-    return !this.authService.hasRole(["Admin"]);
+    return !this.authService.hasRole(["ADMIN"]);
   }
-
-
-
+ 
   onAction(event: { row: any; action: string }) {
     const { row, action } = event;
     switch (action) {

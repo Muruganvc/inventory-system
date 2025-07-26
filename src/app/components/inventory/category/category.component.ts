@@ -183,7 +183,8 @@ export class CategoryComponent implements OnInit {
       companyId: formValue.company.value,
       categoryName: formValue.categoryName,
       isActive: formValue.isActive,
-      description: formValue.description
+      description: formValue.description,
+      rowVersion : this.selectedCategory.rowVersion
     };
 
     this.companyService.updateCategory(this.selectedCategory.categoryId, request).subscribe({

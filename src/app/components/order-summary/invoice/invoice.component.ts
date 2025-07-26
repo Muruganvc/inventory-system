@@ -173,7 +173,7 @@ export class InvoiceComponent implements OnInit {
   }
 
   async getInvCompanyInfo(): Promise<void> {
-    const info = await firstValueFrom(this.userService.getInventoryCompanyInfo());
+    const info = await firstValueFrom(this.userService.getInventoryCompanyInfo(1));
     if (!info) return;
     this.invCompanyInfo = info;
     this.qrCodePreview = info.qrCodeBase64 ?? null;

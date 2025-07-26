@@ -24,10 +24,11 @@ export class CompanyListComponent implements OnInit {
   private readonly commonService = inject(CommonService);
 
   // Table column configuration
-  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
+  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string, }[] = [
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
+    { key: 'createdDate', label: 'Created Date', align: 'left', isHidden: false,pipe: 'date' },
     { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false },
   ];
   // Action buttons for the table
@@ -52,7 +53,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   isUser(): boolean {
-    return !this.authService.hasRole(['Admin']);
+    return !this.authService.hasRole(['ADMIN']);
   }
 
   onAction(event: { row: any; action: string }): void {

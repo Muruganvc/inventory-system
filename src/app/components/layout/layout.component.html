@@ -94,13 +94,13 @@
     </a>
   </div>
 
-  <div class="footer-section footer-right">
+  <!-- <div class="footer-section footer-right">
     <ng-container *ngIf="invCompanyInfo as info">
-      <span><strong>API Version:</strong> {{ info.apiVersion }}</span>
-      <span><strong>UI Version:</strong> {{ info.uiVersion }}</span>
+      
+     
     </ng-container>
-    <span><strong>Database Name:</strong> {{ databaseName }}</span>
-  </div>
+    
+  </div> -->
 
 
   <div class="footer-section footer-right">
@@ -114,10 +114,18 @@
   <div class="popup-content">
     <span class="close-btn" (click)="closePopup()" title="Close">&times;</span>
     <h3 class="popup-title">Feature Under Development</h3>
-    <p class="popup-message">
-      We're currently working on this feature. It is under development and will be available soon.<br>
-      Thank you for your patience!
-    </p>
+    <div class="popup-row">
+      <div class="popup-col">
+        <strong>API Version:</strong> {{ invCompanyInfo.apiVersion }}
+      </div>
+      <div class="popup-col">
+        <strong>UI Version:</strong> {{ invCompanyInfo.uiVersion }}
+      </div>
+      <div class="popup-col">
+        <strong>Database Name:</strong> {{ databaseName }}
+      </div>
+    </div>
+
 
     <!-- Social Media Icons -->
     <div class="social-icons">

@@ -11,4 +11,5 @@ export interface GetCategoryQueryResponse extends TableRow {
   createdBy: string;
   productCategoryName:string;
   companyCategoryName : string;
+  rowVersion :number;
 }
