@@ -416,3 +416,40 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
   opacity: 1 !important;          
 }
  
+
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; // Enables row wrap
+  gap: 1rem;
+
+  .title-wrapper {
+    flex: 1;
+  }
+
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button {
+      white-space: nowrap;
+    }
+  }
+
+  &.mobile-layout {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .title-wrapper {
+      width: 100%;
+    }
+
+    .button-group {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}

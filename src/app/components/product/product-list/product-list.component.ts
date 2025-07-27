@@ -60,6 +60,7 @@ export class ProductListComponent implements OnInit {
     this.productService.getProducts('product').subscribe({
       next: (result) => {
         result.forEach(a => {
+          a.id = a.productId;
           const company = a.companyName || '';
           const category = a.categoryName || '';
           const productCategory = a.productCategoryName || '';

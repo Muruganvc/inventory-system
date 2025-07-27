@@ -9,6 +9,7 @@
     </ng-container>
   </div>
 
+
   <mat-form-field appearance="outline" class="search-box">
     <mat-label>Search</mat-label>
     <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" />
@@ -88,31 +89,45 @@
 
   <!-- Mobile view -->
   <ng-template #mobileView>
-    <div class="mobile-card" *ngFor="let row of paginatedMobileData">
-      <mat-card>
+    <div class="mobile-card" *ngFor="let row of paginatedMobileData; let i = index">
+      <mat-card class="mobile-mat-card" [ngStyle]="{
+        'background-color': getCardColor(i),
+        'border-left': '8px solid ' + getOppositeColor(getCardColor(i)),
+        'color': '#fff'
+      }">
         <mat-card-content>
-          <div *ngFor="let col of columns">
-            <strong>{{ col.label }}:</strong>
-            <ng-container *ngIf="!isEditing(row)">
-              {{ row[col.key] }}
-            </ng-container>
-            <ng-container *ngIf="isEditing(row)">
-              <ng-container *ngIf="col.type === 'checkbox'; else mobileInput">
-                <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
+          <div class="mobile-field" *ngFor="let col of columns">
+            <label>{{ col.label }}</label>
+
+            <div class="field-value">
+              <!-- View Mode -->
+              <ng-container *ngIf="!isEditing(row)">
+                {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
               </ng-container>
-              <ng-template #mobileInput>
-                <input [(ngModel)]="editedRow[col.key]" class="custom-input" />
-              </ng-template>
-            </ng-container>
+
+              {{isEditing(row) | json }}
+
+              <!-- Edit Mode -->
+              <ng-container *ngIf="isEditing(row)">
+                <!-- Checkbox -->
+                <ng-container *ngIf="col.type === 'checkbox'; else notCheckbox">
+                  <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
+                </ng-container>
+
+                <!-- Textbox / default input -->
+                <ng-template #notCheckbox>
+                  <input [(ngModel)]="editedRow[col.key]" class="custom-input" [type]="col.type || 'text'" />
+                </ng-template>
+              </ng-container>
+            </div>
           </div>
 
-          {{actions.length}}
-          <div class="actions">
+          <div class="mobile-actions">
             <ng-container *ngFor="let btn of actions">
               <ng-container *ngIf="btn.condition(row)">
                 <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })"
                   [matTooltip]="btn.tooltip">
-                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 15, color: btn.color }"></i>
+                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 18, color: '#fff' }"></i>
                 </button>
               </ng-container>
             </ng-container>

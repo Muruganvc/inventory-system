@@ -243,7 +243,6 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
   isEditing(row: T) {
     return this.editRowId === row.id
-
   }
   getIconClass(type: string): string {
     switch (type) {
@@ -261,4 +260,25 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     const updatedRow = { ...row, [key]: value };
     this.fieldChanged.emit({ row: updatedRow, key, value });
   }
+
+  private readonly dynamicColors: string[] = [
+    '#5bc0de', '#4caf50', '#3f51b5', '#ff9800', '#9c27b0',
+    '#009688', '#c2185b', '#00bcd4', '#8bc34a', '#ffc107',
+    '#795548', '#e91e63', '#607d8b', '#2196f3', '#ff5722',
+    '#673ab7', '#03a9f4', '#aed581', '#f06292', '#90a4ae',
+    '#f44336', '#26a69a', '#ffb74d', '#b39ddb', '#689f38'
+  ];
+
+  getCardColor(index: number): string {
+    return this.dynamicColors[index % this.dynamicColors.length];
+  }
+ 
+  getOppositeColor(hex: string): string {
+    // Remove '#' and parse to integer
+    const r = 255 - parseInt(hex.substr(1, 2), 16);
+    const g = 255 - parseInt(hex.substr(3, 2), 16);
+    const b = 255 - parseInt(hex.substr(5, 2), 16);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
 }
