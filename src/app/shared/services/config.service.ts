@@ -17,7 +17,7 @@ export class ConfigService {
   constructor(private http: HttpClient) { }
 
   async load(): Promise<void> {
-    this.config = await firstValueFrom(this.http.get<AppConfig>('/config.json'));
+    this.config = await firstValueFrom(this.http.get<AppConfig>('config.json'));
   }
 
   get baseUrl(): string {
