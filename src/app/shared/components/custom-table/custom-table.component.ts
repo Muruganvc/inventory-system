@@ -46,7 +46,7 @@ export interface TableColumn {
     MatCardModule,
     MatButtonModule, MatIconModule,
     LayoutModule, MatExpansionModule, MatCheckboxModule,
-    MatTooltipModule,NumberOnlyDirective
+    MatTooltipModule, NumberOnlyDirective
   ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
@@ -85,13 +85,13 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   isMobile = false;
   isTablet = false;
   @Input() actions: {
-  iconClass: string;
-  color: string;
-  tooltip: string;
-  action: string;
-  condition: (row: any) => boolean;
-}[] = [];
-  @Output() actionClick = new EventEmitter<{ row: any; action: string }>(); 
+    iconClass: string;
+    color: string;
+    tooltip: string;
+    action: string;
+    condition: (row: any) => boolean;
+  }[] = [];
+  @Output() actionClick = new EventEmitter<{ row: any; action: string }>();
 
   constructor(private breakpointObserver: BreakpointObserver, private cd: ChangeDetectorRef) {
     this.breakpointObserver.observe([
@@ -173,18 +173,18 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     // if (this.showActions) this.displayedColumns.push('actions');
     // if (this.showCheckbox) this.displayedColumns.unshift('select');
   }
- trackByKey(index: number, item: any): string {
-  return item.key;
-}
+  trackByKey(index: number, item: any): string {
+    return item.key;
+  }
 
-  ngOnChanges(changes: SimpleChanges): void { 
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['columns'] && changes['columns'].currentValue) {
-      this.columns = [...changes['columns'].currentValue];  
-       this.cd.detectChanges(); 
+      this.columns = [...changes['columns'].currentValue];
+      this.cd.detectChanges();
     }
- 
+
     if (changes['data'] && changes['data'].currentValue) {
-      this.data = [...changes['data'].currentValue];  
+      this.data = [...changes['data'].currentValue];
       this.dataSource = new MatTableDataSource<T>(this.data);
 
       setTimeout(() => {
@@ -193,7 +193,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
         }
       });
     }
- 
+
     this.displayedColumns = this.columns
       ?.filter(col => !col.isHidden)
       .map(col => col.key) ?? [];
@@ -201,7 +201,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     if (this.showActions && !this.displayedColumns.includes('actions')) {
       this.displayedColumns.push('actions');
     }
- 
+
     this.displayedColumns = [...new Set(this.displayedColumns)];
   }
 
@@ -216,9 +216,9 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
 
   startEdit(row: T) {
-    // this.editRowId = row.id;
-    // this.editedRow = { ...row };
-    this.edit.emit(row);
+    this.editRowId = row.id;
+    this.editedRow = { ...row };
+    console.log('Editing row ID:', this.editRowId);
   }
 
   saveRow() {
@@ -272,7 +272,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   getCardColor(index: number): string {
     return this.dynamicColors[index % this.dynamicColors.length];
   }
- 
+
   getOppositeColor(hex: string): string {
     // Remove '#' and parse to integer
     const r = 255 - parseInt(hex.substr(1, 2), 16);
@@ -281,4 +281,11 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     return `rgb(${r}, ${g}, ${b})`;
   }
 
+  handleMobileAction(row: any, action: string) {
+    if (action === 'editQty') {
+      this.startEdit(row);
+    } else {
+      this.actionClick.emit({ row, action });
+    }
+  }
 }

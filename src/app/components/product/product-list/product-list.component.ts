@@ -164,8 +164,19 @@ export class ProductListComponent implements OnInit {
     this.resetTableActions();
   }
 
+  // resetTableActions(): void {
+  //   this.tableActions = this.getDefaultActions();
+    
+  // }
   resetTableActions(): void {
-    this.tableActions = this.getDefaultActions();
+    // Reset all rows to not be in edit mode
+    this.products = this.products.map(p => ({
+      ...p,
+      isEditing: false
+    }));
+
+    // Reset table actions with a fresh reference
+    this.tableActions = [...this.getDefaultActions()];
   }
 
   getDefaultActions(): any[] {

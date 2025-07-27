@@ -98,40 +98,65 @@
         <mat-card-content>
           <div class="mobile-field" *ngFor="let col of columns">
             <label>{{ col.label }}</label>
-
             <div class="field-value">
+
               <!-- View Mode -->
               <ng-container *ngIf="!isEditing(row)">
                 {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
               </ng-container>
 
-              {{isEditing(row) | json }}
-
               <!-- Edit Mode -->
               <ng-container *ngIf="isEditing(row)">
-                <!-- Checkbox -->
-                <ng-container *ngIf="col.type === 'checkbox'; else notCheckbox">
-                  <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
-                </ng-container>
+                <ng-container [ngSwitch]="col.type">
 
-                <!-- Textbox / default input -->
-                <ng-template #notCheckbox>
-                  <input [(ngModel)]="editedRow[col.key]" class="custom-input" [type]="col.type || 'text'" />
-                </ng-template>
+                  <!-- Checkbox -->
+                  <ng-container *ngSwitchCase="'checkbox'">
+                    <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
+                  </ng-container>
+
+                  <!-- Textbox -->
+                  <ng-container *ngSwitchCase="'textbox'">
+                    <input [(ngModel)]="editedRow[col.key]" class="custom-input" maxlength="8" />
+                  </ng-container>
+
+                  <!-- Default Fallback -->
+                  <ng-container *ngSwitchDefault>
+                    <input [(ngModel)]="editedRow[col.key]" class="custom-input" />
+                  </ng-container>
+
+                </ng-container>
               </ng-container>
+
             </div>
           </div>
 
+
           <div class="mobile-actions">
             <ng-container *ngFor="let btn of actions">
-              <ng-container *ngIf="btn.condition(row)">
-                <button mat-icon-button (click)="actionClick.emit({ row, action: btn.action })"
+              <ng-container *ngIf="btn.condition?.(row)">
+                <button mat-icon-button (click)="startEdit(row); actionClick.emit({ row, action: btn.action })"
                   [matTooltip]="btn.tooltip">
-                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 18, color: '#fff' }"></i>
+                  <i class="{{ btn.iconClass }}" [ngStyle]="{
+                    'font-size.px': 15,
+                    color: btn.color,
+                    cursor: 'pointer'
+                  }"></i>
                 </button>
               </ng-container>
             </ng-container>
           </div>
+
+
+
+          <!-- <div class="mobile-actions">
+            <ng-container *ngFor="let btn of actions">
+              <ng-container *ngIf="btn.condition(row)">
+                <button mat-icon-button (click)="handleMobileAction(row, btn.action)" [matTooltip]="btn.tooltip">
+                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 18, color: '#fff' }"></i>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div> -->
         </mat-card-content>
       </mat-card>
     </div>
