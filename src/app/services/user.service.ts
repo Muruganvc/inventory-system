@@ -88,7 +88,7 @@ export class UserService {
 
   addOrRemoveUserMenuItem = (userId: number, menuId: number): Observable<boolean> => {
     return this.api
-      .post<null, boolean>(`menu/${userId}/${menuId}`, null)
+      .put<null, boolean>(`user-menu/${userId}/menu/${menuId}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -121,7 +121,7 @@ export class UserService {
 
   getRoles = (): Observable<Role[]> => {
     return this.api
-      .get<Role[]>(`all-roles`)
+      .get<Role[]>(`roles`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

@@ -26,8 +26,6 @@ export class ForgetPasswordComponent implements OnInit {
       userName: new FormControl(null, [Validators.required]),
       mobileNo: new FormControl(null, [
         Validators.required,
-        Validators.minLength(10),
-        Validators.maxLength(10),
         Validators.pattern(/^[0-9]{10}$/) // ensures only digits
       ])
     });
@@ -72,12 +70,21 @@ export class ForgetPasswordComponent implements OnInit {
 
   handleSave(form: any): void {
     const { userName, mobileNo } = form.form.value;
+    const controls = form.form.controls;
 
     if (!userName || !mobileNo) {
       this.commonService.showError("Username and Mobile No are required.");
       return;
     }
+    if (controls.mobileNo.invalid) {
+      this.commonService.showError("Invalid Mobile No");
+      return;
+    }
 
+    if (controls.userName.invalid) {
+      this.commonService.showError("Invalid Username");
+      return;
+    }
     this.userService.forgetPassword(userName, mobileNo).subscribe({
       next: (result) => {
         if (result) {

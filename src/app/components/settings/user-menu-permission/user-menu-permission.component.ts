@@ -101,15 +101,18 @@ export class UserMenuPermissionComponent {
   }
 
   addOrRemoveMenu = (row: any): void => {
-    if (this.selectedUserId > 0) {
-      this.userService.addOrRemoveUserMenuItem(this.selectedUserId, row.id).subscribe({
-        next: result => {
-          if (!!result) {
-          }
-        }
-      });
-    } else {
-      this.commonService.showWarning("Must be select user.");
+    if (this.selectedUserId <= 0) {
+      this.commonService.showWarning("Must select a user.");
+      this.flatMenu = this.flatMenu.map(item => ({ ...item, permission: false }));
+      return;
     }
+
+    this.userService.addOrRemoveUserMenuItem(this.selectedUserId, row.id).subscribe({
+      next: (result) => {
+        if (result) {
+          this.commonService.showWarning("Updated.");
+        }
+      }
+    });
   }
 }

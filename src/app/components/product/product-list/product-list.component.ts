@@ -75,7 +75,7 @@ export class ProductListComponent implements OnInit {
 
   appendIsActiveColumnIfAdmin(): void {
     const hasIsActiveColumn = this.columns.some(col => col.key === 'isActive');
-    const IsProductActive = this.authService.hasRole(["ProductActive"]);
+    const IsProductActive = this.authService.hasRole(["ACTIVEPRODUCT"]);
     if (IsProductActive && !hasIsActiveColumn) {
       this.columns = [
         ...this.columns,

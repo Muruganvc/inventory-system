@@ -75,7 +75,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   private initFields(): void {
-    const IsProductActive = !this.authService.hasRole(["ProductActive"]);
+    const IsProductActive = !this.authService.hasRole(["ACTIVEPRODUCT"]);
     this.fields = [
       { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [] },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
@@ -87,8 +87,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     ];
   }
   createNewProduct(term: string) {
-    const newProduct = { key: term, value: term }; // can replace with ID later
-    const productField = this.fields.find(f => f.name === 'productCategory');
+    const newProduct = { key: term, value: term };
+    const productField = this.fields.find(f => f.name === 'ACTIVEPRODUCT');
     productField?.options?.push(newProduct);
     return newProduct;
   }

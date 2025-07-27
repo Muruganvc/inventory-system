@@ -209,9 +209,9 @@ export class SalesComponent implements OnInit {
   }
 
   private handleSave(params: any): void {
-    this.addProduct(params.form.value);
+    const isValid = this.addProduct(params.form.value);
     const netAmount = this.formGroup.get('netAmount')?.value;
-    this.formGroup.reset();
+    if (isValid) this.formGroup.reset();
     this.formGroup.patchValue({ netAmount }, { emitEvent: false });
   }
 
@@ -309,39 +309,51 @@ export class SalesComponent implements OnInit {
     });
   }
 
-  private addProduct(form: any): void {
-    if (this.productSales.some(p => p.productId === form.product.value)) {
+  private addProduct(form: any): boolean {
+    const { product, price, quantity, serialNo } = form;
+    const productId = product?.value;
+    if (this.productSales.some(p => p.productId === productId)) {
       this.commonService.showWarning('Product already exists.');
-      return;
+      return false;
+    }
+    if (!price || Number(price) === 0) {
+      this.commonService.showWarning('Please enter unit price.');
+      return false;
     }
 
-    if (form.quantity === 0) {
+    if (!quantity || Number(quantity) === 0) {
+      this.commonService.showWarning('Please enter quantity.');
+      return false;
+    }
+    const selectedProduct = this.products.find(p => p.productId === productId);
+    if (!selectedProduct) {
+      this.commonService.showWarning('Selected product not found.');
+      return false;
+    }
+    if (selectedProduct.quantity === 0) {
       this.commonService.showWarning('This product is currently out of stock.');
-      return;
+      return false;
     }
-
-    const selectedProduct = this.products.find(p => p.productId === form.product.value);
-    if (!selectedProduct) return;
-
-    if (form.price < selectedProduct.landingPrice) {
+    if (Number(price) < selectedProduct.landingPrice) {
       this.commonService.showWarning('Unit price should not be less than Landing Price.');
-      return;
+      return false;
     }
-
     const newProduct: ProductEntry = {
-      productName: `${selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
-      mrp: selectedProduct.mrp,
-      price: form.price,
-      quantity: form.quantity,
-      totalAmount: form.price * form.quantity,
       productId: selectedProduct.productId,
       id: selectedProduct.productId,
+      productName: `${selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
+      mrp: selectedProduct.mrp,
       salesPrice: selectedProduct.salesPrice,
-      serialNo: form.serialNo
+      price: Number(price),
+      quantity: Number(quantity),
+      totalAmount: Number(price) * Number(quantity),
+      serialNo
     };
 
     this.productSales = [...this.productSales, newProduct];
+    return true;
   }
+
 
   onEdit(entry: ProductEntry): void {
     this.productSales = this.productSales.filter(p => p.id !== entry.id);

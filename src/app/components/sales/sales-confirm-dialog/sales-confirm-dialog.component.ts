@@ -47,8 +47,6 @@ export class SalesConfirmDialogComponent implements OnInit {
       customerName: new FormControl(null, [Validators.required]),
       mobileNo: new FormControl(null, [
         Validators.required,
-        Validators.minLength(10),
-        Validators.maxLength(10),
         Validators.pattern(/^[0-9]{10}$/)
       ]),
       address: new FormControl(null),
@@ -78,7 +76,7 @@ export class SalesConfirmDialogComponent implements OnInit {
         this.customers = result;
         result.map(m => {
           this.customerDropDown.push({
-            key: m.phone,
+            key: m.mobileNo,
             value: m.customerId
           });
         });
@@ -131,7 +129,7 @@ export class SalesConfirmDialogComponent implements OnInit {
 
     // if (params.form.invalid) return;
 
-    
+
 
     const formValue = params.form.value;
 
@@ -212,7 +210,7 @@ export class SalesConfirmDialogComponent implements OnInit {
   initFields = (): void => {
     this.fields = [
       {
-        type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6,maxLength: 10, options: [],
+        type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6, maxLength: 10, options: [],
         addTag: true,
       },
       { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 50 },
