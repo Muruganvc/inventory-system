@@ -12,4 +12,5 @@ export interface GetProductCategoryQueryResponse extends TableRow {
   createdAt: Date;
   username: string;
   productFullName: string;
+  rowVersion: number;
 }

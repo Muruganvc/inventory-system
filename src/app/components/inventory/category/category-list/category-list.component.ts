@@ -35,7 +35,7 @@ export class CategoryListComponent implements OnInit {
   }
 
   isUser = (): boolean => {
-    return !this.authService.hasRole(["Admin"]);
+    return !this.authService.hasRole(["ADMIN"]);
   }
 
 
@@ -50,10 +50,11 @@ export class CategoryListComponent implements OnInit {
       },
     ];
 
-  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
+  columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string }[] = [
     { key: 'companyCategoryName', label: 'Company Category Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
+    { key: 'createdAt', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false },
   ];
 

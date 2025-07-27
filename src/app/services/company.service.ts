@@ -11,6 +11,7 @@ import { GetProductCategoryQueryResponse } from '../models/GetProductCategoryQue
 import { ProductCategoryCreateCommand } from '../models/ProductCategoryCreateCommand';
 import { ProductCategoryUpdateRequest } from '../models/ProductCategoryUpdateRequest';
 import { KeyValuePair } from '../shared/common/KeyValuePair';
+import { GetCompanyCategoryProductsQueryResponse } from '../models/GetCompanyCategoryProductsQueryResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -19,32 +20,32 @@ export class CompanyService {
   private readonly api = inject(ApiService);
   createCompany = (create: CompanyCreate): Observable<number> => {
     return this.api
-      .post<CompanyCreate, number>('company', create)
+      .post<CompanyCreate, number>('companies', create)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   getCompanies = (isAllActiveCompany: boolean): Observable<GetCompanyQueryResponse[]> => {
     return this.api
-      .get<GetCompanyQueryResponse[]>(`company?isAllActiveCompany=${isAllActiveCompany}`)
+      .get<GetCompanyQueryResponse[]>(`companies?isAllActiveCompany=${isAllActiveCompany}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
 
-  getCompanyCategoryProduct = (): Observable<KeyValuePair[]> => {
+  getCompanyCategoryProduct = (isAllProduct : boolean): Observable<GetCompanyCategoryProductsQueryResponse[]> => {
     return this.api
-      .get<KeyValuePair[]>(`company-category-product`)
+      .get<GetCompanyCategoryProductsQueryResponse[]>(`company-category-products/${isAllProduct}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   updateCompany = (companyId: number, update: CompanyUpdateCommand): Observable<number> => {
     return this.api
-      .put<CompanyUpdateCommand, number>(`company/${companyId}`, update)
+      .put<CompanyUpdateCommand, number>(`companies/${companyId}`, update)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   createCategory = (create: CategoryCreateRequest): Observable<number> => {
     return this.api
-      .post<CategoryCreateRequest, number>('category', create)
+      .post<CategoryCreateRequest, number>('categories', create)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -56,25 +57,25 @@ export class CompanyService {
 
   updateCategory = (categoryId: number, update: CategoryUpdateRequest): Observable<number> => {
     return this.api
-      .put<CategoryUpdateRequest, number>(`category/${categoryId}`, update)
+      .put<CategoryUpdateRequest, number>(`categories/${categoryId}`, update)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   createProductCategory = (create: ProductCategoryCreateCommand): Observable<number> => {
     return this.api
-      .post<ProductCategoryCreateCommand, number>('product-category', create)
+      .post<ProductCategoryCreateCommand, number>('company-category-product', create)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   getProductCategories = (isAllActive: boolean): Observable<GetProductCategoryQueryResponse[]> => {
     return this.api
-      .get<GetProductCategoryQueryResponse[]>(`product-categories?isAllActive=${isAllActive}`)
+      .get<GetProductCategoryQueryResponse[]>(`company-category-products/${isAllActive}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   updateProductCategory = (productCategoryId: number, update: ProductCategoryUpdateRequest): Observable<number> => {
     return this.api
-      .put<ProductCategoryUpdateRequest, number>(`product-category/${productCategoryId}`, update)
+      .put<ProductCategoryUpdateRequest, number>(`company-category-product/${productCategoryId}`, update)
       .pipe(map(res => this.api.handleResult(res)));
   };
 }

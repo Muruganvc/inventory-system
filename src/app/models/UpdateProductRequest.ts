@@ -1,12 +1,12 @@
 export interface UpdateProductRequest {
     productId: number;
     productName: string;
-    companyId: number;
-    categoryId: number;
-    productCategoryId?: number | null;
+    productCategoryId: number;
     description?: string | null;
     mrp: number;
     salesPrice: number;
-    totalQuantity: number;
+    quantity: number;
     isActive: boolean; 
+    landingPrice : number;
+    rowVersion : number;
 }

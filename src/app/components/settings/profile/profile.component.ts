@@ -61,8 +61,8 @@ export class ProfileComponent implements OnInit {
   }
 
   private loadUser(): void {
-    const userName = this.authService.getUserName();
-    this.userService.getUser(userName).subscribe({
+    const userId = +this.authService.getUserId();
+    this.userService.getUser(userId).subscribe({
       next: user => {
         if (user) {
           this.formGroup.patchValue({

@@ -47,7 +47,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
 
     this.initFields();
-    this.loadCompanyCategoryProduct(); 
+    this.loadCompanyCategoryProduct();
     this.initActionButtons();
     this.bindQuantityChange();
   }
@@ -73,7 +73,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       ]
     });
   }
-
 
   private initFields(): void {
     const IsProductActive = !this.authService.hasRole(["ProductActive"]);
@@ -138,7 +137,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private patchForm(product: ProductsResponse): void {
     this.formGroup.patchValue({
       product: { value: product.productId, key: product.productName },
-      companyCategoryProduct: { value: product.companyCategoryProductNameId, key: product.companyCategoryProductName },
+      companyCategoryProduct: { value: product.productCategoryId, key: product.productFullName },
       mrp: product.mrp,
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
@@ -151,15 +150,17 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- DATA LOADERS -------------------- */
 
   private loadCompanyCategoryProduct = (): void => {
-    this.companyService.getCompanyCategoryProduct().subscribe({
+    this.companyService.getCompanyCategoryProduct(true).subscribe({
       next: res => {
-        this.updateFieldOptions('companyCategoryProduct', res);
+        const options: KeyValuePair[] = res.map(item => ({
+          key: `${item.companyName} ${item.categoryName} ${item.productCategoryName}`,
+          value: item.productCategoryId
+        }));
+        this.updateFieldOptions('companyCategoryProduct', options);
       }
     });
   }
-
-
-
+ 
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
     if (field) field.options = options;
@@ -214,9 +215,19 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
   }
   private handleUpdate(params: any): void {
-    const request = this.buildUpdateProductRequest(params.form.value);
-    request.totalQuantity = +this.formGroup.get('availableQuantity')?.value;
-    this.productService.updateProduct(request.productId, request).subscribe({
+
+    var update: UpdateProductRequest = {
+      productId: params.form.value.product.value,
+      productName: params.form.value.companyCategoryProduct.key,
+      mrp: params.form.value.mrp,
+      salesPrice: params.form.value.salesPrice,
+      landingPrice: params.form.value.landingPrice,
+      quantity: params.form.value.quantity,
+      isActive: params.form.value.isActive,
+      rowVersion: this.productResponse.rowVersion,
+      productCategoryId: params.form.value.companyCategoryProduct.value
+    };
+    this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
       next: () => {
         this.commonService.showSuccess('Product updated.');
         this.resetForm();
@@ -242,34 +253,31 @@ export class ProductComponent implements OnInit, OnDestroy {
     Object.values(this.formGroup.controls).forEach(control => control.setErrors(null));
     this.initForm();
   }
-
   private buildProductRequest(value: any): ProductRequest {
-    const { key: productName, value: compositeIds } = value.companyCategoryProduct || {};
-    const [companyIdStr, categoryIdStr, productCategoryIdStr] = (compositeIds || '').split('$');
-
-    const companyId = Number(companyIdStr);
-    const categoryId = Number(categoryIdStr);
-    const productCategoryId = Number(productCategoryIdStr);
+    const {
+      key: productName,
+      value: productCategoryId
+    } = value.companyCategoryProduct || {};
 
     return {
-      productName,
-      companyId,
-      categoryId,
-      productCategoryId,
-      mrp: value.mrp,
-      salesPrice: value.salesPrice,
-      landingPrice: value.landingPrice,
-      totalQuantity: value.quantity,
+      productName: productName || '',
+      productCategoryId: productCategoryId ?? null,
+      description: value.description || '',
+      mrp: Number(value.mrp) || 0,
+      salesPrice: Number(value.salesPrice) || 0,
+      landingPrice: Number(value.landingPrice) || 0,
+      totalQuantity: Number(value.quantity) || 0,
       isActive: !!value.isActive
     };
   }
 
-  private buildUpdateProductRequest(value: any): UpdateProductRequest {
-    return {
-      ...this.buildProductRequest(value),
-      productId: this.productResponse.productId
-    };
-  }
+
+  // private buildUpdateProductRequest(value: any): UpdateProductRequest {
+  //   return {
+  //     ...this.buildProductRequest(value),
+  //     productId: this.productResponse.productId
+  //   };
+  // }
 }
 
 /** -------------------- VALIDATORS -------------------- */

@@ -22,7 +22,7 @@ export class UserService {
 
   getUserMenu = (userId: number): Observable<MenuItem[]> => {
     return this.api
-      .get<MenuItem[]>(`menus/${userId}`)
+      .get<MenuItem[]>(`menu/${userId}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -44,9 +44,9 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  getUser = (userName: string): Observable<LoginUserResponse> => {
+  getUser = (userId: number): Observable<LoginUserResponse> => {
     return this.api
-      .get<LoginUserResponse>(`user/${userName}`)
+      .get<LoginUserResponse>(`user/${userId}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -58,19 +58,19 @@ export class UserService {
 
   updateUserWithImage = (userId: number, update: FormData): Observable<number> => {
     return this.api
-      .put<FormData, number>(`update/${userId}`, update, undefined, undefined, true)
+      .put<FormData, number>(`user/${userId}`, update, undefined, undefined, true)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   updatePassword = (userId: number, updatePwd: ChangePasswordRequest): Observable<number> => {
     return this.api
-      .put<ChangePasswordRequest, number>(`password-change/${userId}`, updatePwd)
+      .put<ChangePasswordRequest, number>(`change-password/${userId}`, updatePwd)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
   createNewUser = (user: NewUserRequest): Observable<number> => {
     return this.api
-      .post<NewUserRequest, number>(`new-user`, user)
+      .post<NewUserRequest, number>(`user`, user)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -80,9 +80,9 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  setActiveUser = (userId: number): Observable<boolean> => {
+  setActiveUser = (userId: number,isActive : boolean): Observable<boolean> => {
     return this.api
-      .put<null, boolean>(`user/activate/${userId}`, null)
+      .put<null, boolean>(`user/${userId}/status/${isActive}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
@@ -104,8 +104,8 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  getInventoryCompanyInfo = (): Observable<GetInventoryCompanyInfo | null> => {
-    return this.api.get<GetInventoryCompanyInfo>('inventory-company-info').pipe(
+  getInventoryCompanyInfo = (invCompanyId : number): Observable<GetInventoryCompanyInfo | null> => {
+    return this.api.get<GetInventoryCompanyInfo>(`inventory-company-info/${invCompanyId}`).pipe(
       map(res => this.api.handleResult(res)),
       catchError(error => {
         return of(null);
@@ -115,7 +115,7 @@ export class UserService {
 
   updateInventoryCompanyInfo = (invCompanyInfoId: number, companyInfo: FormData): Observable<number> => {
     return this.api
-      .post<FormData, number>(`inventory-company-info/${invCompanyInfoId}`, companyInfo, undefined, undefined, true)
+      .put<FormData, number>(`inventory-company-info/${invCompanyInfoId}`, companyInfo, undefined, undefined, true)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

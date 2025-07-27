@@ -113,7 +113,7 @@ export class CompanyComponent implements OnInit {
 
     const createCommand: CompanyCreate = {
       companyName: formValue.companyName,
-      isActive: formValue.isActive,
+      isActive: !!formValue.isActive,
       description: formValue.description
     };
 
@@ -135,7 +135,8 @@ export class CompanyComponent implements OnInit {
     const updateCommand: CompanyUpdateCommand = { 
       companyName: formValue.companyName,
       isActive: formValue.isActive,
-      description: formValue.description
+      description: formValue.description,
+      rowVersion : this.selectedCompany.rowVersion
     };
 
     this.companyService.updateCompany(this.selectedCompany.companyId, updateCommand).subscribe({

@@ -4,7 +4,7 @@ export interface ProductsResponse extends TableRow {
   productFullName: string;
   productId: number;
   productName: string;
-  productCategoryId?: number;
+  productCategoryId: number;
   productCategoryName?: string | null;
   categoryId?: number | null;
   categoryName?: string | null;
@@ -16,8 +16,12 @@ export interface ProductsResponse extends TableRow {
   landingPrice: number;
   quantity: number;
   isActive: boolean;
-  userName?: string | null; 
+  userName?: string | null;
   isEditing: boolean;
-  companyCategoryProductName: string;
-  companyCategoryProductNameId: string;
+  rowVersion: number;
 }
+
+export interface UpdateProductQuantityPayload  {
+  quantity: number;
+  rowVersion: number;
+};

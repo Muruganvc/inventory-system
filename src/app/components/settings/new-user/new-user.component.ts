@@ -8,8 +8,7 @@ import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 
 import { ActionButtons } from '../../../shared/common/ActionButton';
-import { NewUserRequest } from '../../../models/NewUserRequest';
-import { ProductsResponse } from '../../../models/ProductsResponse';
+import { NewUserRequest } from '../../../models/NewUserRequest'; 
 
 @Component({
   selector: 'app-new-user',
@@ -27,8 +26,7 @@ export class NewUserComponent implements OnInit {
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
-  pageHeader = 'New User';
-  productResponse!: ProductsResponse;
+  pageHeader = 'New User'; 
 
   ngOnInit(): void {
     this.initForm();
@@ -48,7 +46,7 @@ export class NewUserComponent implements OnInit {
   }
 
   private initFields(): void {
-    const isAdmin = !this.authService.hasRole(['Admin']);
+    const isAdmin = !this.authService.hasRole(['ADMIN']);
 
     this.fields = [
       { type: 'input', name: 'firstName', label: 'First Name', colSpan: 6, maxLength: 20 },
@@ -103,7 +101,7 @@ export class NewUserComponent implements OnInit {
   private handleSave(form: any): void {
     const value = form.form.value;
     const newUser: NewUserRequest = {
-      emailId: value.email,
+      email: value.email,
       firstName: value.firstName,
       lastName: value.lastName,
       role: +value.role,

@@ -3,4 +3,5 @@ export interface ProductCategoryUpdateRequest {
   productCategoryName: string;
   description: string;
   isActive: boolean;
+  rowVersion: number;
 }

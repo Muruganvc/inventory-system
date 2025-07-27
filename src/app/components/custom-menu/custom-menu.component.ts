@@ -35,7 +35,7 @@ export class CustomMenuComponent implements OnInit {
 
   private setUserDetails(): void {
     this.fullName = this.authService.getUserName();
-    this.role = this.authService.hasRole(['Admin']) ? 'Admin' : 'User';
+    this.role = this.authService.getUserRoles()[0];
   }
 
   private loadMenus(): void {

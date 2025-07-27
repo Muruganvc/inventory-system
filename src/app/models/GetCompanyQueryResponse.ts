@@ -4,7 +4,8 @@ export interface GetCompanyQueryResponse extends TableRow {
   companyId: number;
   companyName: string;
   isActive: boolean;
-  createDate: Date;
+  createdDate: Date;
   createdBy: string;
-  description:string;
+  description: string;
+  rowVersion: number;
 }

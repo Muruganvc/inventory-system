@@ -21,7 +21,7 @@ export class AuthService {
 
   login(login: LoginRequest): Observable<LoginResponse> {
     return this.api
-      .post<LoginRequest, LoginResponse>('user-login', login)
+      .post<LoginRequest, LoginResponse>('login', login)
       .pipe(
         map(res => this.api.handleResult(res)),
         tap(response => {
@@ -113,7 +113,18 @@ export class AuthService {
     const roles = decoded[roleClaimKey];
     return Array.isArray(roles) ? roles : [roles];
   }
+// getUserRoles(): string[] {
+//   const decoded = this.getDecodedToken();
+//   if (!decoded) return [];
 
+//   const roleClaimKey = Object.keys(decoded).find(key =>
+//     key.endsWith('/identity/claims/role')
+//   );
+//   if (!roleClaimKey) return [];
+
+//   const roles = decoded[roleClaimKey];
+//   return Array.isArray(roles) ? roles : [roles];
+// }
 
 
   hasRole(requiredRoles: string[]): boolean {
