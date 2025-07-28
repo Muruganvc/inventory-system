@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.startIdleWatcher();
-    this.startHealthCheck();
+    // this.startHealthCheck();
   }
 
   private startIdleWatcher(): void {
