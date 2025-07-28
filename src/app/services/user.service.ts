@@ -80,7 +80,7 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  setActiveUser = (userId: number,isActive : boolean): Observable<boolean> => {
+  setActiveUser = (userId: number, isActive: boolean): Observable<boolean> => {
     return this.api
       .put<null, boolean>(`user/${userId}/status/${isActive}`, null)
       .pipe(map(res => this.api.handleResult(res)));
@@ -104,7 +104,7 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  getInventoryCompanyInfo = (invCompanyId : number): Observable<GetInventoryCompanyInfo | null> => {
+  getInventoryCompanyInfo = (invCompanyId: number): Observable<GetInventoryCompanyInfo | null> => {
     return this.api.get<GetInventoryCompanyInfo>(`inventory-company-info/${invCompanyId}`).pipe(
       map(res => this.api.handleResult(res)),
       catchError(error => {
@@ -125,7 +125,7 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  getUserRoles = (userId : number): Observable<UserRole[]> => {
+  getUserRoles = (userId: number): Observable<UserRole[]> => {
     return this.api
       .get<UserRole[]>(`user-roles/${userId}`)
       .pipe(map(res => this.api.handleResult(res)));
@@ -137,5 +137,11 @@ export class UserService {
       .put<null, boolean>(`user/${userId}/role/${roleId}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
+
+  checkHealth(): Observable<any> {
+    return this.api
+      .get<any>(`health`)
+      .pipe(map(res => this.api.handleResult(res)));
+  }
 
 }
