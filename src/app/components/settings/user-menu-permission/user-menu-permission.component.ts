@@ -10,10 +10,11 @@ import { UserService } from '../../../services/user.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { GetMenuItemPermissionQueryResponse } from '../../../models/GetMenuItemPermissionQueryResponse';
 import { CommonService } from '../../../shared/services/common.service';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-user-menu-permission',
   standalone: true,
-  imports: [CommonModule, NgSelectModule, FormsModule, MatTableModule, MatFormFieldModule, MatCheckboxModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule,NgSelectModule, FormsModule, MatTableModule, MatFormFieldModule, MatCheckboxModule, MatIconModule],
   templateUrl: './user-menu-permission.component.html',
   styleUrl: './user-menu-permission.component.scss'
 })
@@ -100,19 +101,25 @@ export class UserMenuPermissionComponent {
     });
   }
 
-  addOrRemoveMenu = (row: any): void => {
-    if (this.selectedUserId <= 0) {
-      this.commonService.showWarning("Must select a user.");
+  addOrRemoveMenu = (menuItem: any): void => {
+    const userId = this.selectedUserId;
+
+    if (typeof userId !== 'number' || userId <= 0) {
+      this.commonService.showWarning("Please select a valid user.");
       this.flatMenu = this.flatMenu.map(item => ({ ...item, permission: false }));
       return;
     }
 
-    this.userService.addOrRemoveUserMenuItem(this.selectedUserId, row.id).subscribe({
-      next: (result) => {
-        if (result) {
-          this.commonService.showWarning("Updated.");
+    this.userService.addOrRemoveUserMenuItem(userId, menuItem.id).subscribe({
+      next: (isUpdated) => {
+        if (isUpdated) {
+          this.commonService.showSuccess("User menu access updated successfully.");
         }
+      },
+      error: () => {
+        this.commonService.showError("An error occurred while updating menu access.");
       }
     });
-  }
+  };
+
 }

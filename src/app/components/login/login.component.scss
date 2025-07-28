@@ -1,16 +1,21 @@
+
 // .login-container {
-//     height: 94vh;
-//     overflow: hidden;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     padding: 1rem;
-//     background: linear-gradient(to right, #81c784, #ef9a9a);
+ 
+//   background-size: cover;
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   min-height: 100vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 20px;
+//   background: linear-gradient(to right, #81c784, #ef9a9a);
 // }
 
-
 .login-container {
- 
+  background: 
+    linear-gradient(to right, rgba(129, 199, 132, 0.8), rgba(239, 154, 154, 0.8)),
+    url('/assets/images/electrical-bg.jpg') no-repeat center center;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -19,8 +24,8 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(to right, #81c784, #ef9a9a);
 }
+
 
 .login-card {
     width: 100%;

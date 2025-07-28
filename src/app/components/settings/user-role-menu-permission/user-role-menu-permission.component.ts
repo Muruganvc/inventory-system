@@ -60,26 +60,41 @@ export class UserRoleMenuPermissionComponent {
     this.screenHeight = window.innerHeight;
   }
 
-  addOrRemoveRole = (row: any): void => {
-    if (this.selectedUserId > 0) {
-      this.userService.addOrRemoveUserRole(this.selectedUserId, row.roleId).subscribe({
-        next: result => {
-          if (!!result) {
-            this.commonService.showSuccess("Role Updated.");
-          }
-        }
-      });
-    } else {
-      this.commonService.showWarning("Must be select user.");
+  addOrRemoveRole = (row: { roleId: number }): void => {
+    if (!this.selectedUserId || this.selectedUserId <= 0) {
+      this.commonService.showWarning("Please select a valid user.");
+      this.roles = this.roles.map(role => ({
+        ...role,
+        permission: false
+      }));
+      return;
     }
+
+    this.userService.addOrRemoveUserRole(this.selectedUserId, row.roleId).subscribe({
+      next: (result: boolean) => {
+        if (result) {
+          this.commonService.showSuccess("Role updated successfully.");
+        } else {
+          this.commonService.showWarning("Role update failed.");
+          this.revertPermission(row.roleId);
+        }
+      }
+    });
   }
+
+  private revertPermission(roleId: number): void {
+    this.roles = this.roles.map(role =>
+      role.roleId === roleId ? { ...role, permission: false } : role
+    );
+  }
+
 
   onUserSelected = (event: any): void => {
     if (!event || !event.id) {
       return;
     }
     const userId = event.id;
-    this.userService.getUserRoles().subscribe({
+    this.userService.getUserRoles(userId).subscribe({
       next: result => {
         const userRoles = result.filter(r => r.userId === userId);
         const userRoleIds = userRoles.map(r => r.roleId);

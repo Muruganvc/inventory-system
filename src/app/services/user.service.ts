@@ -125,16 +125,16 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  getUserRoles = (): Observable<UserRole[]> => {
+  getUserRoles = (userId : number): Observable<UserRole[]> => {
     return this.api
-      .get<UserRole[]>(`user-roles`)
+      .get<UserRole[]>(`user-roles/${userId}`)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
 
   addOrRemoveUserRole = (userId: number, roleId: number): Observable<boolean> => {
     return this.api
-      .post<null, boolean>(`add-or-remove-role/user/${userId}/role/${roleId}`, null)
+      .put<null, boolean>(`user/${userId}/role/${roleId}`, null)
       .pipe(map(res => this.api.handleResult(res)));
   };
 
