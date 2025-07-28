@@ -48,11 +48,13 @@ import { InvoiceComponent } from './components/order-summary/invoice/invoice.com
 import { BackupComponent } from './components/backup/backup.component';
 import { IncomeOutcomeSummaryReportComponent } from './components/dashboard/income-outcome-summary-report/income-outcome-summary-report.component';
 import { UserRoleMenuPermissionComponent } from './components/settings/user-role-menu-permission/user-role-menu-permission.component';
+import { CompanyExpiredNoticeComponent } from './components/company-expired-notice/company-expired-notice.component';
+import { HomeComponent } from './components/home/home.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-
   {
     path: '',
     component: LayoutComponent,
@@ -114,5 +116,6 @@ export const routes: Routes = [
 
   { path: 'invoice-print', component: InvoiceComponent },
   { path: 'unauthorized', component: UnauthorizedAccessComponent },
+  { path: 'company-expired', component: CompanyExpiredNoticeComponent },
   { path: '**', component: LoginComponent }
 ];

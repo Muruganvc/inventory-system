@@ -37,9 +37,9 @@ export class LoginComponent implements OnInit {
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
 
-  companyName : string='';
+  companyName: string = '';
 
-  constructor(private fb: FormBuilder, private router: Router,private configService: ConfigService) {
+  constructor(private fb: FormBuilder, private router: Router, private configService: ConfigService) {
     this.auth.logout();
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -64,6 +64,10 @@ export class LoginComponent implements OnInit {
       next: (user) => {
         if (user == null) {
           this.commonService.showError("Invalid credentials");
+          return;
+        }
+        if (!user.invCompanyInfo?.isActive) {
+          this.router.navigate(['/company-expired']);
           return;
         }
         this.commonService.setInvCompanyInfoData(user.invCompanyInfo);

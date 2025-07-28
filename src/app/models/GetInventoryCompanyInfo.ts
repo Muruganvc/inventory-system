@@ -13,4 +13,5 @@ export interface GetInventoryCompanyInfo {
   bankBranchName: string;
   bankAccountNo: string;
   bankBranchIFSC: string;
+  isActive : boolean;
 }

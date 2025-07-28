@@ -62,12 +62,12 @@
       <span>Add New User</span>
     </button>
 
-    <button *ngIf="isAdmin()" mat-menu-item (click)="onUserRolePermission()">
+    <button *ngIf="isSuperAdmin()" mat-menu-item (click)="onUserRolePermission()">
       <i class="fas fa-user-lock pd-10-rt"></i>
       <span>User Role Permission</span>
     </button>
 
-    <button *ngIf="isAdmin()" mat-menu-item (click)="onMenuPermission()">
+    <button *ngIf="isSuperAdmin()" mat-menu-item (click)="onMenuPermission()">
       <i class="fas fa-user-lock pd-10-rt"></i>
       <span>Menu Permission</span>
     </button>

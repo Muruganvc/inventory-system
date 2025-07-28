@@ -139,7 +139,7 @@ export class AuthService {
     const roles = decoded[roleClaimKey];
     const userRoles = Array.isArray(roles) ? roles : [roles];
 
-    if (userRoles.includes('SuperAdmin')) return true;
+    if (userRoles.includes('SUPERADMIN')) return true;
 
     return requiredRoles.some(role => userRoles.includes(role));
   }

@@ -128,7 +128,7 @@ export class LayoutComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.authService.logout();
+        this.authService.logout('/home');
       }
     });
   }

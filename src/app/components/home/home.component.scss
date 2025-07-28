@@ -1,0 +1,392 @@
+/* General reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar .logo h2 {
+  color: #e74c3c;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+}
+
+.navbar .nav-links li {
+  margin: 0 15px;
+}
+
+.navbar .nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.navbar .nav-links a:hover {
+  color: #e74c3c;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger .bar {
+  width: 25px;
+  height: 4px;
+  margin: 5px 0;
+  background-color: white;
+  transition: 0.3s;
+}
+
+/* Mobile Menu */
+.nav-links.active {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .navbar .hamburger {
+    display: flex;
+  }
+
+  .navbar .nav-links.active {
+    display: flex;
+  }
+
+  .navbar .nav-links li {
+    margin: 10px 0;
+  }
+
+  .content {
+    padding-top: 80px;
+  }
+}
+
+/* Section Styling */
+.section {
+  padding: 60px 20px;
+  background-color: #f4f4f4;
+  margin-top: 60px;
+}
+
+.section h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.section p {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #555;
+}
+
+/* Services List */
+#services ul {
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 1.2rem;
+}
+
+#services li {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Footer Section */
+.footer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.footer h4 {
+  font-size: 1.4rem;
+  color: #444;
+}
+
+/* Login Form */
+#login input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  max-width: 300px;
+  font-size: 1rem;
+}
+
+#login button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#login button:hover {
+  background-color: #c0392b;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Home Section */
+#home {
+  padding-top: 80px; /* to offset fixed navbar */
+}
+
+/* Content Layout */
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allows stacking in small screen sizes */
+  gap: 30px; /* Add spacing between text and image */
+}
+
+.text-content {
+  flex: 1; /* Allow text section to take available space */
+  width: 48%; /* Width in desktop */
+}
+
+.text-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.text-content p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.text-content .btn {
+  font-size: 1.1rem;
+  color: #fff;
+  background-color: #e74c3c;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.text-content .btn:hover {
+  background-color: #c0392b;
+}
+
+.image-content {
+  flex: 1;
+  width: 48%; /* Width in desktop */
+}
+
+.image-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Mobile View */
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column; /* Stack text and image vertically */
+    align-items: center;
+    gap: 20px;
+  }
+
+  .text-content, .image-content {
+    width: 100%; /* Allow both text and image to take full width on small screens */
+    text-align: center;
+  }
+}
+
+
+/* Contact Section Styles */
+.footer {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f4f4f4;
+  margin-top: 40px;
+}
+
+.footer h4 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.footer p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.contact-info ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.contact-info li {
+  margin: 10px 0;
+}
+
+.contact-info .social-links {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-info .social-links li {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.contact-info .social-links a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.contact-info .social-links a:hover {
+  color: #e74c3c;
+}
+
+
+/* Purchase Now Form Section Styling */
+.purchase-section {
+  // background-color: #e74c3c; /* Red background for emphasis */
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+  margin-top: 60px;
+}
+
+.purchase-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.purchase-section p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+/* Purchase Form Styling */
+.purchase-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #e74c3c;
+  outline: none;
+}
+
+/* Submit Button Styling */
+.purchase-btn {
+  font-size: 1.1rem;
+  color: #fff;
+  background-color: #c0392b; /* Darker red on hover */
+  border: none;
+  padding: 15px 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.purchase-btn:hover {
+  background-color: #e74c3c; /* Lighter red for hover effect */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .purchase-form {
+    width: 90%;
+  }
+}
+
+/* Purchase Section initially hidden */
+#purchase {
+  display: none;
+}
