@@ -16,7 +16,7 @@
     <span class="bar"></span>
   </div>
 </nav>
- 
+
 <!-- Purchase Now Form Section -->
 <div id="purchase" class="section purchase-section" style="display: none;">
   <div class="container">
@@ -50,9 +50,10 @@
 <div class="container" id="home">
   <div class="content">
     <div class="text-content">
-      <h1>Best electrical services with perfect repairs</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim</p>
-      <button  (click)="showPurchaseSection()"  class="btn">Purchase Now</button>
+      <h1>Best Electrical Services with Perfect Repairs</h1>
+      <p>We offer top-quality electrical services and repairs, ensuring your safety and satisfaction. Our skilled team is dedicated to providing prompt, reliable, and efficient solutions for all your electrical needs. From minor repairs to major installations, we’ve got you covered.</p>
+      <p>Contact us today for expert electrical services you can trust!</p>
+      <button (click)="showPurchaseSection()" class="btn">Purchase Now</button>
     </div>
     <div class="image-content">
       <img src="electrician.jpg" alt="Electrician working" />
@@ -60,7 +61,7 @@
   </div>
 </div>
 
-<!-- About Us Section -->
+<!-- Other Sections: About, Services, Contact -->
 <div id="about" class="section">
   <div class="container">
     <h2>About Us</h2>
@@ -72,13 +73,28 @@
 <div id="services" class="section">
   <div class="container">
     <h2>Our Services</h2>
-    <ul>
-      <li>Electrical Installations</li>
-      <li>Rewinding of Motors</li>
-      <li>Lighting Solutions</li>
-      <li>Electrical Repairs</li>
-      <li>Pumping Works</li>
-    </ul>
+    <div class="services-grid">
+      <div class="service-card">
+        <h3>Electrical Installations</h3>
+        <p>We provide professional electrical installation services for residential, commercial, and industrial properties.</p>
+      </div>
+      <div class="service-card">
+        <h3>Rewinding of Motors</h3>
+        <p>Our rewinding services restore motors and enhance their efficiency, helping businesses reduce downtime.</p>
+      </div>
+      <div class="service-card">
+        <h3>Lighting Solutions</h3>
+        <p>We offer comprehensive lighting solutions, from design to installation, to brighten up your space.</p>
+      </div>
+      <div class="service-card">
+        <h3>Electrical Repairs</h3>
+        <p>Our team specializes in fast and reliable electrical repairs, ensuring your system runs smoothly.</p>
+      </div>
+      <div class="service-card">
+        <h3>Pumping Works</h3>
+        <p>We provide expert pumping works for water, sewage, and other industrial applications to ensure your system operates efficiently.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -100,16 +116,3 @@
     </ul>
   </div>
 </div>
-
-<!-- Login Section -->
-<!-- <div id="login" class="section">
-  <div class="container">
-    <h2>Login</h2>
-    <p>Please enter your credentials to log in to your account.</p>
-    <form>
-      <input type="text" placeholder="Username" required />
-      <input type="password" placeholder="Password" required />
-      <button type="submit" class="btn">Login</button>
-    </form>
-  </div>
-</div> -->
