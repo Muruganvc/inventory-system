@@ -18,42 +18,69 @@
 </nav>
 
 <!-- Purchase Now Form Section -->
-<div id="purchase" class="section purchase-section" style="display: none;">
-  <div class="container">
-    <h2 style="color: black;" >Purchase Your Order(s)</h2>
-    <p>Fill out the form below to get started with our electrical services. We will get back to you as soon as possible.</p>
-    
-    <!-- Purchase Form -->
-    <form action="#" method="POST" class="purchase-form">
-      <div class="form-group">
-        <label for="name">Product Name:</label>
-        <input type="text" id="name" name="producName" required placeholder="Enter Product Name">
-      </div>
+<div class="purchase-section-container">
+  <button (click)="addNewProduct()">Add New Product</button>
 
-      <div class="form-group">
-        <label for="email">Quantity</label>
-        <input type="text" id="email" name="quantity" required placeholder="Enter Quantity">
-      </div>
- 
-      <div class="form-group">
-        <label for="message">Additional Details:</label>
-        <textarea id="message" name="message" rows="4" placeholder="Any additional information or special requests?"></textarea>
-      </div>
+  <!-- Dynamically display each product -->
+  <div *ngFor="let product of products; let i = index" class="purchase-section">
+    <div class="container">
+      <h2 style="color: black;">Purchase Your Order(s)</h2>
+      <p>Fill out the form below to get started with our electrical services. We will get back to you as soon as possible.</p>
 
-      <button type="submit" class="btn purchase-btn">Submit Request</button>
-    </form>
+      <!-- Purchase Form -->
+      <form (ngSubmit)="onSubmit(product)" #purchaseForm="ngForm">
+        <div class="form-group">
+          <label for="name{{i}}">Product Name:</label>
+          <input type="text" id="name{{i}}" [(ngModel)]="product.productName" name="productName{{i}}" required placeholder="Enter Product Name" />
+        </div>
+
+        <div class="form-group">
+          <label for="quantity{{i}}">Quantity</label>
+          <input type="text" id="quantity{{i}}" [(ngModel)]="product.quantity" name="quantity{{i}}" required placeholder="Enter Quantity" />
+        </div>
+
+        <div class="form-group">
+          <label for="message{{i}}">Additional Details:</label>
+          <textarea id="message{{i}}" [(ngModel)]="product.message" name="message{{i}}" rows="4" placeholder="Any additional information or special requests?"></textarea>
+        </div>
+
+        <div class="button-container">
+          <button type="submit" class="btn purchase-btn">Submit Request</button>
+          <button type="button" class="btn remove-btn" (click)="removeProduct(i)">Remove</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Button to Open the Purchase Items View Popup -->
+  <button class="btn view-btn" (click)="openPurchaseModal()">View Purchase Items</button>
+
+  <!-- View Purchase Items Popup -->
+  <div *ngIf="isModalOpen" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Purchase Summary:</h3>
+      <ul>
+        <li *ngFor="let product of products; let i = index">
+          <strong>Product Name:</strong> {{ product.productName }} <br />
+          <strong>Quantity:</strong> {{ product.quantity }} <br />
+          <strong>Additional Details:</strong> {{ product.message }} <br />
+        </li>
+      </ul>
+      <button class="btn close-btn" (click)="closePurchaseModal()">Close</button>
+    </div>
   </div>
 </div>
-
 
 <!-- Content Section: Home -->
 <div class="container" id="home">
   <div class="content">
     <div class="text-content">
       <h1>Best Electrical Services with Perfect Repairs</h1>
-      <p>We offer top-quality electrical services and repairs, ensuring your safety and satisfaction. Our skilled team is dedicated to providing prompt, reliable, and efficient solutions for all your electrical needs. From minor repairs to major installations, we’ve got you covered.</p>
+      <p>We offer top-quality electrical services and repairs, ensuring your safety and satisfaction. Our skilled team
+        is dedicated to providing prompt, reliable, and efficient solutions for all your electrical needs. From minor
+        repairs to major installations, we’ve got you covered.</p>
       <p>Contact us today for expert electrical services you can trust!</p>
-      <button (click)="showPurchaseSection()" class="btn">Purchase Now</button>
+      <button (click)="addNewProduct()" class="btn">Purchase Now</button>
     </div>
     <div class="image-content">
       <img src="electrician.jpg" alt="Electrician working" />
@@ -65,7 +92,8 @@
 <div id="about" class="section">
   <div class="container">
     <h2>About Us</h2>
-    <p>We provide top-notch electrical services and rewinding solutions for both industrial and residential needs. Our team is dedicated to ensuring safety, reliability, and high-quality service.</p>
+    <p>We provide top-notch electrical services and rewinding solutions for both industrial and residential needs. Our
+      team is dedicated to ensuring safety, reliability, and high-quality service.</p>
   </div>
 </div>
 
@@ -76,7 +104,8 @@
     <div class="services-grid">
       <div class="service-card">
         <h3>Electrical Installations</h3>
-        <p>We provide professional electrical installation services for residential, commercial, and industrial properties.</p>
+        <p>We provide professional electrical installation services for residential, commercial, and industrial
+          properties.</p>
       </div>
       <div class="service-card">
         <h3>Rewinding of Motors</h3>
@@ -92,7 +121,8 @@
       </div>
       <div class="service-card">
         <h3>Pumping Works</h3>
-        <p>We provide expert pumping works for water, sewage, and other industrial applications to ensure your system operates efficiently.</p>
+        <p>We provide expert pumping works for water, sewage, and other industrial applications to ensure your system
+          operates efficiently.</p>
       </div>
     </div>
   </div>

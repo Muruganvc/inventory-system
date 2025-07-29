@@ -9,16 +9,12 @@
 html,
 body {
   height: 100%;
-  margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
   background-color: #f8f8f8;
   color: #333;
   line-height: 1.6;
-  overflow-x: hidden;
-  /* Prevent horizontal scrolling */
-  overflow-y: auto;
-  /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-y: auto;   /* Enable vertical scrolling */
 }
 
 /* Navbar Styles */
@@ -132,141 +128,7 @@ body {
   color: #555;
 }
 
-/* Services List */
-#services ul {
-  list-style-type: none;
-  padding-left: 0;
-  font-size: 1.2rem;
-}
-
-#services li {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
 /* Footer Section */
-.footer {
-  text-align: center;
-  margin-top: 40px;
-}
-
-.footer h4 {
-  font-size: 1.4rem;
-  color: #444;
-}
-
-/* Login Form */
-#login input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 80%;
-  max-width: 300px;
-  font-size: 1rem;
-}
-
-#login button {
-  display: block;
-  margin: 10px auto;
-  padding: 10px 20px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-#login button:hover {
-  background-color: #c0392b;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Home Section */
-#home {
-  padding-top: 80px;
-  /* to offset fixed navbar */
-}
-
-/* Content Layout */
-.content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  /* Allows stacking in small screen sizes */
-  gap: 30px;
-  /* Add spacing between text and image */
-}
-
-.text-content {
-  flex: 1;
-  /* Allow text section to take available space */
-  width: 48%;
-  /* Width in desktop */
-}
-
-.text-content h1 {
-  font-size: 2.8rem;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.text-content p {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.text-content .btn {
-  font-size: 1.1rem;
-  color: #fff;
-  background-color: #e74c3c;
-  border: none;
-  padding: 12px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.text-content .btn:hover {
-  background-color: #c0392b;
-}
-
-.image-content {
-  flex: 1;
-  width: 48%;
-  /* Width in desktop */
-}
-
-.image-content img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Mobile View */
-@media screen and (max-width: 768px) {
-  .content {
-    flex-direction: column;
-    /* Stack text and image vertically */
-    align-items: center;
-    gap: 20px;
-  }
-
-  .text-content,
-  .image-content {
-    width: 100%;
-    /* Allow both text and image to take full width on small screens */
-    text-align: center;
-  }
-}
-
-
-/* Contact Section Styles */
 .footer {
   text-align: center;
   padding: 60px 20px;
@@ -319,6 +181,86 @@ html {
   color: #e74c3c;
 }
 
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Content Layout */
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.text-content {
+  flex: 1;
+  width: 48%;
+  padding-top: 75px;
+}
+
+.text-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.text-content p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.text-content .btn {
+  font-size: 1.1rem;
+  color: #fff;
+  background-color: #e74c3c;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.text-content .btn:hover {
+  background-color: #c0392b;
+}
+
+.image-content {
+  flex: 1;
+  width: 48%;
+  padding-top: 75px;
+}
+
+.image-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Mobile View */
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .text-content,
+  .image-content {
+    width: 100%;
+    text-align: center;
+  }
+
+  .text-content .btn {
+    width: 100%;
+  }
+}
 
 /* Purchase Now Form Section Styling */
 .purchase-section {
@@ -376,23 +318,42 @@ html {
   outline: none;
 }
 
-/* Submit Button Styling */
-.purchase-btn {
-  font-size: 1.1rem;
-  color: #fff;
-  background-color: #c0392b;
-  /* Darker red on hover */
-  border: none;
-  padding: 15px 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* Button Container to align buttons properly */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Submit and Remove Button Styling */
+.purchase-btn,
+.remove-btn {
+  padding: 12px 20px;
+  font-size: 1rem;
   border-radius: 5px;
   text-transform: uppercase;
 }
 
+.purchase-btn {
+  background-color: #28a745;
+}
+
 .purchase-btn:hover {
-  background-color: #e74c3c;
-  /* Lighter red for hover effect */
+  background-color: #218838;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+}
+
+.remove-btn:hover {
+  background-color: #c82333;
+}
+
+.remove-btn:focus {
+  outline: none;
 }
 
 /* Responsive Design */
@@ -400,11 +361,16 @@ html {
   .purchase-form {
     width: 90%;
   }
-}
 
-/* Purchase Section initially hidden */
-#purchase {
-  display: none;
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .purchase-btn,
+  .remove-btn {
+    width: 100%;
+  }
 }
 
 /* Services Section */
@@ -452,11 +418,118 @@ html {
 
 .service-card:hover {
   transform: translateY(-10px);
-  /* Hover effect */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .service-card:focus {
   outline: none;
-  /* Remove focus outline */
+}
+
+/* Purchase Summary Section */
+.view-purchase-items {
+  background-color: #f4f4f4;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.view-purchase-items h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.view-purchase-items ul {
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.view-purchase-items li {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.view-purchase-items li button {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.view-purchase-items li strong {
+  color: #333;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-content ul {
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.modal-content li {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  padding: 10px 15px;
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-transform: uppercase;
+}
+
+.modal-content button:hover {
+  background-color: #e74c3c;
+}
+
+/* Button Styling */
+.view-btn, .remove-btn, .purchase-btn {
+  margin-top: 20px;
+}
+
+/* Responsive Modal */
+@media screen and (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+  }
 }
