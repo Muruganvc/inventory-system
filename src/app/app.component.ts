@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { interval, Subscription, switchMap } from 'rxjs';
@@ -24,7 +24,7 @@ import { UserService } from './services/user.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly idleService = inject(IdleService);
   private readonly userService = inject(UserService);
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.startIdleWatcher();
-    // this.startHealthCheck();
+    this.startHealthCheck();
   }
 
   private startIdleWatcher(): void {
@@ -42,16 +42,23 @@ export class AppComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    // Unsubscribe to avoid memory leaks
+    if (this.healthCheckSub) {
+      this.healthCheckSub.unsubscribe();
+    }
+  }
+
   private startHealthCheck(): void {
-    // Call once immediately
+    // Perform the initial health check
     this.userService.checkHealth().subscribe({
       next: (res) => console.log('Initial health check:', res),
       error: (err) => console.error('Initial health check failed:', err)
     });
 
-    // Then every 10 minutes
-    this.healthCheckSub = interval(10 * 60 * 1000).pipe(
-      switchMap(() => this.userService.checkHealth())
+    // Set up the interval for 5 minutes (300,000ms)
+    this.healthCheckSub = interval(4.5 * 60 * 1000).pipe(
+      switchMap(() => this.userService.checkHealth())  // Call the health check every 5 minutes
     ).subscribe({
       next: (res) => console.log('Health check success:', res),
       error: (err) => console.error('Health check failed:', err)
