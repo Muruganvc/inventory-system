@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { KeyValuePair } from '../shared/common/KeyValuePair';
 import { ApiService } from '../shared/services/api.service';
 import { ProductRequest } from '../models/ProductRequest';
-import { ProductsResponse, UpdateProductQuantityPayload } from '../models/ProductsResponse';
+import { ProductsResponse, RowVersion, UpdateProductQuantityPayload } from '../models/ProductsResponse';
 import { UpdateProductRequest } from '../models/UpdateProductRequest';
 import { map, Observable } from 'rxjs';
 import { BulkUpload, BulkUploadRequest } from '../models/BulkUpload';
@@ -52,9 +52,9 @@ export class ProductService {
       .pipe(map(res => this.api.handleResult(res)));
   };
 
-  setActiveProduct = (productId: number): Observable<boolean> => {
+  setActiveProduct = (productId: number, rowVersion: RowVersion): Observable<boolean> => {
     return this.api
-      .put<null, boolean>(`product/activate/${productId}`, null)
+      .put<RowVersion, boolean>(`product/${productId}/status`, rowVersion)
       .pipe(map(res => this.api.handleResult(res)));
   };
 

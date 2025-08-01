@@ -4,6 +4,11 @@
   (newOpen)="newOpen($event)">
 </app-custom-table>
 <div class="export-btn-container">
+  <div>
+    <label class="form-label">Filter by Active</label>
+    <mat-checkbox (change)="onCheckboxChange($event)"></mat-checkbox>
+  </div>
+
   <button mat-flat-button class="btn-export-excel" (click)="exportToExcel()">
     <i class="bi bi-file-earmark-excel"></i> Export to Excel
   </button>

@@ -6,15 +6,16 @@ import { ProductService } from '../../../services/product.service';
 import { AuthService } from '../../../services/auth.service';
 import { CommonService, ExcelColumn } from '../../../shared/services/common.service';
 
-import { ProductsResponse, UpdateProductQuantityPayload } from '../../../models/ProductsResponse';
+import { ProductsResponse, RowVersion, UpdateProductQuantityPayload } from '../../../models/ProductsResponse';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CustomTableComponent, MatButtonModule],
+  imports: [CustomTableComponent, MatButtonModule, MatCheckboxModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
@@ -23,6 +24,7 @@ export class ProductListComponent implements OnInit {
   private readonly commonService = inject(CommonService);
 
   products: ProductsResponse[] = [];
+  allProducts: ProductsResponse[] = [];
   tableActions: any[] = [];
   backupRow: { [id: string]: ProductsResponse } = {};
   role: boolean = true;
@@ -68,6 +70,7 @@ export class ProductListComponent implements OnInit {
         });
 
         this.products = result;
+        this.allProducts = result;
         this.appendIsActiveColumnIfAdmin();
       }
     });
@@ -166,7 +169,7 @@ export class ProductListComponent implements OnInit {
 
   // resetTableActions(): void {
   //   this.tableActions = this.getDefaultActions();
-    
+
   // }
   resetTableActions(): void {
     // Reset all rows to not be in edit mode
@@ -205,7 +208,10 @@ export class ProductListComponent implements OnInit {
   }
 
   handleFieldChange(event: { row: ProductsResponse; key: string; value: any }) {
-    this.productService.setActiveProduct(event.row.productId ?? 0).subscribe({
+    var rowVersion: RowVersion = {
+      rowVersion: event.row.rowVersion
+    }
+    this.productService.setActiveProduct(event.row.productId ?? 0, rowVersion).subscribe({
       next: result => {
         if (result) {
           this.getProducts();
@@ -265,4 +271,14 @@ export class ProductListComponent implements OnInit {
     this.products = this.commonService.sortByKey(this.products, 'productFullName', 'asc');
     this.commonService.exportToExcel<ProductsResponse>(this.products, columns, 'Products', 'Products');
   }
+
+
+
+ onCheckboxChange(event: any): void {
+  const isChecked = event.checked;
+  this.products = isChecked 
+    ? this.allProducts.filter(product => product.isActive === isChecked)
+    : [...this.allProducts]; // Make a copy when unchecked to restore the original
+}
+
 }
