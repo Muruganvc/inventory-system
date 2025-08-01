@@ -5,6 +5,6 @@ export interface ProductRequest {
     mrp: number;
     salesPrice: number;
     landingPrice:number;
-    totalQuantity: number;
+    quantity: number;
     isActive: boolean;
 }

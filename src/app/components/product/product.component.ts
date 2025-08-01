@@ -266,7 +266,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: Number(value.mrp) || 0,
       salesPrice: Number(value.salesPrice) || 0,
       landingPrice: Number(value.landingPrice) || 0,
-      totalQuantity: Number(value.quantity) || 0,
+      quantity: Number(value.quantity) || 0,
       isActive: !!value.isActive
     };
   }
