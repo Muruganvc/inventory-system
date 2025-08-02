@@ -1,3 +1,5 @@
-<app-custom-table [data]="backUpResponse" [title]="'Database BackUp'" [addBtnTitle]="'Create Backup'"
-    [columns]="columns" [showActions]="false" [actions]="[]" (newOpen)="createBack($event)">
-</app-custom-table>
+<div class="export-btn-container">
+    <button mat-flat-button class="btn-export-excel" (click)="createBack()">
+        <i class="menu-icon bi bi-file-earmark-excel"></i> Create Database Backup
+    </button>
+</div>

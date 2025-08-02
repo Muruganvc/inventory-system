@@ -3,11 +3,12 @@ import { DatabaseBackupResponse } from '../../shared/common/DatabaseBackupRespon
 import { BackupService } from '../../services/backup.service';
 import { CustomTableComponent } from "../../shared/components/custom-table/custom-table.component";
 import { CommonService } from '../../shared/services/common.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-backup',
   standalone: true,
-  imports: [CustomTableComponent],
+  imports: [MatButtonModule],
   templateUrl: './backup.component.html',
   styleUrl: './backup.component.scss'
 })
@@ -17,8 +18,7 @@ export class BackupComponent implements OnInit {
   private readonly commonService = inject(CommonService);
   backUpResponse: DatabaseBackupResponse[] = [];
 
-  ngOnInit(): void {
-    this.getBack();
+  ngOnInit(): void { 
   }
 
   columns: {
@@ -39,18 +39,8 @@ export class BackupComponent implements OnInit {
         }
       }
     ];
-
-  getBack = (): void => {
-    // this.backUpService.getBackUp().subscribe({
-    //   next: result => {
-    //     if (!!result) {
-    //       this.backUpResponse = result;
-    //     }
-    //   }
-    // });
-  }
-
-  createBack = (aa: any): void => {
+ 
+  createBack = (): void => {
     this.backUpService.createBackupNew().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
