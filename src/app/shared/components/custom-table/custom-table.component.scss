@@ -163,7 +163,7 @@
 }
 
 .page-header {
-  padding: 16px 24px 8px;
+  padding: 16px 0px 8px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
@@ -183,6 +183,7 @@
   /* Green */
   color: white;
   font-weight: 600;
+  border-radius: 3px;
 }
 
 .add-button:hover {

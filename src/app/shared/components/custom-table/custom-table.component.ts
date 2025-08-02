@@ -134,7 +134,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     );
   }
   pageIndex = 0;
-  pageSize = 5;
+  pageSize = 10;
   get paginatedMobileData(): T[] {
     const start = this.pageIndex * this.pageSize;
     return this.filteredData.slice(start, start + this.pageSize);

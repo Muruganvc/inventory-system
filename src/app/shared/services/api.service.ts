@@ -111,6 +111,11 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
+  downloadSqlFile(url: string): Observable<Blob> {
+    return this.http.post<Blob>(`${this.config.baseUrl}${url}`, {}, { responseType: 'blob' as 'json' })
+      .pipe(catchError(this.handleError));
+  }
+
   /**
    * HTTP PUT request
    */

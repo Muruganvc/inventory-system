@@ -189,6 +189,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
+
+    if(params.form.invalid) return;
     const formErrors = params.form.errors;
     const errorMessages = formErrors
       ? Object.values(formErrors)

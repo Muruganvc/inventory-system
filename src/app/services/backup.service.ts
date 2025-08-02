@@ -21,6 +21,14 @@ export class BackupService {
       );
   }
 
+
+  createBackupNew(): Observable<Blob> {
+    return this.api
+      .downloadSqlFile(
+        `database-backup`
+      );
+  }
+
   getBackUp(): Observable<DatabaseBackupResponse[]> {
     return this.api
       .get<DatabaseBackupResponse[]>('backup')

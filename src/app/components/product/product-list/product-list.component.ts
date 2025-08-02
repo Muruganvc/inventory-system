@@ -274,11 +274,22 @@ export class ProductListComponent implements OnInit {
 
 
 
- onCheckboxChange(event: any): void {
-  const isChecked = event.checked;
-  this.products = isChecked 
-    ? this.allProducts.filter(product => product.isActive === isChecked)
-    : [...this.allProducts]; // Make a copy when unchecked to restore the original
-}
+  onCheckboxChange1(event: any): void {
+    const isChecked = event.checked;
+    this.products = isChecked
+      ? this.allProducts.filter(product => product.isActive === isChecked)
+      : [...this.allProducts]; // Make a copy when unchecked to restore the original
+  }
 
+ 
+
+  onCheckboxChange(event: any): void {
+    const isChecked = event.checked;
+
+    if (isChecked) {
+      this.products = this.allProducts.filter(p => Boolean(p.isActive));
+    } else {
+      this.products = [...this.allProducts];
+    }
+  }
 }

@@ -99,6 +99,7 @@ export class NewUserComponent implements OnInit {
   }
 
   private handleSave(form: any): void {
+    if(form.form.invalid) return;
     const value = form.form.value;
     const newUser: NewUserRequest = {
       email: value.email,
