@@ -453,3 +453,18 @@ ng-select.ng-invalid.ng-touched .ng-select-container {
     }
   }
 }
+
+button{
+  border-radius: 5px !important;
+}
+
+/* Ensure placeholder is visible */
+ng-select .ng-select-container .ng-placeholder {
+  visibility: visible !important;
+  color: #999; /* Optional: Adjust color for better visibility */
+}
+
+/* Optionally increase font size */
+ng-select .ng-select-container .ng-placeholder {
+  font-size: 16px;
+}

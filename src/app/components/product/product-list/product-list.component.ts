@@ -11,11 +11,12 @@ import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialo
 import { CustomTableComponent } from '../../../shared/components/custom-table/custom-table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { NgSelectModule } from "@ng-select/ng-select";
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CustomTableComponent, MatButtonModule, MatCheckboxModule],
+  imports: [CustomTableComponent, MatButtonModule, MatCheckboxModule, NgSelectModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
@@ -342,4 +343,11 @@ export class ProductListComponent implements OnInit {
       this.products = [...this.allProducts];
     }
   }
+   selectedCountry: string;
+  countries = [
+    { name: 'United States', code: 'US' },
+    { name: 'Canada', code: 'CA' },
+    { name: 'Australia', code: 'AU' },
+    { name: 'India', code: 'IN' }
+  ];
 }

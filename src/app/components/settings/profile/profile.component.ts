@@ -75,6 +75,7 @@ export class ProfileComponent implements OnInit {
 
           if (user.profileImageBase64) {
             this.imagePreview = user.profileImageBase64;
+            this.selectedFile = this.commonService.base64ToFile(user.profileImageBase64, 'file');
           }
         }
       }

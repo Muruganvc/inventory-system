@@ -28,7 +28,7 @@
     </button>
 
     <!-- Sub-menu Trigger -->
-    <button *ngIf="isAdmin() || isSuperAdmin()" mat-menu-item [matMenuTriggerFor]="userMgmtMenu">
+    <button *ngIf="isSuperAdmin()" mat-menu-item [matMenuTriggerFor]="userMgmtMenu">
       <i class="fas fa-users-cog pd-10-rt"></i>
       <span>User Management</span>
 

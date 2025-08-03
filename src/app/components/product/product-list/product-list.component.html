@@ -1,3 +1,12 @@
+ 
+<ng-select style="padding-top: 100px;"
+  [items]="countries"
+  bindLabel="name"
+  bindValue="code" 
+  [placeholder]="selectedCountry ? '' : 'Select a country'"
+  [clearable]="true"
+></ng-select>
+
 <app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="!isUser() ? 'Add Product' : null"
   [columns]="columns" [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)"
   (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)"

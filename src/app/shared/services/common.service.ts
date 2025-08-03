@@ -249,4 +249,17 @@ export class CommonService {
     });
   }
 
+
+  base64ToFile = (base64: string, fileName: string): File => {
+    const base64Data = base64.split(',')[1];
+    const byteCharacters = atob(base64Data);
+    const byteArray = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteArray[i] = byteCharacters.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray], { type: 'application/octet-stream' });
+    const file = new File([blob], fileName, { type: blob.type });
+    return file;
+  }
+
 }

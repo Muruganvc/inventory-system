@@ -71,18 +71,18 @@ export class InventoryCompanyInfoComponent implements OnInit {
 
   private initializeFields(): void {
     const fieldsConfig = [
-      { name: 'invCompanyName', label: 'Inventory Company Name', colSpan: 6,maxLength: 100 },
-      { name: 'description', label: 'Description', colSpan: 6,maxLength: 100 },
-      { name: 'address', label: 'Address',maxLength: 100 },
-      { name: 'email', label: 'Email', colSpan: 6,maxLength: 50 },
-      { name: 'mobileNo', label: 'Mobile No', colSpan: 6,maxLength: 10 },
-      { name: 'gstNo', label: 'GST Number',maxLength: 15 },
-      { name: 'apiVersion', label: 'API Version', colSpan: 6,maxLength: 20 },
-      { name: 'uiVersion', label: 'UI Version', colSpan: 6 ,maxLength: 20},
-      { name: 'bankName', label: 'Bank Name', colSpan: 6,maxLength: 20 },
-      { name: 'bankBranchName', label: 'Bank Branch Name', colSpan: 6,maxLength: 20 },
-      { name: 'bankAccountNo', label: 'Bank Account No.', colSpan: 6,maxLength: 20 },
-      { name: 'bankBranchIFSC', label: 'Bank Branch IFSC', colSpan: 6,maxLength: 10 }
+      { name: 'invCompanyName', label: 'Inventory Company Name', colSpan: 6, maxLength: 100 },
+      { name: 'description', label: 'Description', colSpan: 6, maxLength: 100 },
+      { name: 'address', label: 'Address', maxLength: 100 },
+      { name: 'email', label: 'Email', colSpan: 6, maxLength: 50 },
+      { name: 'mobileNo', label: 'Mobile No', colSpan: 6, maxLength: 10 },
+      { name: 'gstNo', label: 'GST Number', maxLength: 15 },
+      { name: 'apiVersion', label: 'API Version', colSpan: 6, maxLength: 20 },
+      { name: 'uiVersion', label: 'UI Version', colSpan: 6, maxLength: 20 },
+      { name: 'bankName', label: 'Bank Name', colSpan: 6, maxLength: 20 },
+      { name: 'bankBranchName', label: 'Bank Branch Name', colSpan: 6, maxLength: 20 },
+      { name: 'bankAccountNo', label: 'Bank Account No.', colSpan: 6, maxLength: 20 },
+      { name: 'bankBranchIFSC', label: 'Bank Branch IFSC', colSpan: 6, maxLength: 10 }
     ];
 
     this.fields = fieldsConfig.map(f => ({
@@ -134,6 +134,9 @@ export class InventoryCompanyInfoComponent implements OnInit {
     }
   }
 
+ 
+
+
   private loadCompanyInfo(): void {
     this.userService.getInventoryCompanyInfo(1).subscribe({
       next: info => {
@@ -155,6 +158,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
 
           if (info.qrCodeBase64) {
             this.imagePreview = info.qrCodeBase64;
+            this.selectedFile = this.commonService.base64ToFile(info.qrCodeBase64, 'file');
           }
 
           this.title = `Update ${this.title}`;

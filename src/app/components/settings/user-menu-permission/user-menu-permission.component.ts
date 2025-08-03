@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-user-menu-permission',
   standalone: true,
-  imports: [CommonModule, MatButtonModule,NgSelectModule, FormsModule, MatTableModule, MatFormFieldModule, MatCheckboxModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, NgSelectModule, FormsModule, MatTableModule, MatFormFieldModule, MatCheckboxModule, MatIconModule],
   templateUrl: './user-menu-permission.component.html',
   styleUrl: './user-menu-permission.component.scss'
 })
@@ -72,20 +72,19 @@ export class UserMenuPermissionComponent {
     level: number = 0
   ): void {
     for (const item of menuItems) {
-      const matched = permissionItems.find(p => p.id === item.id);
-      const hasPermission = matched ? matched.hasPermission === true : false;
-
+      const matched = permissionItems.find(p => p.id === item.id || p.id === item.parentId);
+      const hasPermission = Boolean(matched);
       this.flatMenu.push({
         ...item,
         permission: hasPermission,
         level
       });
-
       if (item.subMenuItem?.length) {
         this.flattenMenu(item.subMenuItem, permissionItems, level + 1);
       }
     }
   }
+
   onUserSelected = (event: any): void => {
     if (!event) {
       this.flatMenu = [];
