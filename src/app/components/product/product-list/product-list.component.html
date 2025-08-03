@@ -1,7 +1,8 @@
 <app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="!isUser() ? 'Add Product' : null"
   [columns]="columns" [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)"
   (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)"
-  (newOpen)="newOpen($event)">
+  (newOpen)="newOpen($event)"  [filterActions]="filterActions" 
+  (filterActionClick)="onFilterActionClick($event)" >
 </app-custom-table>
 <div class="export-btn-container">
   <!-- <div>

@@ -4,7 +4,7 @@ import { CustomTableComponent } from '../../../../shared/components/custom-table
 import { CompanyService } from '../../../../services/company.service';
 import { AuthService } from '../../../../services/auth.service';
 import { GetCompanyQueryResponse } from '../../../../models/GetCompanyQueryResponse';
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
 import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
 
 @Component({
@@ -16,6 +16,7 @@ import { CommonService, ExcelColumn } from '../../../../shared/services/common.s
 })
 export class CompanyListComponent implements OnInit {
   companies: GetCompanyQueryResponse[] = [];
+  allCompanies: GetCompanyQueryResponse[] = [];
 
   // Injected services
   private readonly router = inject(Router);
@@ -28,7 +29,7 @@ export class CompanyListComponent implements OnInit {
     { key: 'companyName', label: 'Company Name', align: 'left', isHidden: false },
     { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
-    { key: 'createdDate', label: 'Created Date', align: 'left', isHidden: false,pipe: 'date' },
+    { key: 'createdDate', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false },
   ];
   // Action buttons for the table
@@ -48,7 +49,10 @@ export class CompanyListComponent implements OnInit {
 
   private loadCompanies(): void {
     this.companyService.getCompanies(true).subscribe({
-      next: (result) => (this.companies = result)
+      next: (result) => {
+        this.companies = result;
+        this.allCompanies = result;
+      }
     });
   }
 
@@ -82,5 +86,58 @@ export class CompanyListComponent implements OnInit {
     ];
     this.companies = this.commonService.sortByKey(this.companies, 'companyName', 'asc');
     this.commonService.exportToExcel<GetCompanyQueryResponse>(this.companies, columns, 'Companies', 'CompanyList');
+  }
+
+  filterActions = [
+    {
+      iconClass: 'fas fa-sort-alpha-down',
+      action: 'CompanyNameAsc',
+      label: 'Company Name: A to Z'
+    },
+    {
+      iconClass: 'fas fa-sort-alpha-up-alt',
+      action: 'CompanyNameAscDesc',
+      label: 'Company Name: Z to A'
+    },
+    {
+      iconClass: 'fas fa-check-circle',  // Active icon
+      action: 'IsActiveTrue',
+      label: 'Is Active: True'
+    },
+    {
+      iconClass: 'fas fa-times-circle',  // Inactive icon
+      action: 'IsActiveFalse',
+      label: 'Is Active: False'
+    },
+    {
+      iconClass: 'fas fa-sync-alt',  // Reset icon
+      action: 'Reset',
+      label: 'Reset'
+    }
+  ];
+
+
+  onFilterActionClick(event: { action: string }) {
+    let filteredcompanies: GetCompanyQueryResponse[] = [];
+    switch (event.action) {
+      case 'CompanyNameAsc':
+        filteredcompanies = [...this.allCompanies].sort((a, b) => a.companyName.localeCompare(b.companyName));
+        break;
+      case 'CompanyNameAscDesc':
+        filteredcompanies = [...this.allCompanies].sort((a, b) => b.companyName.localeCompare(a.companyName));
+        break;
+      case 'IsActiveTrue':
+        filteredcompanies = this.allCompanies.filter(comp => comp.isActive === true);
+        break;
+      case 'IsActiveFalse':
+        filteredcompanies = this.allCompanies.filter(comp => comp.isActive === false);
+        break;
+      case 'Reset':
+        filteredcompanies = [...this.allCompanies]
+        break;
+      default:
+        break;
+    }
+    this.companies = filteredcompanies;
   }
 }

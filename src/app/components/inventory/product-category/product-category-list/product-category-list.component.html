@@ -1,6 +1,7 @@
 <app-custom-table [data]="productCategories" [title]="'Product Category List'"
     [addBtnTitle]=" !isUser() ? 'Add Product Category' : null" [columns]="columns" [showActions]="!isUser()"
-    [actions]="tableActions" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
+    [actions]="tableActions" (actionClick)="onAction($event)" (newOpen)="newOpen($event)"
+    [filterActions]="filterActions" (filterActionClick)="onFilterActionClick($event)">
 </app-custom-table>
 <div class="export-btn-container">
     <button mat-flat-button class="btn-export-excel" (click)="exportToExcel()">

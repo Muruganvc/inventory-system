@@ -16,6 +16,7 @@ import { CommonService, ExcelColumn } from '../../../../shared/services/common.s
 })
 export class ProductCategoryListComponent implements OnInit {
   productCategories: GetProductCategoryQueryResponse[] = [];
+  allProductCategories: GetProductCategoryQueryResponse[] = [];
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
@@ -28,6 +29,7 @@ export class ProductCategoryListComponent implements OnInit {
             ...a,
             productFullName: `${a.companyName} ${a.categoryName} ${a.productCategoryName}`
           }));
+          this.allProductCategories = this.productCategories;
         }
       }
     });
@@ -58,11 +60,11 @@ export class ProductCategoryListComponent implements OnInit {
   isUser = (): boolean => {
     return !this.authService.hasRole(["ADMIN"]);
   }
- 
+
   onAction(event: { row: any; action: string }) {
     const { row, action } = event;
     switch (action) {
-      case 'edit': this.onEdit(row); break; 
+      case 'edit': this.onEdit(row); break;
     }
   }
 
@@ -99,10 +101,63 @@ export class ProductCategoryListComponent implements OnInit {
       },
       { header: 'Created By', key: 'username', width: 20 }
     ];
-  
+
     this.productCategories = this.commonService.sortByKey(this.productCategories, 'productFullName', 'asc');
 
     this.commonService.exportToExcel<GetProductCategoryQueryResponse>(this.productCategories, columns, 'Company Category Product', 'Company Category Product');
+  }
+
+
+  filterActions = [
+    {
+      iconClass: 'fas fa-sort-alpha-down',
+      action: 'CategoryNameAsc',
+      label: 'Category Name: A to Z'
+    },
+    {
+      iconClass: 'fas fa-sort-alpha-up-alt',
+      action: 'CategoryNameAscDesc',
+      label: 'Category Name: Z to A'
+    },
+    {
+      iconClass: 'fas fa-check-circle',  // Active icon
+      action: 'IsActiveTrue',
+      label: 'Is Active: True'
+    },
+    {
+      iconClass: 'fas fa-times-circle',  // Inactive icon
+      action: 'IsActiveFalse',
+      label: 'Is Active: False'
+    },
+    {
+      iconClass: 'fas fa-sync-alt',  // Reset icon
+      action: 'Reset',
+      label: 'Reset'
+    }
+  ];
+
+  onFilterActionClick(event: { action: string }) {
+    let filteredCategories: GetProductCategoryQueryResponse[] = [];
+    switch (event.action) {
+      case 'CategoryNameAsc':
+        filteredCategories = [...this.allProductCategories].sort((a, b) => a.productCategoryName.localeCompare(b.productCategoryName));
+        break;
+      case 'CategoryNameAscDesc':
+        filteredCategories = [...this.allProductCategories].sort((a, b) => b.productCategoryName.localeCompare(a.productCategoryName));
+        break;
+      case 'IsActiveTrue':
+        filteredCategories = this.allProductCategories.filter(cat => cat.isActive === true);
+        break;
+      case 'IsActiveFalse':
+        filteredCategories = this.allProductCategories.filter(cat => cat.isActive === false);
+        break;
+      case 'Reset':
+        filteredCategories = [...this.allProductCategories]
+        break;
+      default:
+        break;
+    }
+    this.productCategories = filteredCategories;
   }
 
 }

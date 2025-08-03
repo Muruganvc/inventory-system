@@ -54,6 +54,59 @@ export class ProductListComponent implements OnInit {
     this.resetTableActions();
   }
 
+  filterActions = [
+    {
+      iconClass: 'fas fa-sort-alpha-down',
+      action: 'ProductNameAsc',
+      label: 'Product Name: A to Z'
+    },
+    {
+      iconClass: 'fas fa-sort-alpha-up-alt',
+      action: 'ProductNameAscDesc',
+      label: 'Product Name: Z to A'
+    },
+    {
+      iconClass: 'fas fa-check-circle',  // Active icon
+      action: 'IsActiveTrue',
+      label: 'Is Active: True'
+    },
+    {
+      iconClass: 'fas fa-times-circle',  // Inactive icon
+      action: 'IsActiveFalse',
+      label: 'Is Active: False'
+    },
+    {
+      iconClass: 'fas fa-sync-alt',  // Reset icon
+      action: 'Reset',
+      label: 'Reset'
+    }
+  ];
+
+
+  onFilterActionClick(event: { action: string }) {
+    let filteredProducts: ProductsResponse[] = [];
+    switch (event.action) {
+      case 'ProductNameAsc':
+        filteredProducts = [...this.allProducts].sort((a, b) => a.productName.localeCompare(b.productName));
+        break;
+      case 'ProductNameAscDesc':
+        filteredProducts = [...this.allProducts].sort((a, b) => b.productName.localeCompare(a.productName));
+        break;
+      case 'IsActiveTrue':
+        filteredProducts = this.allProducts.filter(product => product.isActive === true);
+        break;
+      case 'IsActiveFalse':
+        filteredProducts = this.allProducts.filter(product => product.isActive === false);
+        break;
+      case 'Reset':
+        filteredProducts = [...this.allProducts]
+        break;
+      default:
+        break;
+    }
+    this.products = filteredProducts;
+  }
+
   isUser = (): boolean => {
     return !this.authService.hasRole(["ADMIN"]);
   }
@@ -249,7 +302,6 @@ export class ProductListComponent implements OnInit {
 
   exportToExcel = (): void => {
     const columns: ExcelColumn<ProductsResponse>[] = [
-      { header: 'Product Full Name', key: 'productFullName', width: 30 },
       { header: 'Product ID', key: 'productId', width: 12 },
       { header: 'Product Name', key: 'productName', width: 25 },
       { header: 'Product Category ID', key: 'productCategoryId', width: 20 },
@@ -264,9 +316,7 @@ export class ProductListComponent implements OnInit {
       { header: 'Landing Price', key: 'landingPrice', width: 15 },
       { header: 'Quantity', key: 'quantity', width: 10 },
       { header: 'Is Active', key: 'isActive', width: 10 },
-      { header: 'User Name', key: 'userName', width: 20 },
-      { header: 'Company Category Product Name', key: 'companyCategoryProductName', width: 30 },
-      { header: 'Company Category Product Name ID', key: 'companyCategoryProductNameId', width: 30 }
+      { header: 'User Name', key: 'createdBy', width: 20 }
     ];
     this.products = this.commonService.sortByKey(this.products, 'productFullName', 'asc');
     this.commonService.exportToExcel<ProductsResponse>(this.products, columns, 'Products', 'Products');
@@ -281,7 +331,7 @@ export class ProductListComponent implements OnInit {
       : [...this.allProducts]; // Make a copy when unchecked to restore the original
   }
 
- 
+
 
   onCheckboxChange(event: any): void {
     const isChecked = event.checked;

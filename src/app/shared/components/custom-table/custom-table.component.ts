@@ -14,6 +14,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NumberOnlyDirective } from '../../services/NumberOnlyDirective ';
+import { MatMenuModule } from '@angular/material/menu';
 
 export interface TableRow {
   id: string | number;
@@ -46,7 +47,7 @@ export interface TableColumn {
     MatCardModule,
     MatButtonModule, MatIconModule,
     LayoutModule, MatExpansionModule, MatCheckboxModule,
-    MatTooltipModule, NumberOnlyDirective
+    MatTooltipModule, NumberOnlyDirective,MatMenuModule
   ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
@@ -57,6 +58,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     if (!this.isMobile) {
       this.dataSource.filter = this.searchTerm.trim().toLowerCase();
     }
+    this.filterData();
     // On mobile, filteredData getter will take care of filtering
   }
   @Input() data: T[] = [];
@@ -92,6 +94,14 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     condition: (row: any) => boolean;
   }[] = [];
   @Output() actionClick = new EventEmitter<{ row: any; action: string }>();
+
+
+  @Input() filterActions: { iconClass: string; action: string, label : string }[] = [];
+  @Output() filterActionClick = new EventEmitter<{ action: string }>();
+
+  onActionClick(action: string) {
+    this.filterActionClick.emit({ action });
+  }
 
   constructor(private breakpointObserver: BreakpointObserver, private cd: ChangeDetectorRef) {
     this.breakpointObserver.observe([
@@ -152,6 +162,14 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     // handle the action
   }
 
+
+  filterData() {
+    this.paginatedMobileData.filter(row => {
+      return Object.keys(row).some(key => {
+        return String(row[key]).toLowerCase().includes(this.searchTerm.toLowerCase());
+      });
+    });
+  }
 
   ngOnInit() {
     this.breakpointObserver.observe([

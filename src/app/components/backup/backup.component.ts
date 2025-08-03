@@ -18,7 +18,7 @@ export class BackupComponent implements OnInit {
   private readonly commonService = inject(CommonService);
   backUpResponse: DatabaseBackupResponse[] = [];
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
   }
 
   columns: {
@@ -39,16 +39,22 @@ export class BackupComponent implements OnInit {
         }
       }
     ];
- 
+
   createBack = (): void => {
     this.backUpService.createBackupNew().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
+ 
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}_` +
+          `${currentDate.getHours().toString().padStart(2, '0')}-${currentDate.getMinutes().toString().padStart(2, '0')}-${currentDate.getSeconds().toString().padStart(2, '0')}`;
+ 
         a.href = url;
-        a.download = 'database_backup.sql';
+        a.download = `database_backup_${formattedDate}.sql`;
         a.click();
         window.URL.revokeObjectURL(url);
+
         this.commonService.showSuccess('SQL backup downloaded successfully!');
       },
       error: (error) => {
@@ -56,4 +62,5 @@ export class BackupComponent implements OnInit {
       },
     });
   };
+
 }

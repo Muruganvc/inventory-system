@@ -339,3 +339,26 @@
   }
 }
 
+
+.search-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // margin-bottom: 10px;
+}
+
+.search-box-container {
+  flex-grow: 1; /* This will allow the search box to take up available space */
+  margin-right: 10px; /* Space between the search box and the filter icon */
+}
+
+.filter-options {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 18px;
+}
+
+.search-box input {
+  width: 100%; /* Make the search box fill its container */
+}

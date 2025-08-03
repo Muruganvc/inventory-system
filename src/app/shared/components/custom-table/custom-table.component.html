@@ -9,11 +9,29 @@
     </ng-container>
   </div>
 
+  <div class="search-filter-container">
+    <div class="search-box-container" [ngStyle]="{
+         'width': filterActions.length === 0 ? '100%' : 'auto',
+         'margin-right': filterActions.length === 0 ? '0' : '10px' 
+       }">
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" />
+      </mat-form-field>
+    </div>
 
-  <mat-form-field appearance="outline" class="search-box">
-    <mat-label>Search</mat-label>
-    <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" />
-  </mat-form-field>
+    <div class="filter-options" *ngIf="filterActions.length > 0">
+      <i [matMenuTriggerFor]="filterMenu" class="fas fa-ellipsis-v vertical-dots" tabindex="0"
+        aria-label="More options"></i>
+      <mat-menu #filterMenu="matMenu">
+        <button mat-menu-item *ngFor="let action of filterActions" (click)="onActionClick(action.action)">
+          <i class="{{ action.iconClass }}"></i>
+          <span>&nbsp;{{ action.label }}</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
 </ng-container>
 
 <div class="mat-elevation-z8">
@@ -108,20 +126,19 @@
               <!-- Edit Mode -->
               <ng-container *ngIf="isEditing(row)">
                 <ng-container [ngSwitch]="col.type">
-
                   <!-- Checkbox -->
                   <ng-container *ngSwitchCase="'checkbox'">
-                    <mat-checkbox [(ngModel)]="editedRow[col.key]"></mat-checkbox>
+                    <mat-checkbox [(ngModel)]="row[col.key]"></mat-checkbox>
                   </ng-container>
 
                   <!-- Textbox -->
                   <ng-container *ngSwitchCase="'textbox'">
-                    <input [(ngModel)]="editedRow[col.key]" class="custom-input" maxlength="8" />
+                    <input [(ngModel)]="row[col.key]" class="custom-input" maxlength="8" />
                   </ng-container>
 
                   <!-- Default Fallback -->
                   <ng-container *ngSwitchDefault>
-                    <input [(ngModel)]="editedRow[col.key]" class="custom-input" />
+                    {{ col.pipe === 'date' ? (row[col.key] | date: 'dd-MM-yyyy') : row[col.key] }}
                   </ng-container>
 
                 </ng-container>
@@ -145,18 +162,6 @@
               </ng-container>
             </ng-container>
           </div>
-
-
-
-          <!-- <div class="mobile-actions">
-            <ng-container *ngFor="let btn of actions">
-              <ng-container *ngIf="btn.condition(row)">
-                <button mat-icon-button (click)="handleMobileAction(row, btn.action)" [matTooltip]="btn.tooltip">
-                  <i class="{{ btn.iconClass }}" [ngStyle]="{ 'font-size.px': 18, color: '#fff' }"></i>
-                </button>
-              </ng-container>
-            </ng-container>
-          </div> -->
         </mat-card-content>
       </mat-card>
     </div>

@@ -20,6 +20,7 @@ export class CategoryListComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
   categories: GetCategoryQueryResponse[] = [];
+  allCategories: GetCategoryQueryResponse[] = [];
   ngOnInit(): void {
     this.companyService.getCategories(true).subscribe({
       next: result => {
@@ -28,6 +29,8 @@ export class CategoryListComponent implements OnInit {
             ...a,
             companyCategoryName: `${a.companyName} ${a.categoryName}`
           }));
+
+          this.allCategories = this.categories;
         }
       }
     });
@@ -100,5 +103,58 @@ export class CategoryListComponent implements OnInit {
     this.categories = this.commonService.sortByKey(this.categories, 'companyCategoryName', 'asc');
     this.commonService.exportToExcel<GetCategoryQueryResponse>(this.categories, columns, 'Category', 'Category List');
   }
+
+  filterActions = [
+      {
+        iconClass: 'fas fa-sort-alpha-down',
+        action: 'CategoryNameAsc',
+        label: 'Category Name: A to Z'
+      },
+      {
+        iconClass: 'fas fa-sort-alpha-up-alt',
+        action: 'CategoryNameAscDesc',
+        label: 'Category Name: Z to A'
+      },
+      {
+        iconClass: 'fas fa-check-circle',  // Active icon
+        action: 'IsActiveTrue',
+        label: 'Is Active: True'
+      },
+      {
+        iconClass: 'fas fa-times-circle',  // Inactive icon
+        action: 'IsActiveFalse',
+        label: 'Is Active: False'
+      },
+      {
+        iconClass: 'fas fa-sync-alt',  // Reset icon
+        action: 'Reset',
+        label: 'Reset'
+      }
+    ];
+  
+  
+    onFilterActionClick(event: { action: string }) {
+      let filteredCategories: GetCategoryQueryResponse[] = [];
+      switch (event.action) {
+        case 'CategoryNameAsc':
+          filteredCategories = [...this.allCategories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+          break;
+        case 'CategoryNameAscDesc':
+          filteredCategories = [...this.allCategories].sort((a, b) => b.categoryName.localeCompare(a.categoryName));
+          break;
+        case 'IsActiveTrue':
+          filteredCategories = this.allCategories.filter(cat => cat.isActive === true);
+          break;
+        case 'IsActiveFalse':
+          filteredCategories = this.allCategories.filter(cat => cat.isActive === false);
+          break;
+        case 'Reset':
+          filteredCategories = [...this.allCategories]
+          break;
+        default:
+          break;
+      }
+      this.categories = filteredCategories;
+    }
 
 }
