@@ -8,7 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:gh": "ng build --configuration production --base-href /inventory-system/",
-    "deploy": "npx angular-cli-ghpages --dir=dist/inventory-system/browser"
+    "deploy": "npx angular-cli-ghpages --dir=dist/inventory-system/browser",
+    "postbuild": "node copy-static.js"
   },
   "private": true,
   "dependencies": {
