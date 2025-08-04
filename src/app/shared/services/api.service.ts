@@ -173,7 +173,7 @@ export class ApiService {
    */
   public handleResult<T>(res: Result<T>): T {
     if (!res.isSuccess) {
-      //  this.commonService.showWarning(res.error);
+      this.commonService.showWarning(res.error);
       throw new Error(res.error || 'Unexpected error');
     }
     return res.value;

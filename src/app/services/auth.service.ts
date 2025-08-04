@@ -4,7 +4,6 @@ import { LoginRequest, LoginResponse } from '../models/LoginRequest';
 import { map, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { Result } from '../shared/common/ApiResponse';
 export interface DecodedToken {
   exp: number;
   role: string | string[];

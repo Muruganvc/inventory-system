@@ -18,13 +18,17 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
         // Extract a meaningful message from the error response
         if (error?.error?.error) {
           message = error.error.error; // For API responses with "error" field
-        } else if (error?.error?.message) {
-          message = error.error.message;
-        } else if (error?.message) {
-          message = error.message;
+        } else if (error?.error?.Exeception) {
+          message = error.error.Exeception;
+        } else if (error?.Exeception) {
+          message = error.Exeception;
+        }
+        if(error.error.StatusCode == 500){
+          message = error.error.Message;
         }
         // Show error toast
         toastr.error(message, 'Error');
+        console.error(error.error.Exeception | error.error.Detailed)
       }
       return throwError(() => error);
     })
