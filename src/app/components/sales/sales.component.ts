@@ -341,7 +341,7 @@ export class SalesComponent implements OnInit {
     const newProduct: ProductEntry = {
       productId: selectedProduct.productId,
       id: selectedProduct.productId,
-      productName: `${selectedProduct.categoryName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
+      productName: `${selectedProduct.companyName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
       mrp: selectedProduct.mrp,
       salesPrice: selectedProduct.salesPrice,
       price: Number(price),
