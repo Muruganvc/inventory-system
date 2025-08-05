@@ -74,10 +74,6 @@ export class CategoryListComponent implements OnInit {
     });
   }
 
-  newOpen(a: any) {
-    this.router.navigate(['/inventory/category']);
-  }
-
   exportToExcel = (): void => {
     const columns: ExcelColumn<GetCategoryQueryResponse>[] = [
       { header: 'Company Category Name', key: 'companyCategoryName', width: 25 },
@@ -101,60 +97,86 @@ export class CategoryListComponent implements OnInit {
 
     ];
     this.categories = this.commonService.sortByKey(this.categories, 'companyCategoryName', 'asc');
-    this.commonService.exportToExcel<GetCategoryQueryResponse>(this.categories, columns, 'Category', 'Category List');
+    this.commonService.exportToExcel<GetCategoryQueryResponse>(this.categories, columns, 'Company Category', 'Category List');
   }
 
   filterActions = [
-      {
-        iconClass: 'fas fa-sort-alpha-down',
-        action: 'CategoryNameAsc',
-        label: 'Category Name: A to Z'
-      },
-      {
-        iconClass: 'fas fa-sort-alpha-up-alt',
-        action: 'CategoryNameAscDesc',
-        label: 'Category Name: Z to A'
-      },
-      {
-        iconClass: 'fas fa-check-circle',  // Active icon
-        action: 'IsActiveTrue',
-        label: 'Is Active: True'
-      },
-      {
-        iconClass: 'fas fa-times-circle',  // Inactive icon
-        action: 'IsActiveFalse',
-        label: 'Is Active: False'
-      },
-      {
-        iconClass: 'fas fa-sync-alt',  // Reset icon
-        action: 'Reset',
-        label: 'Reset'
-      }
-    ];
-  
-  
-    onFilterActionClick(event: { action: string }) {
-      let filteredCategories: GetCategoryQueryResponse[] = [];
-      switch (event.action) {
-        case 'CategoryNameAsc':
-          filteredCategories = [...this.allCategories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
-          break;
-        case 'CategoryNameAscDesc':
-          filteredCategories = [...this.allCategories].sort((a, b) => b.categoryName.localeCompare(a.categoryName));
-          break;
-        case 'IsActiveTrue':
-          filteredCategories = this.allCategories.filter(cat => cat.isActive === true);
-          break;
-        case 'IsActiveFalse':
-          filteredCategories = this.allCategories.filter(cat => cat.isActive === false);
-          break;
-        case 'Reset':
-          filteredCategories = [...this.allCategories]
-          break;
-        default:
-          break;
-      }
-      this.categories = filteredCategories;
+    {
+      iconClass: 'fas fa-sort-alpha-down',
+      action: 'CategoryNameAsc',
+      label: 'Category Name: A to Z'
+    },
+    {
+      iconClass: 'fas fa-sort-alpha-up-alt',
+      action: 'CategoryNameAscDesc',
+      label: 'Category Name: Z to A'
+    },
+    {
+      iconClass: 'fas fa-check-circle',  // Active icon
+      action: 'IsActiveTrue',
+      label: 'Is Active: True'
+    },
+    {
+      iconClass: 'fas fa-times-circle',  // Inactive icon
+      action: 'IsActiveFalse',
+      label: 'Is Active: False'
+    },
+    {
+      iconClass: 'fas fa-sync-alt',  // Reset icon
+      action: 'Reset',
+      label: 'Reset'
     }
+  ];
+
+  buttons = [
+    {
+      label: 'Excel Export',
+      icon: 'fas fa-file-excel',
+      tooltip: 'Excel Export',
+      action: 'excelExport',
+      class: 'excel-button'
+    },
+    {
+      label: 'Add Category',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Add Product',
+      action: 'addCategory',
+      class: 'add-new-item-button'
+    }
+  ];
+
+
+  onButtonClicked(action: string) {
+    if (action === 'excelExport') {
+      this.exportToExcel();
+    } else if (action === 'addCategory') {
+      this.router.navigate(['/inventory/category']);
+    }
+  }
+
+
+  onFilterActionClick(event: { action: string }) {
+    let filteredCategories: GetCategoryQueryResponse[] = [];
+    switch (event.action) {
+      case 'CategoryNameAsc':
+        filteredCategories = [...this.allCategories].sort((a, b) => a.categoryName.localeCompare(b.categoryName));
+        break;
+      case 'CategoryNameAscDesc':
+        filteredCategories = [...this.allCategories].sort((a, b) => b.categoryName.localeCompare(a.categoryName));
+        break;
+      case 'IsActiveTrue':
+        filteredCategories = this.allCategories.filter(cat => cat.isActive === true);
+        break;
+      case 'IsActiveFalse':
+        filteredCategories = this.allCategories.filter(cat => cat.isActive === false);
+        break;
+      case 'Reset':
+        filteredCategories = [...this.allCategories]
+        break;
+      default:
+        break;
+    }
+    this.categories = filteredCategories;
+  }
 
 }

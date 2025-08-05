@@ -3,7 +3,7 @@ import { CustomTableComponent } from "../../../shared/components/custom-table/cu
 import * as XLSX from 'xlsx';
 import { BulkUpload } from '../../../models/BulkUpload';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../../services/product.service'; 
+import { ProductService } from '../../../services/product.service';
 import { CommonService } from '../../../shared/services/common.service';
 @Component({
   selector: 'app-bulkcreate-company-category-product',
@@ -39,19 +39,35 @@ export class BulkcreateCompanyCategoryProductComponent {
   }
   newOpen(a: any) {
 
-   const body = { requests: this.bulkCompnay };
+    
+  }
+
+
+  buttons = [
+    {
+      label: 'Upload',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Upload',
+      action: 'Upload',
+      class: 'excel-button'
+    }
+  ];
+
+
+  onButtonClicked(_: string) {
+    if (this.bulkCompnay.length == 0) {
+      this.commonService.showInfo("Please upload file to save."); return;
+    } 
     this.productService.bulkCreateCompany(this.bulkCompnay).subscribe({
       next: result => {
-        if(result){
+        if (result) {
           this.commonService.showSuccess("All Products created.");
-        }else{
+        } else {
           this.commonService.showInfo("Product not created, May product already exists. Please check.");
         }
       }
     });
   }
-
- 
   tableActions =
     [
       {
@@ -120,7 +136,7 @@ export class BulkcreateCompanyCategoryProductComponent {
         alert(`Missing required columns: ${missingHeaders.join(', ')}`);
         return;
       }
- 
+
       const fullNameAdd = filteredData.map(row => ({
         ...row,
         fullName: `${row['CompanyName']} ${row['CategoryName']} ${row['ProductCategoryName']}`
@@ -131,11 +147,11 @@ export class BulkcreateCompanyCategoryProductComponent {
     };
 
     reader.readAsBinaryString(file);
-  } 
+  }
   resetUpload(fileInput: HTMLInputElement): void {
-  fileInput.value = '';
-  this.selectedFileName = '';
-  this.bulkCompnay = [];
-  this.tableHeaders = [];
-}
+    fileInput.value = '';
+    this.selectedFileName = '';
+    this.bulkCompnay = [];
+    this.tableHeaders = [];
+  }
 }

@@ -55,6 +55,33 @@ export class ProductListComponent implements OnInit {
     this.resetTableActions();
   }
 
+ 
+  buttons = [
+    {
+      label: 'Excel Export',
+      icon: 'fas fa-file-excel',
+      tooltip: 'Excel Export',
+      action: 'excelExport', 
+      class :'excel-button'
+    },
+    {
+      label: 'Add Product',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Add Product',
+      action: 'addProduct',
+      class :'add-new-item-button'
+    }
+  ];
+
+
+  onButtonClicked(action: string) {
+    if (action === 'excelExport') {
+      this.exportToExcel();
+    } else if (action === 'addProduct') {
+      this.router.navigate(['/product']);
+    }
+  }
+
   filterActions = [
     {
       iconClass: 'fas fa-sort-alpha-down',
@@ -296,11 +323,7 @@ export class ProductListComponent implements OnInit {
       }
     });
   }
-
-  newOpen(_: any): void {
-    this.router.navigate(['/product']);
-  }
-
+ 
   exportToExcel = (): void => {
     const columns: ExcelColumn<ProductsResponse>[] = [
       { header: 'Product ID', key: 'productId', width: 12 },

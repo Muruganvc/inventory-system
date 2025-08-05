@@ -1,11 +1,15 @@
 <ng-container *ngIf="showHeader">
   <div class="page-header">
-    <h2 class="page-title">{{ title() }}</h2>
     <ng-container *ngIf="!!addBtnTitle()">
-      <button mat-flat-button (click)="openNew()" class="add-button">
-        <i class="fas fa-circle-plus" style="font-size: 18px;" matTooltip="Add"></i>
-        &nbsp; {{ addBtnTitle() }}
-      </button>
+      <div class="button-container">
+        <h2 class="page-title">{{ title() }}</h2>
+        <button *ngFor="let button of buttons" mat-flat-button (click)="onButtonClick(button.action)"
+          [ngClass]="button.class" matTooltip="{{ button.tooltip }}">
+          <i [ngClass]="button.icon" style="font-size: 18px;"></i>
+          &nbsp; {{ button.label }}
+        </button>
+
+      </div>
     </ng-container>
   </div>
 

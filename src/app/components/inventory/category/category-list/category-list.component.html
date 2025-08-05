@@ -1,9 +1,5 @@
 <app-custom-table [data]="categories" [title]="'Category List'" [addBtnTitle]="!isUser() ?'Add Category' : null"
     [columns]="columns" [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)"
-    (newOpen)="newOpen($event)" [filterActions]="filterActions" (filterActionClick)="onFilterActionClick($event)">
+    [buttons] ='buttons' (buttonClicked)="onButtonClicked($event)" [filterActions]="filterActions" (filterActionClick)="onFilterActionClick($event)">
 </app-custom-table>
-<div class="export-btn-container">
-    <button mat-flat-button class="btn-export-excel" (click)="exportToExcel()">
-        <i class="bi bi-file-earmark-excel"></i> Export to Excel
-    </button>
-</div>
+ 

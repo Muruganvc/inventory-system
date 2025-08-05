@@ -48,10 +48,10 @@ export class ProductCategoryListComponent implements OnInit {
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, pipe?: string }[] = [
     { key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false },
-    { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
-    { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
-    { key: 'productCategoryName', label: 'Product Category Name', align: 'left', isHidden: true },
-    { key: 'description', label: 'Description', align: 'left', isHidden: true },
+    // { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
+    // { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
+    // { key: 'productCategoryName', label: 'Product Category Name', align: 'left', isHidden: true },
+    // { key: 'description', label: 'Description', align: 'left', isHidden: true },
     { key: 'isActive', label: 'Is Active', align: 'left', isHidden: false },
     { key: 'createdAt', label: 'Created Date', align: 'left', isHidden: false, pipe: 'date' },
     { key: 'username', label: 'Created By', align: 'left', isHidden: false },
@@ -73,10 +73,7 @@ export class ProductCategoryListComponent implements OnInit {
       state: { data: productCategory }
     });
   }
-
-  newOpen(a: any) {
-    this.router.navigate(['/inventory/product-category']);
-  }
+ 
 
   exportToExcel = (): void => {
     const columns: ExcelColumn<GetProductCategoryQueryResponse>[] = [
@@ -105,6 +102,32 @@ export class ProductCategoryListComponent implements OnInit {
     this.productCategories = this.commonService.sortByKey(this.productCategories, 'productFullName', 'asc');
 
     this.commonService.exportToExcel<GetProductCategoryQueryResponse>(this.productCategories, columns, 'Company Category Product', 'Company Category Product');
+  }
+
+  buttons = [
+    {
+      label: 'Excel Export',
+      icon: 'fas fa-file-excel',
+      tooltip: 'Excel Export',
+      action: 'excelExport', 
+      class :'excel-button'
+    },
+    {
+      label: 'Add Product Category',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Add Product Category',
+      action: 'addProductCategory',
+      class :'add-new-item-button'
+    }
+  ];
+
+
+  onButtonClicked(action: string) {
+    if (action === 'excelExport') {
+      this.exportToExcel();
+    } else if (action === 'addProductCategory') {
+      this.router.navigate(['/inventory/product-category']);
+    }
   }
 
 

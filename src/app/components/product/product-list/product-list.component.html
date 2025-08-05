@@ -1,16 +1,7 @@
 <app-custom-table [data]="products" [title]="'Product List'" [addBtnTitle]="!isUser() ? 'Add Product' : null"
   [columns]="columns" [showActions]="!isUser()" [actions]="tableActions" (actionClick)="onAction($event)"
   (edit)="onEdit($event)" (fieldChanged)="handleFieldChange($event)" (delete)="onDelete($event)"
-  (newOpen)="newOpen($event)"  [filterActions]="filterActions" 
-  (filterActionClick)="onFilterActionClick($event)" >
+   [filterActions]="filterActions" 
+  (filterActionClick)="onFilterActionClick($event)" [buttons] ='buttons' (buttonClicked)="onButtonClicked($event)" >
 </app-custom-table>
-<div class="export-btn-container">
-  <!-- <div>
-    <label class="form-label">Filter by Active</label>
-    <mat-checkbox (change)="onCheckboxChange($event)"></mat-checkbox>
-  </div> -->
-
-  <button mat-flat-button class="btn-export-excel" (click)="exportToExcel()">
-    <i class="bi bi-file-earmark-excel"></i> Export to Excel
-  </button>
-</div>
+ 

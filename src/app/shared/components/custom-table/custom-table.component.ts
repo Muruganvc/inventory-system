@@ -58,8 +58,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     if (!this.isMobile) {
       this.dataSource.filter = this.searchTerm.trim().toLowerCase();
     }
-    this.filterData();
-    // On mobile, filteredData getter will take care of filtering
+    this.filterData(); 
   }
   @Input() data: T[] = [];
   @Input() columns: TableColumn[] = [];
@@ -73,8 +72,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   @Input() showHeader: boolean = true;
 
   @Output() edit = new EventEmitter<T>();
-  @Output() delete = new EventEmitter<T>();
-  @Output() newOpen = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<T>(); 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -94,6 +92,12 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     condition: (row: any) => boolean;
   }[] = [];
   @Output() actionClick = new EventEmitter<{ row: any; action: string }>();
+
+  @Input() buttons: { icon: string; action: string, label: string, tooltip: string, class: string }[] = [];
+  @Output() buttonClicked = new EventEmitter<string>();
+  onButtonClick(action: string) {
+    this.buttonClicked.emit(action);
+  }
 
 
   @Input() filterActions: { iconClass: string; action: string, label : string }[] = [];
@@ -116,14 +120,12 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   }
   getCellClasses(col: TableColumn, row: any): { [key: string]: boolean } {
     const classes: { [key: string]: boolean } = {};
-
     if (col.highLight) {
       classes['highlight-cell'] = true;
       if (col.highLight.class && col.highLight.condition?.(row)) {
         classes[col.highLight.class] = true;
       }
     }
-
     return classes;
   }
 
@@ -159,7 +161,6 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
 
   actionClick1(row: any, action: string) {
     this.actionClick.emit({ row, action });
-    // handle the action
   }
 
 
@@ -269,11 +270,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
       case 'error': return 'icon-error';
       default: return 'icon-default';
     }
-  }
-  openNew() {
-    this.newOpen.emit('new');
-  }
-
+  } 
   onFieldChange(row: any, key: string, value: any): void {
     const updatedRow = { ...row, [key]: value };
     this.fieldChanged.emit({ row: updatedRow, key, value });

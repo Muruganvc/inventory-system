@@ -72,10 +72,7 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
-  newOpen(_: any): void {
-    this.router.navigate(['/inventory/company']);
-  }
-
+  
   exportToExcel = (): void => {
     const columns: ExcelColumn<GetCompanyQueryResponse>[] = [
       { header: 'Company ID', key: 'companyId', width: 10 },
@@ -115,6 +112,32 @@ export class CompanyListComponent implements OnInit {
       label: 'Reset'
     }
   ];
+
+  buttons = [
+    {
+      label: 'Excel Export',
+      icon: 'fas fa-file-excel',
+      tooltip: 'Excel Export',
+      action: 'excelExport', 
+      class :'excel-button'
+    },
+    {
+      label: 'Add Company',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Add Company',
+      action: 'addCompany',
+      class :'add-new-item-button'
+    }
+  ];
+
+
+  onButtonClicked(action: string) {
+    if (action === 'excelExport') {
+      this.exportToExcel();
+    } else if (action === 'addCompany') {
+      this.router.navigate(['/inventory/company']);
+    }
+  }
 
 
   onFilterActionClick(event: { action: string }) {

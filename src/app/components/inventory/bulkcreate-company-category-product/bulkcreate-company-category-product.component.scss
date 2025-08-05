@@ -1,9 +1,9 @@
 .upload-container {
-  padding: 20px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-width: 100%;
+  margin-top: 10px;
 }
 
 .upload-label {
@@ -53,4 +53,8 @@
 
 .reset-btn:hover {
   background-color: #c53030;
+}
+
+.note{
+  margin-top: 10px;
 }

@@ -161,7 +161,9 @@
   outline: none;
   /* Removes default blue glow */
 }
-
+.page-title {
+  flex-grow: 1;  /* This makes the title take up available space on the left */
+}
 .page-header {
   padding: 16px 0px 8px;
   background-color: #ffffff;
@@ -169,6 +171,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+   width: 100%; 
 }
 
 .page-header h2 {
@@ -190,6 +193,40 @@
   background-color: #45a049;
   /* Darker green */
 }
+
+ 
+/* Excel button styles */
+.excel-button {
+ background-color: #4CAF50 !important; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.excel-button:hover {
+  background-color: #388E3C !important;
+}
+
+/* Add Product button styles (if desired) */
+.add-new-item-button {
+ background-color: #FFA500 !important; /* Orange */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.add-new-item-button:hover {
+   background-color: #FF4500 !important; 
+}
+
 
 
 .page-title {
@@ -361,4 +398,13 @@
 
 .search-box input {
   width: 100%; /* Make the search box fill its container */
+}
+
+
+
+.button-container {
+  display: flex;
+  gap: 10px;  /* Adjusts space between buttons */
+  justify-content: flex-end;
+  width: 100%;
 }

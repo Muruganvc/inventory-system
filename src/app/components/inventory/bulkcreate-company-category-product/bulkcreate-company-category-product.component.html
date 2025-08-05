@@ -1,4 +1,5 @@
 <div class="upload-container">
+  
   <label for="fileUpload" class="upload-label">
     <i class="fas fa-file-upload"></i>
     Upload Excel File
@@ -21,7 +22,11 @@
     Reset
   </button>
 </div>
+<div class="note" >
+  <strong> Excel : Column should be CompanyName,CategoryName,ProductCategoryName </strong>
+</div>
 
 <app-custom-table [data]="bulkCompnay" [title]="'Bulk Company Product'" [addBtnTitle]="'Upload'" [columns]="columns"
-    [showActions]="false" [actions]="[]" (actionClick)="onAction($event)" (newOpen)="newOpen($event)">
+    [showActions]="false" [actions]="[]" (actionClick)="onAction($event)"
+    [buttons] ='buttons' (buttonClicked)="onButtonClicked($event)">
 </app-custom-table> 
