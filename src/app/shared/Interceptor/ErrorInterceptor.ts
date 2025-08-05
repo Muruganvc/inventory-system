@@ -4,10 +4,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, throwError } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(ToastrService);
   const router = inject(Router);
+  const auth = inject(AuthService);
 
   // Check if the request has opted out of error toasts
   const skipErrorToastr = req.headers.get('X-Skip-Error-Toastr') === 'true';
@@ -29,6 +31,11 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
         }
         if (error?.error?.StatusCode == 500) {
           message = error?.error?.Message;
+        }
+        if (error?.error?.StatusCode == 401) {
+          message = 'Session Expired, Please re-login';
+          toastr.error(message, 'Error');
+          auth.logout();
         }
         // Show error toast
         if (url !== '/home') {
