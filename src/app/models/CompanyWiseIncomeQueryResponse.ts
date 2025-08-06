@@ -17,5 +17,6 @@ export interface TotalProductQueryResponse {
   totalQuantity: number;
   totalNetAmount: number;
   balanceAmount: number;
-  companyWiseSales: CompanyWiseSales[]
+  companyWiseSales: CompanyWiseSales[],
+  totalStockValue : number;
 }

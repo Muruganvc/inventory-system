@@ -325,6 +325,12 @@ export class ProductListComponent implements OnInit {
   }
  
   exportToExcel = (): void => {
+
+    this.products = this.products.map(product => { 
+      const totalAmount = product.salesPrice * product.quantity;
+      return { ...product, totalAmount };
+    });
+
     const columns: ExcelColumn<ProductsResponse>[] = [
       { header: 'Product ID', key: 'productId', width: 12 },
       { header: 'Product Name', key: 'productName', width: 25 },
@@ -340,10 +346,12 @@ export class ProductListComponent implements OnInit {
       { header: 'Landing Price', key: 'landingPrice', width: 15 },
       { header: 'Quantity', key: 'quantity', width: 10 },
       { header: 'Is Active', key: 'isActive', width: 10 },
-      { header: 'User Name', key: 'createdBy', width: 20 }
+      { header: 'User Name', key: 'createdBy', width: 20 },
+      { header: 'Total Amount', key: 'totalAmount', width: 20 }
     ];
+
     this.products = this.commonService.sortByKey(this.products, 'productFullName', 'asc');
-    this.commonService.exportToExcel<ProductsResponse>(this.products, columns, 'Products', 'Products');
+    this.commonService.exportToExcel<ProductsResponse>(this.products, columns, 'Products', 'Products', 'totalAmount');
   }
 
 

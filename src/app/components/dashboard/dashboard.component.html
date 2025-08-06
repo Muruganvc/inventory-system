@@ -3,12 +3,22 @@
   <!-- 🔷 Info Cards -->
   <div class="info-cards">
 
+      <div class="card bg-teal">
+        <div class="card-content">
+          <i class="fas fa-chart-line icon"></i>
+          <div>
+            <h2>{{ productSoldOut.totalStockValue | currency:'INR':'symbol':'1.2-2' }}</h2>
+            <p>Current Stock Value</p>
+          </div>
+        </div>
+      </div>
+
     <!-- Card: Total Revenue -->
     <div class="card bg-purple">
       <div class="card-content">
         <i class="fas fa-money-bill-wave icon"></i>
         <div>
-          <h2>₹{{ productSoldOut.totalNetAmount | number: '1.2-2' }}</h2>
+          <h2>{{ productSoldOut.totalNetAmount | currency:'INR':'symbol':'1.2-2'  }}</h2>
           <p>Total Revenue</p>
         </div>
       </div>
@@ -19,7 +29,7 @@
       <div class="card-content">
         <i class="fas fa-credit-card icon"></i>
         <div>
-          <h2>₹{{ productSoldOut.balanceAmount | number: '1.2-2' }}</h2>
+          <h2>{{ productSoldOut.balanceAmount | currency:'INR':'symbol':'1.2-2'  }}</h2>
           <p>Total Outstanding Balance</p>
         </div>
       </div>
@@ -47,12 +57,12 @@
 
 
   <!-- 🔷 Product Availability -->
-  <div class="chart-wrapper-default-hg large-chart-card-default-hg evaluation-summary">
+  <!-- <div class="chart-wrapper-default-hg large-chart-card-default-hg evaluation-summary">
     <div class="large-chart-card">
       <h3>Available Quantity</h3>
       <app-product-available-qauntity></app-product-available-qauntity>
     </div>
-  </div>
+  </div> -->
 
   <!-- 📊 Mixed Chart Layout -->
   <div class="chart-wrapper">

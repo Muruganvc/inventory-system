@@ -48,7 +48,7 @@ export class ProductCategoryComponent {
     this.formGroup = new FormGroup({
       company: new FormControl(null, Validators.required),
       category: new FormControl(null, Validators.required),
-      productCategoryName: new FormControl(null, Validators.required),
+      productCategoryName: new FormControl(null),
       isActive: new FormControl(null),
       description: new FormControl(null)
     });
@@ -116,9 +116,9 @@ export class ProductCategoryComponent {
         isHidden: !this.selectedProductCategory
       },
       {
-        label: 'Cancel',
-        icon: 'fas fa-times mr-2',
-        class: 'btn-cancel',
+        label: 'Clear',
+        icon: 'fas fa-broom',
+        class: 'btn-clear',
         callback: () => this.formGroup.reset(),
         validate: false,
         isHidden: false

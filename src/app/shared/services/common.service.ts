@@ -194,18 +194,14 @@ export class CommonService {
     return sorted;
   }
 
-  exportToExcel<T>( data: T[], columns: ExcelColumn<T>[], sheetName: string, fileName: string): void {
+  exportToExcel<T>(data: T[], columns: ExcelColumn<T>[], sheetName: string, fileName: string, totalKey?: string): void {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet(sheetName);
-
-    // Define typed columns
     worksheet.columns = columns.map(col => ({
       header: col.header,
       key: col.key as string,
-      width: col.width
+      width: col.width || 10
     }));
-
-    // Add rows with formatting support
     data.forEach(item => {
       const row: Record<string, any> = {};
       columns.forEach(col => {
@@ -215,9 +211,43 @@ export class CommonService {
       worksheet.addRow(row);
     });
 
-    worksheet.addRow([]);
+    worksheet.addRow([]);  // Add an empty row before total row (if any)
 
-    // Style header row
+    // If a totalKey is provided, calculate the total for that key (numeric values)
+    if (totalKey) {
+      // Calculate the total for the specified column
+      const total = data.reduce((sum, item) => {
+        const value = item[totalKey as keyof T];
+        // Ensure value is a number before summing
+        return sum + (typeof value === 'number' ? value : 0);
+      }, 0);
+
+      const columnCount = columns.length - 1;
+
+      // Add the total row, where "Total" goes in the first column and the sum goes in the last column
+      const totalRow = worksheet.addRow({
+        [columns[0].key]: 'Total',  // "Total" in the first column
+        [columns[columnCount].key]: total  // The total amount goes in the last column
+      });
+
+      // Apply styles to the total row
+      applyBorders(totalRow);
+      totalRow.eachCell((cell, colNumber) => {
+        // Left-align "Total" in the first column
+        if (colNumber === 1) {
+          cell.alignment = { horizontal: 'left' };
+        } else {
+          // Right-align the total value in the last column
+          cell.alignment = { horizontal: 'right' };
+        }
+
+        // Make the total row bold
+        cell.font = { bold: true };
+      });
+    }
+
+
+    // Style header row (bold, yellow text, red background)
     const headerRow = worksheet.getRow(1);
     headerRow.eachCell(cell => {
       cell.font = { bold: true, color: { argb: 'FFFFFF00' } }; // Yellow text
@@ -228,7 +258,7 @@ export class CommonService {
       };
     });
 
-    // Apply borders to all rows
+    // Apply borders to all rows (including header)
     for (let i = 1; i <= worksheet.rowCount; i++) {
       worksheet.getRow(i).eachCell(cell => {
         cell.border = {
@@ -240,16 +270,26 @@ export class CommonService {
       });
     }
 
-    // Save Excel file
+    // Save the Excel file
     workbook.xlsx.writeBuffer().then(buffer => {
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
       FileSaver.saveAs(blob, `${fileName}.xlsx`);
     });
+
+    // Helper function to apply borders to rows
+    function applyBorders(row: ExcelJS.Row) {
+      row.eachCell(cell => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+    }
   }
-
-
   base64ToFile = (base64: string, fileName: string): File => {
     const base64Data = base64.split(',')[1];
     const byteCharacters = atob(base64Data);

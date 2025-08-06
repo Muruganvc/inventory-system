@@ -72,7 +72,7 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
-  
+
   exportToExcel = (): void => {
     const columns: ExcelColumn<GetCompanyQueryResponse>[] = [
       { header: 'Company ID', key: 'companyId', width: 10 },
@@ -82,7 +82,7 @@ export class CompanyListComponent implements OnInit {
       { header: 'Created By', key: 'createdBy', width: 20 }
     ];
     this.companies = this.commonService.sortByKey(this.companies, 'companyName', 'asc');
-    this.commonService.exportToExcel<GetCompanyQueryResponse>(this.companies, columns, 'Companies', 'CompanyList');
+    this.commonService.exportToExcel<GetCompanyQueryResponse>(this.companies, columns, 'Companies', 'Company List');
   }
 
   filterActions = [
@@ -118,15 +118,15 @@ export class CompanyListComponent implements OnInit {
       label: 'Excel Export',
       icon: 'fas fa-file-excel',
       tooltip: 'Excel Export',
-      action: 'excelExport', 
-      class :'excel-button'
+      action: 'excelExport',
+      class: 'excel-button'
     },
     {
       label: 'Add Company',
       icon: 'fas fa-circle-plus',
       tooltip: 'Add Company',
       action: 'addCompany',
-      class :'add-new-item-button'
+      class: 'add-new-item-button'
     }
   ];
 

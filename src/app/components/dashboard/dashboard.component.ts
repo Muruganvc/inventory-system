@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, LOCALE_ID, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -32,9 +32,11 @@ import { AuthService } from '../../services/auth.service';
     WeekwiseComponent,
     MonthwiseComponent,
     YearwiseComponent,
-    ProductAvailableQauntityComponent,
     IncomeOutcomeSummaryReportComponent
-],
+  ],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'en-IN' }  // Set the locale to Indian format
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -47,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   productSoldOut: TotalProductQueryResponse;
   auditLog: AuditLog[] = [];
   companyData: CompanyGroup[] = [];
- 
+
   isAdmin = (): boolean => {
     return this.authService.hasRole(["Admin"])
   }
@@ -87,18 +89,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   ];
 
-ngOnInit(): void {
-  this.productSoldOut = {
-    totalQuantity: 0,
-    totalNetAmount: 0,
-    balanceAmount: 0,
-    companyWiseSales: []
-  };
+  ngOnInit(): void {
+    this.productSoldOut = {
+      totalQuantity: 0,
+      totalNetAmount: 0,
+      balanceAmount: 0,
+      companyWiseSales: [],
+      totalStockValue: 0
+    };
 
-  this.startAutoSlider();
-  this.getProductSoldOut();
-  this.getAuditLogs();
-}
+    this.startAutoSlider();
+    this.getProductSoldOut();
+    this.getAuditLogs();
+  }
 
   ngOnDestroy(): void {
     this.stopAutoSlider();

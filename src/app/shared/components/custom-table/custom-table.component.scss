@@ -164,22 +164,6 @@
 .page-title {
   flex-grow: 1;  /* This makes the title take up available space on the left */
 }
-.page-header {
-  padding: 16px 0px 8px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-   width: 100%; 
-}
-
-.page-header h2 {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0;
-  color: #333;
-}
 
 .add-button {
   background-color: #4caf50 !important;
@@ -349,34 +333,6 @@
 
 
 
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  .page-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-
-  .add-button {
-    white-space: nowrap;
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-
-    .add-button {
-      width: 100%;
-    }
-  }
-}
-
-
 .search-filter-container {
   display: flex;
   justify-content: space-between;
@@ -400,11 +356,64 @@
   width: 100%; /* Make the search box fill its container */
 }
 
-
-
+/* Button Container */
 .button-container {
   display: flex;
   gap: 10px;  /* Adjusts space between buttons */
   justify-content: flex-end;
   width: 100%;
+}
+
+/* Mobile view for Button Container */
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;  /* Stack buttons vertically */
+    gap: 15px;               /* Increase gap between buttons */
+    width: 100%;
+  }
+}
+
+/* Page Header */
+.page-header {
+  padding: 16px 0 8px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Page Header Title */
+.page-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+/* Page Header Layout (Flex) */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Add Button */
+.page-header .add-button {
+  white-space: nowrap;
+}
+
+/* Mobile view for Page Header */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-header .add-button {
+    width: 100%;
+  }
 }

@@ -32,8 +32,21 @@ export class UserListComponent implements OnInit {
     { key: 'email', label: 'Email', align: 'left', isHidden: false }
   ];
 
-  newOpen(a: any) {
-    this.router.navigate(['/setting/user']);
+  buttons = [
+    {
+      label: 'Add User',
+      icon: 'fas fa-circle-plus',
+      tooltip: 'Add User',
+      action: 'addUser',
+      class: 'add-new-item-button'
+    }
+  ];
+
+
+  onButtonClicked(action: string) {
+    if (action === 'addUser') {
+      this.router.navigate(['/setting/user']);
+    }
   }
 
   getUsers = (): void => {
