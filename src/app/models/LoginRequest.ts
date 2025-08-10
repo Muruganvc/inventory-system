@@ -10,5 +10,6 @@ export interface LoginResponse {
     fistName: string;
     lastName: string;
     token: string;
-    invCompanyInfo?: GetInventoryCompanyInfo
+    invCompanyInfo?: GetInventoryCompanyInfo,
+    refreshToken : string;
 }

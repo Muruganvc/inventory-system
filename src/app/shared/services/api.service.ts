@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 
 import { ConfigService } from './config.service';
 import { Result } from '../common/ApiResponse';
@@ -44,8 +44,8 @@ export class ApiService {
       }
     }
 
-  return httpHeaders;
-}
+    return httpHeaders;
+  }
 
 
   /**
@@ -73,9 +73,26 @@ export class ApiService {
   /**
    * Centralized HTTP error handling. Can be extended for logging or retry logic.
    */
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    return throwError(() => error);
+  private handleError<T>(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Something went wrong.';
+    let statusCode = error.status;
+
+    // Check if the error is a 401 Unauthorized error
+    if (error.status === 401) {
+      errorMessage = 'Unauthorized access. Please log in again.';
+    }
+    // Handle other error statuses (like 500 Internal Server Error, etc.)
+    else if (error.status === 500) {
+      errorMessage = 'Server error. Please try again later.';
+    } else {
+      // Fallback message for other types of errors
+      errorMessage = error.error?.message || errorMessage;
+    }
+
+    // Throwing the error using throwError
+    return throwError(() => new Error(errorMessage));  // Propagate the error
   }
+
 
   /**
    * HTTP GET request
@@ -89,6 +106,7 @@ export class ApiService {
       .get<Result<T>>(`${this.config.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
+        withCredentials: true
       })
       .pipe(catchError(this.handleError));
   }
@@ -105,17 +123,20 @@ export class ApiService {
   ): Observable<Result<TResponse>> {
     return this.http
       .post<Result<TResponse>>(`${this.config.baseUrl}${url}`, body ?? {}, {
-        headers: this.createHeaders(headers,isFormData),
+        headers: this.createHeaders(headers, isFormData),
         params: this.createParams(params),
+        withCredentials: true,
       })
       .pipe(catchError(this.handleError));
   }
 
   downloadSqlFile(url: string): Observable<Blob> {
-    return this.http.post<Blob>(`${this.config.baseUrl}${url}`, {}, { responseType: 'blob' as 'json' })
-      .pipe(catchError(this.handleError));
+    return this.http.post<Blob>(`${this.config.baseUrl}${url}`, {}, {
+      responseType: 'blob' as 'json',  // Set the responseType to 'blob' to handle binary data
+      withCredentials: true  // Include credentials (e.g., cookies or authorization headers) in the request
+    })
+      .pipe(catchError(this.handleError));  // Handle errors using the handleError method
   }
-
   /**
    * HTTP PUT request
    */
@@ -130,6 +151,7 @@ export class ApiService {
       .put<Result<TResponse>>(`${this.config.baseUrl}${url}`, body, {
         headers: this.createHeaders(headers, isFormData),
         params: this.createParams(params),
+        withCredentials: true,
       })
       .pipe(catchError(this.handleError));
   }
@@ -147,6 +169,7 @@ export class ApiService {
       .patch<Result<TResponse>>(`${this.config.baseUrl}${url}`, body, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
+        withCredentials: true,
       })
       .pipe(catchError(this.handleError));
   }
@@ -163,6 +186,7 @@ export class ApiService {
       .delete<Result<TResponse>>(`${this.config.baseUrl}${url}`, {
         headers: this.createHeaders(headers),
         params: this.createParams(params),
+        withCredentials: true,
       })
       .pipe(catchError(this.handleError));
   }

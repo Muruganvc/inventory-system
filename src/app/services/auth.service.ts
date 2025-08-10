@@ -15,6 +15,7 @@ export interface DecodedToken {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'authToken';
+  private refreshTokenKey = 'refreshToken';
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
 
@@ -26,6 +27,7 @@ export class AuthService {
         tap(response => {
           if (response.token) {
             this.setToken(response.token);
+            this.setRefreshToken(response.refreshToken);
           }
         })
       );
@@ -42,8 +44,35 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
+  getRefreshToken(): string | null {
+    return localStorage.getItem(this.refreshTokenKey);
+  }
+
+  refreshToken(): Observable<{ token: string, refreshToken: string }> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      this.logout();
+      return new Observable();
+    }
+
+    return this.api
+      .post<null, LoginResponse>(`refresh-token/${refreshToken}`, null)
+      .pipe(
+        map(res => this.api.handleResult(res)),
+        tap(response => {
+          if (response.token) {
+            this.setToken(response.token);
+            this.setRefreshToken(response.refreshToken);
+          }
+        })
+      );
+  }
+
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+  }
+  setRefreshToken(refreshToken: string): void {
+    localStorage.setItem(this.refreshTokenKey, refreshToken);
   }
 
   removeToken(): void {
@@ -112,18 +141,18 @@ export class AuthService {
     const roles = decoded[roleClaimKey];
     return Array.isArray(roles) ? roles : [roles];
   }
-// getUserRoles(): string[] {
-//   const decoded = this.getDecodedToken();
-//   if (!decoded) return [];
+  // getUserRoles(): string[] {
+  //   const decoded = this.getDecodedToken();
+  //   if (!decoded) return [];
 
-//   const roleClaimKey = Object.keys(decoded).find(key =>
-//     key.endsWith('/identity/claims/role')
-//   );
-//   if (!roleClaimKey) return [];
+  //   const roleClaimKey = Object.keys(decoded).find(key =>
+  //     key.endsWith('/identity/claims/role')
+  //   );
+  //   if (!roleClaimKey) return [];
 
-//   const roles = decoded[roleClaimKey];
-//   return Array.isArray(roles) ? roles : [roles];
-// }
+  //   const roles = decoded[roleClaimKey];
+  //   return Array.isArray(roles) ? roles : [roles];
+  // }
 
 
   hasRole(requiredRoles: string[]): boolean {
