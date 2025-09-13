@@ -10,7 +10,6 @@ import { CategoryUpdateRequest } from '../models/CategoryUpdateRequest';
 import { GetProductCategoryQueryResponse } from '../models/GetProductCategoryQueryResponse';
 import { ProductCategoryCreateCommand } from '../models/ProductCategoryCreateCommand';
 import { ProductCategoryUpdateRequest } from '../models/ProductCategoryUpdateRequest';
-import { KeyValuePair } from '../shared/common/KeyValuePair';
 import { GetCompanyCategoryProductsQueryResponse } from '../models/GetCompanyCategoryProductsQueryResponse';
 
 @Injectable({
