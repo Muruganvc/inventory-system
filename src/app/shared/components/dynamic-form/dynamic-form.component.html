@@ -17,39 +17,50 @@
                 <div class="form-field" [class.popup]="isPopup" [ngClass]="'col-span-' + field.colSpan">
                     <ng-container [ngSwitch]="field.type">
                         <!-- Input -->
-                        <mat-form-field *ngSwitchCase="'input'" appearance="outline">
-                            <mat-label>{{ field.label }}</mat-label>
-                            <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name" [readonly]="field.isReadOnly"
-                                [attr.maxlength]="field.maxLength || null" appAppSentenceCase  [ngClass]="{
-    'highlight-disabled': formGroup.get(field.name)?.disabled
-  }" />
-                            <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
-                                {{ field.label }} is required
-                            </mat-error>
-                            <mat-error *ngIf="formGroup.get(field.name)?.hasError('email')">
-                                Please enter a valid email
-                            </mat-error>
-                            <mat-error *ngIf="formGroup.get(field.name)?.hasError('minlength')">
-                                Minimum {{ formGroup.get(field.name)?.errors?.['minlength']?.requiredLength }}
-                                characters required
-                            </mat-error>
-                            <mat-error *ngIf="formGroup.get(field.name)?.hasError('pattern')">
-                                Invalid {{ field.label }}
-                            </mat-error>
-                        </mat-form-field>
+                        <ng-container *ngSwitchCase="'input'">
+                               <label class="form-label">{{ field.label }}</label>
+                            <mat-form-field *ngSwitchCase="'input'" appearance="outline">
+                                <!-- <mat-label>{{ field.label }}</mat-label> -->
+                                <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name"
+                                    [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null" appAppSentenceCase [ngClass]="{
+                            'highlight-disabled': formGroup.get(field.name)?.disabled
+                          }" />
+                                <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
+                                    {{ field.label }} is required
+                                </mat-error>
+                                <mat-error *ngIf="formGroup.get(field.name)?.hasError('email')">
+                                    Please enter a valid email
+                                </mat-error>
+                                <mat-error *ngIf="formGroup.get(field.name)?.hasError('minlength')">
+                                    Minimum {{ formGroup.get(field.name)?.errors?.['minlength']?.requiredLength }}
+                                    characters required
+                                </mat-error>
+                                <mat-error *ngIf="formGroup.get(field.name)?.hasError('pattern')">
+                                    Invalid {{ field.label }}
+                                </mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                      
 
                         <!-- Password -->
-                        <mat-form-field *ngSwitchCase="'password'" appearance="outline">
-                            <mat-label>{{ field.label }}</mat-label>
-                            <input matInput type="password" [formControlName]="field.name" />
-                        </mat-form-field>
- 
+                        <ng-container *ngSwitchCase="'password'">
+                            <label class="form-label">{{ field.label }}</label>
+                            <mat-form-field *ngSwitchCase="'password'" appearance="outline">
+                                <!-- <mat-label>{{ field.label }}</mat-label> -->
+                                <input matInput type="password" [formControlName]="field.name" />
+                            </mat-form-field>
+                        </ng-container>
+
+
 
                         <ng-container *ngSwitchCase="'searchable-select'">
+                              <label class="form-label">{{ field.label }}</label>
                             <div class="ng-select-wrapper">
-                                <ng-select #ngSelectRef [formControlName]="field.name" [items]="field.options" bindLabel="key" [compareWith]="compareFn"
-                                    [addTag]="field.addTag" (clear)="field.clear?.(field.name)" placeholder="Select {{ field.label }}"
-                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid" [class.ng-touched]="formGroup.get(field.name)?.touched"
+                                <ng-select #ngSelectRef [formControlName]="field.name" [items]="field.options"
+                                    bindLabel="key" [compareWith]="compareFn" [addTag]="field.addTag"
+                                    (clear)="field.clear?.(field.name)" placeholder="Select {{ field.label }}"
+                                    [class.ng-invalid]="formGroup.get(field.name)?.invalid"
+                                    [class.ng-touched]="formGroup.get(field.name)?.touched"
                                     (open)="setMaxLength(ngSelectRef, field.maxLength || 100)">
                                 </ng-select>
 
@@ -61,27 +72,38 @@
                         </ng-container>
 
                         <!-- Select -->
-                        <mat-form-field *ngSwitchCase="'select'" appearance="outline">
-                            <mat-label>{{ field.label }}</mat-label>
-                            <mat-select [formControlName]="field.name">
-                                <mat-option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label
-                                    }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <ng-container *ngSwitchCase="'select'">
+                              <label class="form-label">{{ field.label }}</label>
+                            <mat-form-field *ngSwitchCase="'select'" appearance="outline">
+                                <!-- <mat-label>{{ field.label }}</mat-label> -->
+                                <mat-select [formControlName]="field.name">
+                                    <mat-option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label
+                                        }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                       
 
                         <!-- Date Picker -->
-                        <mat-form-field *ngSwitchCase="'date'" appearance="outline">
-                            <mat-label>{{ field.label }}</mat-label>
-                            <input matInput [matDatepicker]="picker" [formControlName]="field.name" />
-                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
+                        <ng-container *ngSwitchCase="'date'">
+                            <label class="form-label">{{ field.label }}</label>
+                            <mat-form-field appearance="outline">
+                                <!-- <mat-label>{{ field.label }}</mat-label> -->
+                                <input matInput [matDatepicker]="picker" [formControlName]="field.name" />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
+                       
 
                         <!-- Checkbox -->
-                        <div *ngSwitchCase="'checkbox'" class="form-control-wrapper">
-                            <label class="form-label">{{ field.label }}</label>
-                            <mat-checkbox [formControlName]="field.name"></mat-checkbox>
-                        </div>
+                        <ng-container *ngSwitchCase="'checkbox'">
+                            <div class="form-control-wrapper">
+                                 <label class="form-label">{{ field.label }}</label>
+                                <mat-checkbox [formControlName]="field.name"></mat-checkbox>
+                            </div>
+                        </ng-container>
+                       
 
                         <!-- Radio Group -->
                         <div *ngSwitchCase="'radio'" class="form-control-wrapper">
@@ -99,12 +121,15 @@
                         </div>
 
                         <!-- Textarea -->
-                        <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" color="accent">
-                            <mat-label>{{ field.label }}</mat-label>
-                            <textarea matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
-                                [attr.maxlength]="field.maxLength || null" [rows]="field.rows || 4"
-                                [placeholder]="field.placeholder || ''" class="no-resize" appAppSentenceCase></textarea>
-                        </mat-form-field>
+                        <div *ngSwitchCase="'textarea'" class="form-control-wrapper">
+                            <label class="form-label">{{ field.label }}</label>
+                            <mat-form-field appearance="outline" color="accent">
+                                <!-- <mat-label>{{ field.label }}</mat-label> -->
+                                <textarea matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
+                                    [attr.maxlength]="field.maxLength || null" [rows]="field.rows || 4" [placeholder]="field.placeholder || ''"
+                                    class="no-resize" appAppSentenceCase></textarea>
+                            </mat-form-field>
+                        </div>
 
                     </ng-container>
                 </div>

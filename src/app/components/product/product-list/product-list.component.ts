@@ -33,9 +33,6 @@ export class ProductListComponent implements OnInit {
   columns: {
     key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, isEditable?: boolean
   }[] = [
-      { key: 'companyName', label: 'Company Name', align: 'left', isHidden: true },
-      { key: 'categoryName', label: 'Category Name', align: 'left', isHidden: true },
-      { key: 'productName', label: 'Prod.Name', align: 'left', isHidden: true },
       { key: 'productFullName', label: 'Product Name', align: 'left', isHidden: false },
       { key: 'mrp', label: 'Mrp ₹', align: 'left', isHidden: false },
       { key: 'salesPrice', label: 'Sales ₹', align: 'left', isHidden: false },
