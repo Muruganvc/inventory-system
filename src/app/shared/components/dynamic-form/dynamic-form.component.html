@@ -99,8 +99,9 @@
 
                         <!-- Checkbox -->
                         <ng-container *ngSwitchCase="'checkbox'">
+                             <label class="form-label">{{ field.label }}</label>
                             <div class="form-control-wrapper">
-                                 <label class="form-label">{{ field.label }}</label>
+                                 <!-- <label class="form-label">{{ field.label }}</label> -->
                                 <mat-checkbox [formControlName]="field.name"></mat-checkbox>
                             </div>
                         </ng-container>

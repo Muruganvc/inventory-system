@@ -180,12 +180,11 @@ export class SalesComponent implements OnInit {
           key: `${p.companyName}`,
           value: p.companyId
         }));
+        this.formGroup.reset();
         this.updateFieldOptions('company', this.companyList);
       }
     });
   }
-
-
 
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
@@ -194,7 +193,6 @@ export class SalesComponent implements OnInit {
 
 
   private bindCompanyChange(): void {
-
     const companyControl = this.formGroup.get('company');
     companyControl?.valueChanges.pipe(
       takeUntilDestroyed(this.destroyRef),
@@ -228,6 +226,11 @@ export class SalesComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef),
       filter(value => !!value)
     ).subscribe(selected => {
+      ['product', 'mrp', 'price', 'quantity', 'availableQuantity', 'salesPrice', 'totalAmount', 'netAmount',
+        'landingPrice', 'serialNo'
+      ].forEach(control => {
+        this.formGroup.get(control)?.reset();
+      });
       this.getProducts(selected.value)
     });
   }
