@@ -29,39 +29,38 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly idleService = inject(IdleService);
   private readonly userService = inject(UserService);
 
-  private healthCheckSub!: Subscription;
+  private healthCheckSub?: Subscription;
 
   ngOnInit(): void {
-    this.startIdleWatcher();
-    this.startHealthCheck();
+
+    this.watchIdleTimeout();
+    // this.startHealthCheck();
+
   }
 
-  private startIdleWatcher(): void {
+  ngOnDestroy(): void {
+    this.healthCheckSub?.unsubscribe();
+  }
+
+  private watchIdleTimeout(): void {
     this.idleService.onIdle().subscribe(() => {
       this.authService.logout();
     });
   }
 
-  ngOnDestroy(): void {
-    // Unsubscribe to avoid memory leaks
-    if (this.healthCheckSub) {
-      this.healthCheckSub.unsubscribe();
-    }
-  }
-
   private startHealthCheck(): void {
-    // Perform the initial health check
+    // Initial health check
     this.userService.checkHealth().subscribe({
-      next: (res) => console.log('Initial health check:', res),
-      error: (err) => console.error('Initial health check failed:', err)
+      next: res => console.log('Initial health check:', res),
+      error: err => console.error('Initial health check failed:', err)
     });
 
-    // Set up the interval for 5 minutes (300,000ms)
+    // Poll every 4.5 minutes
     this.healthCheckSub = interval(4.5 * 60 * 1000).pipe(
-      switchMap(() => this.userService.checkHealth())  // Call the health check every 5 minutes
+      switchMap(() => this.userService.checkHealth())
     ).subscribe({
-      next: (res) => console.log('Health check success:', res),
-      error: (err) => console.error('Health check failed:', err)
+      next: res => console.log('Health check success:', res),
+      error: err => console.error('Health check failed:', err)
     });
   }
 }
