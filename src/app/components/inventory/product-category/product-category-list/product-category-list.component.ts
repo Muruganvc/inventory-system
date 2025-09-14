@@ -163,10 +163,10 @@ export class ProductCategoryListComponent implements OnInit {
     let filteredCategories: GetProductCategoryQueryResponse[] = [];
     switch (event.action) {
       case 'CategoryNameAsc':
-        filteredCategories = [...this.allProductCategories].sort((a, b) => a.productCategoryName.localeCompare(b.productCategoryName));
+        filteredCategories = [...this.allProductCategories].sort((a, b) => a.productFullName.localeCompare(b.productFullName));
         break;
       case 'CategoryNameAscDesc':
-        filteredCategories = [...this.allProductCategories].sort((a, b) => b.productCategoryName.localeCompare(a.productCategoryName));
+        filteredCategories = [...this.allProductCategories].sort((a, b) => b.productFullName.localeCompare(a.productFullName));
         break;
       case 'IsActiveTrue':
         filteredCategories = this.allProductCategories.filter(cat => cat.isActive === true);
