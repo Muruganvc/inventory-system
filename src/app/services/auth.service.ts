@@ -25,6 +25,10 @@ export class AuthService {
       .pipe(
         map(res => this.api.handleResult(res)),
         tap(response => {
+          if (!response.invCompanyInfo?.isActive) {
+            this.router.navigate(['/company-expired']);
+            return;
+          }
           if (response.token) {
             this.setToken(response.token);
             this.setRefreshToken(response.refreshToken);
