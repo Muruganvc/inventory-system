@@ -19,7 +19,6 @@ import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ProductEntry } from '../../models/ProductEntry';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { OrderCreateRequest } from '../../models/CustomerRequest';
-import { CompanyService } from '../../services/company.service';
 
 @Component({
   selector: 'app-sales',
@@ -34,7 +33,6 @@ export class SalesComponent implements OnInit {
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly companyService = inject(CompanyService);
 
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
@@ -49,8 +47,6 @@ export class SalesComponent implements OnInit {
   actionButtons: ActionButtons[] = [];
   products: ProductsResponse[] = [];
   productsList: KeyValuePair[] = [];
-  companyList: KeyValuePair[] = [];
-  categoryList: KeyValuePair[] = [];
   productSales: ProductEntry[] = [];
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
@@ -72,18 +68,13 @@ export class SalesComponent implements OnInit {
     this.initForm();
     this.initFields();
     this.initActionButtons();
-    this.getCompanies();
-    // this.getProducts();
-    this.bindCompanyChange();
-    this.bindCategoryChange();
+    this.getProducts();
     this.bindProductChange();
     this.bindTotalAmountChange();
   }
 
   private initForm(): void {
     this.formGroup = new FormGroup({
-      company: new FormControl(null, Validators.required),
-      category: new FormControl(null, Validators.required),
       product: new FormControl(null, Validators.required),
       mrp: new FormControl({ value: null, disabled: true }, Validators.required),
       price: new FormControl(null, Validators.required),
@@ -101,7 +92,7 @@ export class SalesComponent implements OnInit {
     const isAdmin = false;
     this.fields = [
       {
-        type: 'searchable-select', name: 'company', label: 'Company Name', colSpan: 4, options: [],
+        type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [],
         clear: (fieldName: string) => {
           this.formGroup.get(fieldName)?.reset();
           this.formGroup.get('category')?.reset();
@@ -109,36 +100,13 @@ export class SalesComponent implements OnInit {
           this.formGroup.reset();
         }
       },
-      {
-        type: 'searchable-select', name: 'category', label: 'Category Name', colSpan: 4, options: [],
-        clear: (fieldName: string) => {
-          this.formGroup.get(fieldName)?.reset();
-          this.formGroup.get('product')?.reset();
-          ['category', 'product', 'mrp', 'price', 'quantity', 'availableQuantity', 'salesPrice', 'totalAmount', 'netAmount',
-            'landingPrice', 'serialNo'
-          ].forEach(control => {
-            this.formGroup.get(control)?.reset();
-          });
-        }
-      },
-      {
-        type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 4, options: [],
-        clear: (fieldName: string) => {
-          this.formGroup.get(fieldName)?.reset();
-          ['product', 'mrp', 'price', 'quantity', 'availableQuantity', 'salesPrice', 'totalAmount', 'netAmount',
-            'landingPrice', 'serialNo'
-          ].forEach(control => {
-            this.formGroup.get(control)?.reset();
-          });
-        }
-      },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
+      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
   }
@@ -173,66 +141,20 @@ export class SalesComponent implements OnInit {
     ];
   }
 
-  private getCompanies = (): void => {
-    this.companyService.getCompanies(true).subscribe({
-      next: result => {
-        this.companyList = result.map(p => ({
-          key: `${p.companyName}`,
-          value: p.companyId
-        }));
-        this.formGroup.reset();
-        this.updateFieldOptions('company', this.companyList);
-      }
-    });
-  }
-
-  private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
-    const field = this.fields.find(f => f.name === fieldName);
-    if (field) field.options = options;
-  }
-
-
-  private bindCompanyChange(): void {
-    const companyControl = this.formGroup.get('company');
-    companyControl?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter(value => !!value)
-    ).subscribe(({ value: companyId }) => {
-      this.productService.getCategoriesByCompany(companyId).subscribe(result => {
-        this.categoryList = result.map(({ categoryName, categoryId }) => ({
-          key: categoryName,
-          value: categoryId
-        }));
-        this.formGroup.get('category')?.reset([]);
-        this.formGroup.get('product')?.reset([]);
-        this.updateFieldOptions('category', this.categoryList);
-      });
-    });
-  }
-
-  private getProducts(categoryId: number): void {
+  private getProducts(): void {
     this.productService.getProducts('sales').subscribe(res => {
-      this.products = res.filter(p => p.categoryId === categoryId);
-      this.productsList = this.products.map(p => ({
-        key: `${p.productCategoryName}`,
+      this.products = res;
+      this.productsList = res.map(p => ({
+        key: `${p.companyName} ${p.categoryName} ${p.productCategoryName}`,
         value: p.productId
       }));
       this.updateFieldOptions('product', this.productsList);
     });
   }
 
-  private bindCategoryChange(): void {
-    this.formGroup.get('category')?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter(value => !!value)
-    ).subscribe(selected => {
-      ['product', 'mrp', 'price', 'quantity', 'availableQuantity', 'salesPrice', 'totalAmount', 'netAmount',
-        'landingPrice', 'serialNo'
-      ].forEach(control => {
-        this.formGroup.get(control)?.reset();
-      });
-      this.getProducts(selected.value)
-    });
+  private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) field.options = options;
   }
 
   private bindProductChange(): void {
