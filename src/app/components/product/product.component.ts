@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form.component';
@@ -8,12 +8,11 @@ import { UpdateProductRequest } from '../../models/UpdateProductRequest';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
-import { filter, map, pairwise, startWith } from 'rxjs';
+import { map, pairwise, startWith } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../shared/services/common.service';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product',
@@ -28,7 +27,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
   private readonly companyService = inject(CompanyService);
-  private readonly destroyRef = inject(DestroyRef);
   errorHtml: string;
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -49,11 +47,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
 
     this.initFields();
-    this.loadCompany();
-    this.bindCompanyChange();
-    this.bindCategoryChange()
-    this.bindCompanyCategoryProductChange();
-    // this.loadCompanyCategoryProduct();
+    this.loadCompanyCategoryProduct();
     this.initActionButtons();
     this.bindQuantityChange();
   }
@@ -64,8 +58,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   private initForm(): void {
     this.formGroup = new FormGroup({
-      company: new FormControl(null, Validators.required),
-      companyCategory: new FormControl(null, Validators.required),
       companyCategoryProduct: new FormControl(null, Validators.required),
       product: new FormControl(null),
       mrp: new FormControl(null, Validators.required),
@@ -85,14 +77,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   private initFields(): void {
     const IsProductActive = !this.authService.hasRole(["ACTIVEPRODUCT"]);
     this.fields = [
-      { type: 'searchable-select', name: 'company', label: 'Company ', colSpan: 4, options: [] },
-      { type: 'searchable-select', name: 'companyCategory', label: 'Company Category ', colSpan: 4, options: [] },
-      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 4, options: [] },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 2, isReadOnly: false, isNumberOnly: true },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [] },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 3, isReadOnly: false, isNumberOnly: true },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
@@ -159,71 +149,18 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   /** -------------------- DATA LOADERS -------------------- */
 
-  private loadCompany = (): void => {
-    this.companyService.getCompanies(true).subscribe({
-      next: result => {
-        const options: KeyValuePair[] = result.map(item => ({
-          key: `${item.companyName}`,
-          value: item.companyId
-        }));
-        this.formGroup.reset();
-        this.updateFieldOptions('company', options);
-      }
-    });
-  }
-
-  private bindCompanyChange = (): void => {
-    const companyControl = this.formGroup.get('company');
-    companyControl?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef), filter(value => !!value)).subscribe((value: any) => {
-      this.productService.getCategoriesByCompany(value?.value).subscribe(result => {
-        const options: KeyValuePair[] = result.map(({ categoryName, categoryId }) => ({
-          key: categoryName,
-          value: categoryId
-        }));
-        this.formGroup.get('companyCategory')?.reset();
-        this.formGroup.get('companyCategoryProduct')?.reset();
-        this.updateFieldOptions('companyCategory', options);
-      });
-    });
-  };
-
-  private bindCategoryChange(): void {
-    this.formGroup.get('companyCategory')?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter(value => !!value)
-    ).subscribe(selected => {
-      this.formGroup.get('companyCategoryProduct')?.reset();
-      this.loadCompanyCategoryProduct(selected.value);
-    });
-  }
-
-  private bindCompanyCategoryProductChange = (): void => {
-    this.formGroup.get('companyCategoryProduct')?.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter(value => !!value)
-    ).subscribe(_ => {
-      ['availableQuantity', 'quantity', 'mrp', 'salesPrice', 'landingPrice', 'isActive'].forEach(control => {
-        this.formGroup.get(control)?.reset();
-      });
-    });
-  }
-
-  private loadCompanyCategoryProduct = (categoryId: number): void => {
+  private loadCompanyCategoryProduct = (): void => {
     this.companyService.getCompanyCategoryProduct(true).subscribe({
       next: res => {
-        const result = res.filter(p => p.categoryId === categoryId);
-        const options: KeyValuePair[] = result.map(item => ({
-          key: `${item.productCategoryName}`,
+        const options: KeyValuePair[] = res.map(item => ({
+          key: `${item.companyName} ${item.categoryName} ${item.productCategoryName}`,
           value: item.productCategoryId
         }));
-        ['product', 'companyCategoryProduct', 'availableQuantity', 'quantity', 'mrp', 'salesPrice', 'landingPrice', 'isActive'].forEach(control => {
-          this.formGroup.get(control)?.reset();
-        });
         this.updateFieldOptions('companyCategoryProduct', options);
       }
     });
   }
-
+ 
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
     if (field) field.options = options;
@@ -244,7 +181,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     ).subscribe(diff => {
       const current = Number(availableControl?.value) || 0;
       const updated = current + diff;
-      availableControl?.setValue(updated > 0 ? updated : 0, { emitEvent: true });
+      availableControl?.setValue(updated, { emitEvent: true });
     });
   }
 
@@ -252,8 +189,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
-
-    if (params.form.invalid) return;
     const formErrors = params.form.errors;
     const errorMessages = formErrors
       ? Object.values(formErrors)
@@ -319,14 +254,15 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.initForm();
   }
   private buildProductRequest(value: any): ProductRequest {
-    const { key: companyName = '', value: companyId } = value.company ?? {};
-    const { key: categoryName = '', value: categoryId } = value.companyCategory ?? {};
-    const { key: productName = '', value: productCategoryId } = value.companyCategoryProduct ?? {};
+    const {
+      key: productName,
+      value: productCategoryId
+    } = value.companyCategoryProduct || {};
 
     return {
-      productName: `${companyName} ${categoryName} ${productName}`.trim(),
+      productName: productName || '',
       productCategoryId: productCategoryId ?? null,
-      description: value.description ?? '',
+      description: value.description || '',
       mrp: Number(value.mrp) || 0,
       salesPrice: Number(value.salesPrice) || 0,
       landingPrice: Number(value.landingPrice) || 0,
@@ -334,6 +270,14 @@ export class ProductComponent implements OnInit, OnDestroy {
       isActive: !!value.isActive
     };
   }
+
+
+  // private buildUpdateProductRequest(value: any): UpdateProductRequest {
+  //   return {
+  //     ...this.buildProductRequest(value),
+  //     productId: this.productResponse.productId
+  //   };
+  // }
 }
 
 /** -------------------- VALIDATORS -------------------- */
@@ -371,4 +315,3 @@ function landingPriceLessThanSalesPriceValidator(): ValidatorFn {
     return null;
   };
 }
-

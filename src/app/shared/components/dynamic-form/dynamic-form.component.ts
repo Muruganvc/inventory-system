@@ -89,4 +89,9 @@ export class DynamicFormComponent {
     });
   }
 
+  customSearchFn = (term: string, item: any): boolean => {
+    const searchWords = term.toLowerCase().split(' ').filter(w => !!w.trim());
+    const searchableText = `${item.key} ${item.value}`.toLowerCase();
+    return searchWords.every(word => searchableText.includes(word));
+  }
 }

@@ -62,6 +62,7 @@
                                     [class.ng-invalid]="formGroup.get(field.name)?.invalid"
                                     [class.ng-touched]="formGroup.get(field.name)?.touched"
                                     (clear)="field.clear?.(field.name)"
+                                    [searchFn]="customSearchFn"
                                     (open)="setMaxLength(ngSelectRef, field.maxLength || 100)">
                                 </ng-select>
 
