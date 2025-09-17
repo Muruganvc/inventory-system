@@ -52,21 +52,21 @@ export class ProductListComponent implements OnInit {
     this.resetTableActions();
   }
 
- 
+
   buttons = [
     {
       label: 'Excel Export',
       icon: 'fas fa-file-excel',
       tooltip: 'Excel Export',
-      action: 'excelExport', 
-      class :'excel-button'
+      action: 'excelExport',
+      class: 'excel-button'
     },
     {
       label: 'Add Product',
       icon: 'fas fa-circle-plus',
       tooltip: 'Add Product',
       action: 'addProduct',
-      class :'add-new-item-button'
+      class: 'add-new-item-button'
     }
   ];
 
@@ -212,6 +212,11 @@ export class ProductListComponent implements OnInit {
 
   save(product: ProductsResponse): void {
 
+    if (product.quantity == 0) {
+      this.commonService.showInfo('Enter available quantity.');
+      return;
+    }
+
     const updateQty: UpdateProductQuantityPayload = {
       quantity: product.quantity,
       rowVersion: product.rowVersion
@@ -320,10 +325,10 @@ export class ProductListComponent implements OnInit {
       }
     });
   }
- 
+
   exportToExcel = (): void => {
 
-    this.products = this.products.map(product => { 
+    this.products = this.products.map(product => {
       const totalAmount = product.salesPrice * product.quantity;
       return { ...product, totalAmount };
     });

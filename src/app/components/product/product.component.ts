@@ -77,9 +77,16 @@ export class ProductComponent implements OnInit, OnDestroy {
   private initFields(): void {
     const IsProductActive = !this.authService.hasRole(["ACTIVEPRODUCT"]);
     this.fields = [
-      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [] },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Quantity', colSpan: 3, isReadOnly: false, isNumberOnly: true },
+      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 4, options: [] },
+      {
+        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true,
+        isReadOnly: this.productResponse ? true : false
+      },
+      {
+        type: 'input', name: 'length', label: 'Length(Meter)', colSpan: 3, maxLength: 8, isNumberOnly: false,
+        isReadOnly: this.productResponse ? true : false
+      },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: false, isNumberOnly: true },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
@@ -160,7 +167,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
     });
   }
- 
+
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
     if (field) field.options = options;
@@ -189,6 +196,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
+    if (params.form.invalid) return;
     const formErrors = params.form.errors;
     const errorMessages = formErrors
       ? Object.values(formErrors)
@@ -237,7 +245,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   private handleCancel(): void {
-    this.formGroup.reset();
+    this.resetForm();
   }
 
   private handleBack(): void {

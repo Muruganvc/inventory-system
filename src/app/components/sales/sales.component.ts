@@ -92,21 +92,19 @@ export class SalesComponent implements OnInit {
     const isAdmin = false;
     this.fields = [
       {
-        type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 6, options: [],
+        type: 'searchable-select', name: 'product', label: 'Product Name', colSpan: 4, options: [],
         clear: (fieldName: string) => {
           this.formGroup.get(fieldName)?.reset();
-          this.formGroup.get('category')?.reset();
-          this.formGroup.get('product')?.reset();
           this.formGroup.reset();
         }
       },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
   }
@@ -126,7 +124,7 @@ export class SalesComponent implements OnInit {
         label: 'Clear',
         icon: 'fas fa-broom',
         class: 'btn-clear',
-        callback: this.handleCancel.bind(this),
+        callback: () => this.formGroup.reset(),
         validate: false,
         isHidden: false
       },
@@ -267,7 +265,7 @@ export class SalesComponent implements OnInit {
     const dialogRef = this.dialog.open(SalesConfirmDialogComponent, {
       width: '90%',
       maxWidth: '600px',
-      height: '470px',
+      // height: '500px',
       disableClose: true,
       panelClass: 'no-radius-dialog',
       data: {

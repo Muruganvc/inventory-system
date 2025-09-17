@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +13,7 @@ import { UserService } from '../../../services/user.service';
 import { Customer } from '../../../models/Customer';
 import { KeyValuePair } from '../../../shared/common/KeyValuePair';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest, filter, merge, startWith } from 'rxjs';
+import { filter, merge, startWith } from 'rxjs';
 import { CustomerRequest, OrderItemRequest } from '../../../models/CustomerRequest';
 import { ProductEntry } from '../../../models/ProductEntry';
 import { CommonService } from '../../../shared/services/common.service';
@@ -45,10 +45,8 @@ export class SalesConfirmDialogComponent implements OnInit {
   ) {
     this.userForm = new FormGroup({
       customerName: new FormControl(null, [Validators.required]),
-      mobileNo: new FormControl(null, [
-        Validators.required,
-        Validators.pattern(/^[0-9]{10}$/)
-      ]),
+      mobileNo: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{10}$/), Validators.minLength(10),
+      Validators.maxLength(10)]),
       address: new FormControl(null),
       disCountPercent: new FormControl(null),
       finalTotal: new FormControl({ value: data.netTotal, disabled: true }),
