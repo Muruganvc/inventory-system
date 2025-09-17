@@ -63,6 +63,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
       landingPrice: new FormControl(null, Validators.required),
+      length: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       isActive: new FormControl(null)
@@ -86,7 +87,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         type: 'input', name: 'length', label: 'Length(Meter)', colSpan: 3, maxLength: 8, isNumberOnly: false,
         isReadOnly: this.productResponse ? true : false
       },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: false, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: false, isNumberOnly: false },
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
@@ -149,8 +150,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
       quantity: product.quantity,
-      availableQuantity: product.quantity,
-      isActive: product.isActive
+      // availableQuantity: Number(product.quantity) > 0 ? product.quantity : product.length,
+      isActive: product.isActive,
+      length: product.length
     });
   }
 
@@ -176,26 +178,40 @@ export class ProductComponent implements OnInit, OnDestroy {
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
     const availableControl = this.formGroup.get('availableQuantity');
-    availableControl?.setValue(+quantityControl?.value, { emitEvent: true });
-    quantityControl?.valueChanges.pipe(
-      startWith(''),
-      map(val => Number(val) || 0),   // convert to number, treat empty as 0
-      pairwise(),                     // gives [previous, current]
-      map(([prev, curr]) => {
-        const diff = curr - prev;
-        return diff;
-      })
+    const lengthControl = this.formGroup.get('length');
+    if (!quantityControl || !availableControl) return;
+    const initialQuantity = Number(quantityControl.value) || 0;
+    availableControl.setValue(initialQuantity > 0 ? initialQuantity : lengthControl?.value, { emitEvent: true });
+    quantityControl.valueChanges.pipe(
+      startWith(initialQuantity),
+      map(value => Number(value) || 0),
+      pairwise(),
+      map(([prev, curr]) => curr - prev) // Calculate difference
     ).subscribe(diff => {
-      const current = Number(availableControl?.value) || 0;
-      const updated = current + diff;
-      availableControl?.setValue(updated, { emitEvent: true });
+      const currentAvailable = Number(availableControl.value) || 0;
+      const updatedAvailable = currentAvailable + diff;
+      const lengthValue = lengthControl?.value;
+      const newValue = lengthValue !== '' && lengthValue !== null && lengthValue !== undefined
+        ? lengthValue
+        : updatedAvailable;
+      availableControl.setValue(newValue, { emitEvent: true });
     });
   }
+
 
 
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
+
+    if (this.formGroup.get('length')?.value !== '') {
+      this.formGroup.get('quantity')?.clearValidators();
+      this.formGroup.get('quantity')?.updateValueAndValidity();
+    } else if (this.formGroup.get('quantity')?.value !== '') {
+      this.formGroup.get('length')?.clearValidators();
+      this.formGroup.get('length')?.updateValueAndValidity();
+    }
+
     if (params.form.invalid) return;
     const formErrors = params.form.errors;
     const errorMessages = formErrors
@@ -223,7 +239,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     });
   }
   private handleUpdate(params: any): void {
-
     var update: UpdateProductRequest = {
       productId: params.form.value.product.value,
       productName: params.form.value.companyCategoryProduct.key,
@@ -233,7 +248,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       quantity: params.form.value.quantity,
       isActive: params.form.value.isActive,
       rowVersion: this.productResponse.rowVersion,
-      productCategoryId: params.form.value.companyCategoryProduct.value
+      productCategoryId: params.form.value.companyCategoryProduct.value,
+      length: params.form.value.length
     };
     this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
       next: () => {
@@ -275,7 +291,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       salesPrice: Number(value.salesPrice) || 0,
       landingPrice: Number(value.landingPrice) || 0,
       quantity: Number(value.quantity) || 0,
-      isActive: !!value.isActive
+      isActive: !!value.isActive,
+      length: value.length
     };
   }
 

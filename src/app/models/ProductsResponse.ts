@@ -3,12 +3,12 @@ import { TableRow } from "../shared/components/custom-table/custom-table.compone
 export interface RowVersion {
   rowVersion: number;
 }
- 
+
 export interface UpdateProductQuantityPayload extends RowVersion {
   quantity: number;
 }
 
-export interface ProductsResponse extends TableRow,RowVersion {
+export interface ProductsResponse extends TableRow, RowVersion {
   productFullName: string;
   productId: number;
   productName: string;
@@ -25,6 +25,6 @@ export interface ProductsResponse extends TableRow,RowVersion {
   quantity: number;
   isActive: boolean;
   userName?: string | null;
-  isEditing: boolean; 
+  isEditing: boolean;
+  length: string;
 }
- 

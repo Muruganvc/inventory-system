@@ -38,6 +38,7 @@ export class ProductListComponent implements OnInit {
       { key: 'salesPrice', label: 'Sales ₹', align: 'left', isHidden: false },
       { key: 'landingPrice', label: 'Landing', align: 'left', isHidden: false },
       { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
+      { key: 'length', label: 'Lenght(Meter)', align: 'left', isHidden: false },
       { key: 'createdBy', label: 'Created By', align: 'left', isHidden: false }
     ];
 

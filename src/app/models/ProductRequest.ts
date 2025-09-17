@@ -4,7 +4,8 @@ export interface ProductRequest {
     description?: string;
     mrp: number;
     salesPrice: number;
-    landingPrice:number;
+    landingPrice: number;
     quantity: number;
     isActive: boolean;
+    length: string;
 }

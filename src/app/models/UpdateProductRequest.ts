@@ -6,7 +6,8 @@ export interface UpdateProductRequest {
     mrp: number;
     salesPrice: number;
     quantity: number;
-    isActive: boolean; 
-    landingPrice : number;
-    rowVersion : number;
+    isActive: boolean;
+    landingPrice: number;
+    rowVersion: number;
+    length: string;
 }

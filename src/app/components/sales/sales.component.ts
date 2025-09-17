@@ -101,7 +101,7 @@ export class SalesComponent implements OnInit {
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'availableQuantity', label: 'Available Qty', colSpan: 2, isReadOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
@@ -201,7 +201,7 @@ export class SalesComponent implements OnInit {
   private patchForm(product: ProductsResponse): void {
     this.formGroup.patchValue({
       mrp: product.mrp,
-      availableQuantity: product.quantity,
+      availableQuantity: product.quantity > 0 ? product.quantity : product.length,
       totalAmount: 0,
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice
