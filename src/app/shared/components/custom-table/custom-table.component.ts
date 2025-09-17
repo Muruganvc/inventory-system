@@ -47,7 +47,7 @@ export interface TableColumn {
     MatCardModule,
     MatButtonModule, MatIconModule,
     LayoutModule, MatExpansionModule, MatCheckboxModule,
-    MatTooltipModule, NumberOnlyDirective,MatMenuModule
+    MatTooltipModule, NumberOnlyDirective, MatMenuModule
   ],
   templateUrl: './custom-table.component.html',
   styleUrl: './custom-table.component.scss'
@@ -58,7 +58,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     if (!this.isMobile) {
       this.dataSource.filter = this.searchTerm.trim().toLowerCase();
     }
-    this.filterData(); 
+    this.filterData();
   }
   @Input() data: T[] = [];
   @Input() columns: TableColumn[] = [];
@@ -72,7 +72,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   @Input() showHeader: boolean = true;
 
   @Output() edit = new EventEmitter<T>();
-  @Output() delete = new EventEmitter<T>(); 
+  @Output() delete = new EventEmitter<T>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -92,15 +92,14 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     condition: (row: any) => boolean;
   }[] = [];
   @Output() actionClick = new EventEmitter<{ row: any; action: string }>();
-
+  @Input() filterProperties: string[] = [];
   @Input() buttons: { icon: string; action: string, label: string, tooltip: string, class: string }[] = [];
   @Output() buttonClicked = new EventEmitter<string>();
   onButtonClick(action: string) {
     this.buttonClicked.emit(action);
   }
 
-
-  @Input() filterActions: { iconClass: string; action: string, label : string }[] = [];
+  @Input() filterActions: { iconClass: string; action: string, label: string }[] = [];
   @Output() filterActionClick = new EventEmitter<{ action: string }>();
 
   onActionClick(action: string) {
@@ -209,6 +208,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
       setTimeout(() => {
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
+          this.applyFIlterAnyKey();
         }
       });
     }
@@ -229,6 +229,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
   ngAfterViewInit() {
     if (this.dataSource && this.paginator) {
       this.dataSource.paginator = this.paginator;
+      this.applyFIlterAnyKey();
     }
   }
 
@@ -246,6 +247,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     if (index > -1) {
       this.data[index] = updated;
       this.dataSource.data = [...this.data];
+      this.applyFIlterAnyKey();
       this.edit.emit(updated);
     }
     this.cancelEdit();
@@ -270,7 +272,7 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
       case 'error': return 'icon-error';
       default: return 'icon-default';
     }
-  } 
+  }
   onFieldChange(row: any, key: string, value: any): void {
     const updatedRow = { ...row, [key]: value };
     this.fieldChanged.emit({ row: updatedRow, key, value });
@@ -303,4 +305,31 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
       this.actionClick.emit({ row, action });
     }
   }
+
+  applyFIlterAnyKey = (): void => {
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      const searchWords = filter
+        .toLowerCase()
+        .split(' ')
+        .filter(word => word.trim() !== '');
+
+      let targetStr: string;
+
+      if (this.filterProperties.length === 0) {
+        // Search all properties
+        targetStr = Object.values(data)
+          .map(value => value?.toString().toLowerCase() || '')
+          .join(' ');
+      } else {
+        // Search only specified properties
+        targetStr = this.filterProperties
+          .map(prop => data?.[prop]?.toString().toLowerCase() || '')
+          .join(' ');
+      }
+
+      return searchWords.every(word => targetStr.includes(word));
+    };
+  }
+
+
 }
