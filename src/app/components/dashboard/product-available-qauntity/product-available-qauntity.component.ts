@@ -53,7 +53,7 @@ export class ProductAvailableQauntityComponent {
         let colorIndex = 0;
         this.allProducts = result.map(item => ({
           ...item,
-          color: item.quantity <= 50 ? 'red' : this.dynamicColors[colorIndex++ % this.dynamicColors.length]
+          color: item.quantity <= 10 ? 'red' : 'green' // this.dynamicColors[colorIndex++ % this.dynamicColors.length]
         }));
         this.productList = [...this.allProducts];
       }

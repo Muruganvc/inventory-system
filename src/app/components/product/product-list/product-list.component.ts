@@ -337,7 +337,6 @@ export class ProductListComponent implements OnInit {
       { header: 'Category Name', key: 'categoryName', width: 25 },
       { header: 'Company ID', key: 'companyId', width: 15 },
       { header: 'Company Name', key: 'companyName', width: 25 },
-      { header: 'Description', key: 'description', width: 30 },
       { header: 'MRP', key: 'mrp', width: 12 },
       { header: 'Sales Price', key: 'salesPrice', width: 15 },
       { header: 'Landing Price', key: 'landingPrice', width: 15 },
