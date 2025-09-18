@@ -377,11 +377,11 @@ export class SalesComponent implements OnInit {
     }
 
     // Check stock availability
-    if (selectedProduct.meter == 0 || selectedProduct.quantity === 0) {
+    if (!(selectedProduct.meter > 0 || selectedProduct.quantity > 0)) {
       this.commonService.showWarning('This product is currently out of stock.');
       return false;
     }
-
+    
     // Check if selling below landing price
     if (unitPrice < selectedProduct.landingPrice) {
       this.commonService.showWarning('Unit price should not be less than Landing Price.');
