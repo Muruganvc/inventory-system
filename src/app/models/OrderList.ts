@@ -18,5 +18,6 @@ export interface OrderListReponse extends TableRow {
   phone: string;
   user: string;
   serialNo: string;
-  isGst : boolean;
+  isGst: boolean;
+  meter: number;
 }

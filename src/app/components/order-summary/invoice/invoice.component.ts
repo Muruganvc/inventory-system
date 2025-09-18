@@ -47,7 +47,7 @@ export class InvoiceComponent implements OnInit {
     balanceAmount: 0,
     isGst: false
   };
- 
+
 
   givenAmount = 0;
   qrCodePreview: string | ArrayBuffer | null = null;
@@ -68,9 +68,9 @@ export class InvoiceComponent implements OnInit {
         invoiceDate: new Date().toISOString().split('T')[0],
         items: result.map(a => ({
           name: a.fullProductName,
-          qty: a.quantity,
+          qty: a.meter > 0 ? a.meter : a.quantity,
           rate: a.unitPrice,
-          total: a.quantity * a.unitPrice,
+          total: a.meter > 0 ? a.meter * a.unitPrice : a.quantity * a.unitPrice,
           balanceAmount: a.balanceAmount,
           unit: 'PCS',
           productId: a.productId,

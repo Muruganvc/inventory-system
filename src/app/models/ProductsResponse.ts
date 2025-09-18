@@ -26,5 +26,5 @@ export interface ProductsResponse extends TableRow, RowVersion {
   isActive: boolean;
   userName?: string | null;
   isEditing: boolean;
-  length: string;
+  meter: number;
 }

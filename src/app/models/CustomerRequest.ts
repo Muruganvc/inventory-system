@@ -11,6 +11,7 @@ export interface OrderItemRequest {
   unitPrice: number;
   discountPercent: number;
   serialNo?: string;
+  meter: number;
 }
 
 export interface OrderCreateRequest {

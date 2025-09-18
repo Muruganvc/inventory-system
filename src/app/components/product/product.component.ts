@@ -63,7 +63,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
       landingPrice: new FormControl(null, Validators.required),
-      length: new FormControl(null, Validators.required),
+      meter: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       isActive: new FormControl(null)
@@ -78,19 +78,26 @@ export class ProductComponent implements OnInit, OnDestroy {
   private initFields(): void {
     const IsProductActive = !this.authService.hasRole(["ACTIVEPRODUCT"]);
     this.fields = [
-      { type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 4, options: [] },
       {
-        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true,
+        type: 'searchable-select', name: 'companyCategoryProduct', label: 'Company Product ', colSpan: 6, options: [],
+        clear: (fieldName: string) => {
+          this.formGroup.get(fieldName)?.reset();
+          this.formGroup.reset();
+        },
         isReadOnly: this.productResponse ? true : false
       },
       {
-        type: 'input', name: 'length', label: 'Length(Meter)', colSpan: 3, maxLength: 8, isNumberOnly: false,
+        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true,
         isReadOnly: this.productResponse ? true : false
       },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: false, isNumberOnly: false },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 3, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      {
+        type: 'input', name: 'meter', label: 'Length(Meter)', colSpan: 2, maxLength: 8, isNumberOnly: true,
+        isReadOnly: this.productResponse ? true : false
+      },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: false, isNumberOnly: false },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
@@ -150,9 +157,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
       quantity: product.quantity,
-      // availableQuantity: Number(product.quantity) > 0 ? product.quantity : product.length,
       isActive: product.isActive,
-      length: product.length
+      meter: product.meter
     });
   }
 
@@ -178,10 +184,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   private bindQuantityChange(): void {
     const quantityControl = this.formGroup.get('quantity');
     const availableControl = this.formGroup.get('availableQuantity');
-    const lengthControl = this.formGroup.get('length');
+    const meterControl = this.formGroup.get('meter');
     if (!quantityControl || !availableControl) return;
     const initialQuantity = Number(quantityControl.value) || 0;
-    availableControl.setValue(initialQuantity > 0 ? initialQuantity : lengthControl?.value, { emitEvent: true });
+    availableControl.setValue(initialQuantity > 0 ? initialQuantity : meterControl?.value, { emitEvent: true });
     quantityControl.valueChanges.pipe(
       startWith(initialQuantity),
       map(value => Number(value) || 0),
@@ -190,26 +196,25 @@ export class ProductComponent implements OnInit, OnDestroy {
     ).subscribe(diff => {
       const currentAvailable = Number(availableControl.value) || 0;
       const updatedAvailable = currentAvailable + diff;
-      const lengthValue = lengthControl?.value;
+      const lengthValue = meterControl?.value;
       const newValue = lengthValue !== '' && lengthValue !== null && lengthValue !== undefined
         ? lengthValue
         : updatedAvailable;
       availableControl.setValue(newValue, { emitEvent: true });
     });
   }
-
-
-
+ 
+ 
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
 
-    if (this.formGroup.get('length')?.value !== '') {
+    if (this.formGroup.get('meter')?.value !== '') {
       this.formGroup.get('quantity')?.clearValidators();
       this.formGroup.get('quantity')?.updateValueAndValidity();
     } else if (this.formGroup.get('quantity')?.value !== '') {
-      this.formGroup.get('length')?.clearValidators();
-      this.formGroup.get('length')?.updateValueAndValidity();
+      this.formGroup.get('meter')?.clearValidators();
+      this.formGroup.get('meter')?.updateValueAndValidity();
     }
 
     if (params.form.invalid) return;
@@ -249,7 +254,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       isActive: params.form.value.isActive,
       rowVersion: this.productResponse.rowVersion,
       productCategoryId: params.form.value.companyCategoryProduct.value,
-      length: params.form.value.length
+      meter: params.form.value.meter
     };
     this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
       next: () => {
@@ -292,7 +297,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       landingPrice: Number(value.landingPrice) || 0,
       quantity: Number(value.quantity) || 0,
       isActive: !!value.isActive,
-      length: value.length
+      meter: value.meter
     };
   }
 

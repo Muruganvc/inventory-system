@@ -162,7 +162,8 @@ export class SalesConfirmDialogComponent implements OnInit {
       productId: item.productId,
       quantity: Number(item.quantity) || 0,
       unitPrice: Number(item.price) || 0,
-      serialNo: item.serialNo
+      serialNo: item.serialNo,
+      meter: Number(item.meter)
     }));
 
     // Final result object

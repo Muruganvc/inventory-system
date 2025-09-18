@@ -9,5 +9,5 @@ export interface UpdateProductRequest {
     isActive: boolean;
     landingPrice: number;
     rowVersion: number;
-    length: string;
+    meter: number;
 }

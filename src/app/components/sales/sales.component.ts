@@ -51,11 +51,12 @@ export class SalesComponent implements OnInit {
 
   columns: { key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean }[] = [
     { key: 'productName', label: 'Prod. Name', align: 'left', isHidden: false },
-    { key: 'serialNo', label: 'Serial No.', align: 'left', isHidden: false },
     { key: 'mrp', label: 'MRP ₹', align: 'left', isHidden: false },
     { key: 'salesPrice', label: 'Sales Price', align: 'left', isHidden: false },
     { key: 'price', label: 'Price ₹', align: 'left', isHidden: false },
     { key: 'quantity', label: 'Quantity', align: 'left', isHidden: false },
+    { key: 'meter', label: 'Meter', align: 'left', isHidden: false },
+    { key: 'serialNo', label: 'Serial No.', align: 'left', isHidden: false },
     { key: 'totalAmount', label: 'Amount ₹', align: 'left', isHidden: false }
   ];
 
@@ -79,7 +80,9 @@ export class SalesComponent implements OnInit {
       mrp: new FormControl({ value: null, disabled: true }, Validators.required),
       price: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
+      meter: new FormControl(null, [Validators.required, Validators.min(0.1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
+      availableMeter: new FormControl({ value: null, disabled: true }),
       salesPrice: new FormControl({ value: null, disabled: true }),
       totalAmount: new FormControl({ value: null, disabled: true }),
       netAmount: new FormControl({ value: null, disabled: true }),
@@ -101,10 +104,12 @@ export class SalesComponent implements OnInit {
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty / Length(Meter)', colSpan: 2, isReadOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true },
+      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 4, maxLength: 15 },
+      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 2, maxLength: 15 },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
   }
@@ -167,20 +172,22 @@ export class SalesComponent implements OnInit {
 
   private bindTotalAmountChange(): void {
     const priceControl = this.formGroup.get('price');
+    const meterControl = this.formGroup.get('meter');
     const quantityControl = this.formGroup.get('quantity');
     const mrpControl = this.formGroup.get('mrp');
     const availableQtyControl = this.formGroup.get('availableQuantity');
     const totalAmountControl = this.formGroup.get('totalAmount');
 
-    if (!priceControl || !quantityControl || !mrpControl || !availableQtyControl || !totalAmountControl) return;
+    if (!priceControl || !quantityControl || !mrpControl || !availableQtyControl || !totalAmountControl || !meterControl) return;
 
     const getNum = (ctrl: AbstractControl | null) => +ctrl?.value || 0;
 
-    merge(priceControl.valueChanges, quantityControl.valueChanges, mrpControl.valueChanges)
+    merge(priceControl.valueChanges, quantityControl.valueChanges, mrpControl.valueChanges, meterControl.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         let price = getNum(priceControl);
         let quantity = getNum(quantityControl);
+        let meter = getNum(meterControl);
         const mrp = getNum(mrpControl);
         const availableQty = getNum(availableQtyControl);
 
@@ -189,22 +196,27 @@ export class SalesComponent implements OnInit {
           return;
         }
 
+
         if (quantity > availableQty) {
           quantityControl.setValue(availableQty, { emitEvent: false });
           return;
         }
-
-        totalAmountControl.setValue(price * quantity, { emitEvent: false });
+        if (meter > 0) {
+          totalAmountControl.setValue(price * meter, { emitEvent: false });
+        } else {
+          totalAmountControl.setValue(price * quantity, { emitEvent: false });
+        }
       });
   }
 
   private patchForm(product: ProductsResponse): void {
     this.formGroup.patchValue({
       mrp: product.mrp,
-      availableQuantity: product.quantity > 0 ? product.quantity : product.length,
+      availableQuantity: product.quantity,
       totalAmount: 0,
       salesPrice: product.salesPrice,
-      landingPrice: product.landingPrice
+      landingPrice: product.landingPrice,
+      availableMeter: product.meter
     });
   }
 
@@ -215,7 +227,7 @@ export class SalesComponent implements OnInit {
   }
 
   private handleSave(params: any): void {
-    const isValid = this.addProduct(params.form.value);
+    const isValid = this.addProduct(params.form);
     const netAmount = this.formGroup.get('netAmount')?.value;
     if (isValid) this.formGroup.reset();
     this.formGroup.patchValue({ netAmount }, { emitEvent: false });
@@ -315,50 +327,87 @@ export class SalesComponent implements OnInit {
     });
   }
 
-  private addProduct(form: any): boolean {
-    const { product, price, quantity, serialNo } = form;
+  private addProduct(form: FormGroup): boolean {
+    const product = form.get('product')?.value;
+    const price = Number(form.get('price')?.value);
+    const quantity = Number(form.get('quantity')?.value);
+    const serialNo = form.get('serialNo')?.value;
+    const availableMeter = Number(form.get('availableMeter')?.value);
+    const meter = Number(form.get('meter')?.value);
+
     const productId = product?.value;
+
+    // Check for duplicate product
     if (this.productSales.some(p => p.productId === productId)) {
       this.commonService.showWarning('Product already exists.');
       return false;
     }
-    if (!price || Number(price) === 0) {
+
+    const unitPrice = Number(price);
+    const qty = Number(quantity);
+
+    // Validate quantity or meter
+    if (availableMeter === 0) {
+      form.get('meter')?.clearValidators();
+      form.get('meter')?.updateValueAndValidity();
+      if (!qty || qty === 0) {
+        this.commonService.showWarning('Please enter quantity.');
+        return false;
+      }
+    } else {
+      form.get('quantity')?.clearValidators();
+      form.get('quantity')?.updateValueAndValidity();
+      if (!meter || meter === 0) {
+        this.commonService.showWarning('Please enter meter.');
+        return false;
+      }
+    }
+
+    // Validate unit price
+    if (!unitPrice || unitPrice === 0) {
       this.commonService.showWarning('Please enter unit price.');
       return false;
     }
 
-    if (!quantity || Number(quantity) === 0) {
-      this.commonService.showWarning('Please enter quantity.');
-      return false;
-    }
+    // Find selected product
     const selectedProduct = this.products.find(p => p.productId === productId);
     if (!selectedProduct) {
       this.commonService.showWarning('Selected product not found.');
       return false;
     }
+
+    // Check stock availability
     if (selectedProduct.quantity === 0) {
       this.commonService.showWarning('This product is currently out of stock.');
       return false;
     }
-    if (Number(price) < selectedProduct.landingPrice) {
+
+    // Check if selling below landing price
+    if (unitPrice < selectedProduct.landingPrice) {
       this.commonService.showWarning('Unit price should not be less than Landing Price.');
       return false;
     }
+
+    // Build the new product entry
     const newProduct: ProductEntry = {
       productId: selectedProduct.productId,
       id: selectedProduct.productId,
       productName: `${selectedProduct.companyName} ${selectedProduct.categoryName} ${selectedProduct.productCategoryName}`,
       mrp: selectedProduct.mrp,
       salesPrice: selectedProduct.salesPrice,
-      price: Number(price),
-      quantity: Number(quantity),
-      totalAmount: Number(price) * Number(quantity),
-      serialNo
+      price: unitPrice,
+      quantity: qty,
+      totalAmount: meter > 0 ? unitPrice * meter : unitPrice * qty,
+      serialNo,
+      meter: meter
     };
 
+    // Add the new product to the sales list
     this.productSales = [...this.productSales, newProduct];
     return true;
   }
+
+
 
 
   onEdit(entry: ProductEntry): void {

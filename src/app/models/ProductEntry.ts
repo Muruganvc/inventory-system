@@ -8,4 +8,5 @@ export interface ProductEntry extends TableRow {
   quantity: number;
   totalAmount: number;
   serialNo?: string;
+  meter: number;
 }

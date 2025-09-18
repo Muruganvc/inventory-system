@@ -7,5 +7,5 @@ export interface ProductRequest {
     landingPrice: number;
     quantity: number;
     isActive: boolean;
-    length: string;
+    meter: number;
 }
