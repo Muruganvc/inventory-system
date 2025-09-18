@@ -377,7 +377,7 @@ export class SalesComponent implements OnInit {
     }
 
     // Check stock availability
-    if (selectedProduct.quantity === 0) {
+    if (selectedProduct.meter == 0 || selectedProduct.quantity === 0) {
       this.commonService.showWarning('This product is currently out of stock.');
       return false;
     }
