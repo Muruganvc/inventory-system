@@ -1,5 +1,5 @@
 {
-  "apiBaseUrl": "https://inventorysystem-api.onrender.com/",
+  "apiBaseUrl": "https://inventorysystem-api-qa.onrender.com/",
   "companyName": "VENNILA ELECTRICALS",
   "apiVersion": "1.0.3",
   "uiVersion": "3.0.0",
