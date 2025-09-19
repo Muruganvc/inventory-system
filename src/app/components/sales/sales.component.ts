@@ -216,7 +216,7 @@ export class SalesComponent implements OnInit {
       totalAmount: 0,
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
-      availableMeter: product.meter
+      availableMeter: product.meter 
     });
   }
 
@@ -421,7 +421,8 @@ export class SalesComponent implements OnInit {
       quantity: entry.quantity,
       totalAmount: entry.price * entry.quantity,
       availableQuantity: selectedProduct?.quantity,
-      serialNo: entry.serialNo
+      serialNo: entry.serialNo,
+      meter:entry.meter
     });
   }
 

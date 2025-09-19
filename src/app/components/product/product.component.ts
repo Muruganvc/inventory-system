@@ -63,8 +63,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
       landingPrice: new FormControl(null, Validators.required),
-      meter: new FormControl(null, Validators.required),
-      quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
+      // meter: new FormControl(null, Validators.required),
+      // quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
+      meter: new FormControl(null),
+      quantity: new FormControl(null),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       isActive: new FormControl(null)
     }, {
@@ -98,7 +100,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
+      { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
   createNewProduct(term: string) {
@@ -203,8 +205,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       availableControl.setValue(newValue, { emitEvent: true });
     });
   }
- 
- 
+
+
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
@@ -227,6 +229,11 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     if (errorMessages.length) {
       this.commonService.showError(errorMessages.join('<br>'));
+      return;
+    }
+
+    if (Number(this.formGroup.get('meter')?.value) === 0 || Number(this.formGroup.get('quantity')?.value)) {
+      this.commonService.showWarning('Enter either meter or quantity.');
       return;
     }
 

@@ -6,6 +6,7 @@ export interface RowVersion {
 
 export interface UpdateProductQuantityPayload extends RowVersion {
   quantity: number;
+  meter:number;
 }
 
 export interface ProductsResponse extends TableRow, RowVersion {

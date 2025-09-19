@@ -69,7 +69,7 @@ export class CategoryComponent implements OnInit {
         maxLength: 20
       },
       {
-        type: 'checkbox',
+        type: 'toggle',
         name: 'isActive',
         label: 'Is Active',
         colSpan: 4

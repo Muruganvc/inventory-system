@@ -63,7 +63,7 @@ export class CompanyComponent implements OnInit {
   private initFields(): void {
     this.fields = [
       { type: 'input', name: 'companyName', label: 'Company Name', colSpan: 6, maxLength: 20 },
-      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 6 },
+      { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 6 },
       { type: 'textarea', name: 'description', label: 'Description', colSpan: 12,isHidden: true }
     ];
   }
