@@ -74,7 +74,7 @@ export class SalesConfirmDialogComponent implements OnInit {
         this.customers = result;
         result.map(m => {
           this.customerDropDown.push({
-            key: m.mobileNo,
+            key: `${m.mobileNo} ${m.customerName}`,
             value: m.customerId
           });
         });
@@ -86,11 +86,13 @@ export class SalesConfirmDialogComponent implements OnInit {
 
   bindCustomerEvent = (): void => {
     const customerNameControl = this.userForm.get('mobileNo');
+
     if (!customerNameControl) return;
     merge(customerNameControl.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         const cust = this.customers.find(a => a.customerId == result.value);
+        this.userForm.get('mobileNo')?.setValue(cust?.mobileNo, { emitEvent: false });
         this.userForm.get('customerName')?.setValue(cust?.customerName, { emitEvent: false });
         this.userForm.get('address')?.setValue(cust?.address, { emitEvent: false });
       });
@@ -211,6 +213,12 @@ export class SalesConfirmDialogComponent implements OnInit {
       {
         type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6, maxLength: 10, options: [],
         addTag: true,
+        clear: () => {
+          const form = this.userForm;
+          form.get('mobileNo')?.reset();
+          form.get('customerName')?.reset();
+          form.get('address')?.reset();
+        }
       },
       { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 50 },
       { type: 'input', name: 'address', label: 'Address', colSpan: 12 },
