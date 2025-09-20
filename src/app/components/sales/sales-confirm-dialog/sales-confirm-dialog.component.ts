@@ -225,7 +225,7 @@ export class SalesConfirmDialogComponent implements OnInit {
       { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, isNumOnly: true, maxLength: 2 },
       { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
       { type: 'input', name: 'balanceAmount', label: 'Balance Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
-      { type: 'checkbox', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
+      { type: 'toggle', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
       { type: 'input', name: 'gstNumber', label: 'Gst Number', colSpan: 8, maxLength: 15 },
     ];
   }

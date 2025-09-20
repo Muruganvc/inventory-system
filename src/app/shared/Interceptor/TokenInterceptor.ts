@@ -1,8 +1,8 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { throwError } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { from, throwError } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
@@ -21,23 +21,26 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
             // If 401 Unauthorized, the token might be expired
             if (error.status === 0) { //0  for testing
                 console.error('Token expired, regenerating...');
-                return authService.refreshToken().pipe(
+
+                // Call the async refreshToken() method using from()
+                return from(authService.refreshToken()).pipe(
                     switchMap((newTokens) => {
-                        // Store the new refresh token in localStorage
+                        // Update tokens
                         authService.setRefreshToken(newTokens.refreshToken);
 
-                        // Retry the original request with the new access token
-                        authReq = req.clone({
+                        // Clone original request with new token
+                        const newAuthReq = req.clone({
                             setHeaders: {
                                 Authorization: `Bearer ${newTokens.token}`,
                             },
                         });
-                        return next(authReq);
+
+                        // Retry the failed request with new token
+                        return next(newAuthReq);
                     }),
                     catchError((err) => {
-                        // If refresh token fails, log out and navigate to login
                         authService.logout();
-                        return throwError(() => err);  // Return the error to propagate it
+                        return throwError(() => err);
                     })
                 );
             }

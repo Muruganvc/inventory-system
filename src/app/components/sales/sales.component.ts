@@ -147,13 +147,16 @@ export class SalesComponent implements OnInit {
   private getProducts(): void {
     this.productService.getProducts('sales').subscribe(res => {
       this.products = res;
+
       this.productsList = res.map(p => ({
-        key: `${p.companyName} ${p.categoryName} ${p.productCategoryName}`,
+        key: `${p.companyName} ${p.categoryName}${p.productCategoryName ? ' ' + p.productCategoryName : ''}`,
         value: p.productId
       }));
+
       this.updateFieldOptions('product', this.productsList);
     });
   }
+
 
   private updateFieldOptions(fieldName: string, options: KeyValuePair[]): void {
     const field = this.fields.find(f => f.name === fieldName);
@@ -216,7 +219,7 @@ export class SalesComponent implements OnInit {
       totalAmount: 0,
       salesPrice: product.salesPrice,
       landingPrice: product.landingPrice,
-      availableMeter: product.meter 
+      availableMeter: product.meter
     });
   }
 
@@ -381,7 +384,7 @@ export class SalesComponent implements OnInit {
       this.commonService.showWarning('This product is currently out of stock.');
       return false;
     }
-    
+
     // Check if selling below landing price
     if (unitPrice < selectedProduct.landingPrice) {
       this.commonService.showWarning('Unit price should not be less than Landing Price.');
@@ -422,7 +425,7 @@ export class SalesComponent implements OnInit {
       totalAmount: entry.price * entry.quantity,
       availableQuantity: selectedProduct?.quantity,
       serialNo: entry.serialNo,
-      meter:entry.meter
+      meter: entry.meter
     });
   }
 

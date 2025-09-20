@@ -2,7 +2,7 @@ import { ElementRef, inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { InvoiceComponent } from '../../components/order-summary/invoice/invoice.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { GetInventoryCompanyInfo } from '../../models/GetInventoryCompanyInfo';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
@@ -300,6 +300,17 @@ export class CommonService {
     const blob = new Blob([byteArray], { type: 'application/octet-stream' });
     const file = new File([blob], fileName, { type: blob.type });
     return file;
+  }
+
+
+  private inventoryCompanyInfoSubject = new BehaviorSubject<GetInventoryCompanyInfo | null>(null);
+
+  setInventoryCompanyInfo(product: GetInventoryCompanyInfo) {
+    this.inventoryCompanyInfoSubject.next(product);
+  }
+
+  getInventoryCompanyInfo(): Observable<GetInventoryCompanyInfo | null> {
+    return this.inventoryCompanyInfoSubject.asObservable();
   }
 
 }

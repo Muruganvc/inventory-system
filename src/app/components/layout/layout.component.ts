@@ -72,7 +72,7 @@ export class LayoutComponent implements OnInit {
  
 
   private loadCompanyInfo(): void {
-    this.userService.getInventoryCompanyInfo(1).subscribe({
+    this.commonService.getInventoryCompanyInfo().subscribe({
       next: info => {
         if (info) {
           this.invCompanyInfo = info

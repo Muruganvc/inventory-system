@@ -4,6 +4,8 @@ import { LoginRequest, LoginResponse } from '../models/LoginRequest';
 import { map, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { CommonService } from '../shared/services/common.service';
 export interface DecodedToken {
   exp: number;
   role: string | string[];
@@ -18,6 +20,7 @@ export class AuthService {
   private refreshTokenKey = 'refreshToken';
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  private readonly commonService = inject(CommonService);
 
   login(login: LoginRequest): Observable<LoginResponse> {
     return this.api
@@ -32,6 +35,9 @@ export class AuthService {
           if (response.token) {
             this.setToken(response.token);
             this.setRefreshToken(response.refreshToken);
+          }
+          if(response.invCompanyInfo){
+            this.commonService.setInvCompanyInfoData(response.invCompanyInfo);
           }
         })
       );
@@ -52,7 +58,37 @@ export class AuthService {
     return localStorage.getItem(this.refreshTokenKey);
   }
 
-  refreshToken(): Observable<{ token: string, refreshToken: string }> {
+
+  async refreshToken(): Promise<{ token: string; refreshToken: string }> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      this.logout();
+      throw new Error('No refresh token available');
+    }
+
+    try {
+      const res = await firstValueFrom(
+        this.api.post<null, LoginResponse>(`refresh-token/${refreshToken}`, null)
+      );
+
+      const response = this.api.handleResult(res);
+
+      if (response.token) {
+        this.setToken(response.token);
+        this.setRefreshToken(response.refreshToken);
+      }
+
+      return {
+        token: response.token,
+        refreshToken: response.refreshToken,
+      };
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      throw error; // You can handle or re-throw the error as needed
+    }
+  }
+
+  refreshTokenOld(): Observable<{ token: string, refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
       this.logout();
