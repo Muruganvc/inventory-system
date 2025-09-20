@@ -349,6 +349,13 @@ export class SalesComponent implements OnInit {
     const unitPrice = Number(price);
     const qty = Number(quantity);
 
+
+    if ((qty > 0 && meter > 0) ||
+      (qty <= 0 && meter <= 0)) {
+      this.commonService.showWarning("Please enter either Quantity or Meter, not both or none.");
+     return false;
+    }
+
     // Validate quantity or meter
     if (availableMeter === 0) {
       form.get('meter')?.clearValidators();
