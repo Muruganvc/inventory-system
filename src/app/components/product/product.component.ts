@@ -232,10 +232,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (Number(this.formGroup.get('meter')?.value) === 0 || Number(this.formGroup.get('quantity')?.value)) {
+
+    const meter = Number(this.formGroup.get('meter')?.value);
+    const quantity = Number(this.formGroup.get('quantity')?.value);
+
+    // If both are > 0 OR both are ≤ 0, warn the user
+    if ((meter > 0 && quantity > 0) || (meter <= 0 && quantity <= 0)) {
       this.commonService.showWarning('Enter either meter or quantity.');
       return;
     }
+ 
 
     const request = this.buildProductRequest(params.form.value);
 
@@ -257,11 +263,11 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: params.form.value.mrp,
       salesPrice: params.form.value.salesPrice,
       landingPrice: params.form.value.landingPrice,
-      quantity: params.form.value.quantity,
+      quantity: params.form.value.quantity || 0,
       isActive: params.form.value.isActive,
       rowVersion: this.productResponse.rowVersion,
       productCategoryId: params.form.value.companyCategoryProduct.value,
-      meter: params.form.value.meter
+      meter: params.form.value.meter || 0
     };
     this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
       next: () => {
@@ -304,7 +310,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       landingPrice: Number(value.landingPrice) || 0,
       quantity: Number(value.quantity) || 0,
       isActive: !!value.isActive,
-      meter: value.meter
+      meter: value.meter || 0
     };
   }
 
