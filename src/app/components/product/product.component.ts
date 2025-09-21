@@ -89,7 +89,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         isReadOnly: this.productResponse ? true : false
       },
       {
-        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true,
+        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true,
         isReadOnly: this.productResponse ? true : false
       },
       {
@@ -97,9 +97,9 @@ export class ProductComponent implements OnInit, OnDestroy {
         isReadOnly: this.productResponse ? true : false
       },
       { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: false, isNumberOnly: false },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
       { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }

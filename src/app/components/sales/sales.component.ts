@@ -80,7 +80,7 @@ export class SalesComponent implements OnInit {
       mrp: new FormControl({ value: null, disabled: true }, Validators.required),
       price: new FormControl(null, Validators.required),
       quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
-      meter: new FormControl(null, [Validators.required, Validators.min(0.1)]),
+      meter: new FormControl(null, [Validators.required, Validators.min(1)]),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       availableMeter: new FormControl({ value: null, disabled: true }),
       salesPrice: new FormControl({ value: null, disabled: true }),
@@ -101,14 +101,14 @@ export class SalesComponent implements OnInit {
           this.formGroup.reset();
         }
       },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8 },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8 },
       { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
       { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true },
-      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true,isHidden: true },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
       { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 2, maxLength: 15 },
       { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
     ];
@@ -213,6 +213,24 @@ export class SalesComponent implements OnInit {
   }
 
   private patchForm(product: ProductsResponse): void {
+
+    this.fields = this.fields.map(field => {
+      if (field.name === 'meter') {
+        return { ...field, isHidden: product.meter <= 0 };
+      }
+       if (field.name === 'availableMeter') {
+        return { ...field, isHidden: product.meter <= 0 };
+      }
+      if (field.name === 'quantity') {
+        return { ...field, isHidden: product.meter > 0 };
+      }
+       if (field.name === 'availableQuantity') {
+        return { ...field, isHidden: product.meter > 0 };
+      }
+      return field;
+    });
+    this.fields = [...this.fields];
+
     this.formGroup.patchValue({
       mrp: product.mrp,
       availableQuantity: product.quantity,
@@ -331,12 +349,24 @@ export class SalesComponent implements OnInit {
   }
 
   private addProduct(form: FormGroup): boolean {
+
+    const meter = Number(form.get('meter')?.value);
+    if (meter > 0) {
+      form.get('quantity')?.clearValidators();
+      form.get('quantity')?.updateValueAndValidity();
+      form.get('quantity')?.setValue(0);
+    } else {
+      form.get('meter')?.setValue(0);
+      form.get('meter')?.clearValidators();
+      form.get('meter')?.updateValueAndValidity();
+    }
+    if (form.invalid) return false;
     const product = form.get('product')?.value;
     const price = Number(form.get('price')?.value);
     const quantity = Number(form.get('quantity')?.value);
     const serialNo = form.get('serialNo')?.value;
     const availableMeter = Number(form.get('availableMeter')?.value);
-    const meter = Number(form.get('meter')?.value);
+
 
     const productId = product?.value;
 
@@ -353,7 +383,7 @@ export class SalesComponent implements OnInit {
     if ((qty > 0 && meter > 0) ||
       (qty <= 0 && meter <= 0)) {
       this.commonService.showWarning("Please enter either Quantity or Meter, not both or none.");
-     return false;
+      return false;
     }
 
     // Validate quantity or meter

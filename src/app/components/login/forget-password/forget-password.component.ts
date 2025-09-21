@@ -40,8 +40,8 @@ export class ForgetPasswordComponent implements OnInit {
   actionButtons: ActionButtons[] = [];
   initFields = (): void => {
     this.fields = [
-      { type: 'input', name: 'userName', label: 'User Name', colSpan: 12, isNumOnly: true, maxLength: 50 },
-      { type: 'input', name: 'mobileNo', label: 'Mobile No.', colSpan: 12, isNumOnly: true, maxLength: 10 }
+      { type: 'input', name: 'userName', label: 'User Name', colSpan: 12,   maxLength: 50 },
+      { type: 'input', name: 'mobileNo', label: 'Mobile No.', colSpan: 12,   maxLength: 10 }
     ];
   }
 

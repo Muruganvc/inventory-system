@@ -12,17 +12,18 @@
         </div>
     </div>
     <div class="form-grid">
-        <ng-container *ngFor="let field of fields">
+        <ng-container *ngFor="let field of fields;trackBy: trackByName">
             <ng-container *ngIf="!field.isHidden">
                 <div class="form-field" [class.popup]="isPopup" [ngClass]="'col-span-' + field.colSpan">
                     <ng-container [ngSwitch]="field.type">
                         <!-- Input -->
                         <ng-container *ngSwitchCase="'input'">
-                               <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label">{{ field.label }}</label>
                             <mat-form-field *ngSwitchCase="'input'" appearance="outline">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
                                 <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name"
-                                    [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null" appAppSentenceCase [ngClass]="{
+                                    [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null"
+                                    appAppSentenceCase [ngClass]="{
                             'highlight-disabled': formGroup.get(field.name)?.disabled
                           }" />
                                 <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
@@ -40,29 +41,29 @@
                                 </mat-error>
                             </mat-form-field>
                         </ng-container>
-                      
+
 
                         <!-- Password -->
                         <ng-container *ngSwitchCase="'password'">
                             <label class="form-label">{{ field.label }}</label>
                             <mat-form-field *ngSwitchCase="'password'" appearance="outline">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
-                                <input matInput type="password" [readonly]="field.isReadOnly" [formControlName]="field.name" />
+                                <input matInput type="password" [readonly]="field.isReadOnly"
+                                    [formControlName]="field.name" />
                             </mat-form-field>
                         </ng-container>
 
 
 
                         <ng-container *ngSwitchCase="'searchable-select'">
-                              <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label">{{ field.label }}</label>
                             <div class="ng-select-wrapper">
-                                <ng-select [readonly]="field.isReadOnly" #ngSelectRef [formControlName]="field.name" [items]="field.options"
-                                    bindLabel="key" [compareWith]="compareFn" [addTag]="field.addTag"
-                                    placeholder="Select {{ field.label }}"
+                                <ng-select [readonly]="field.isReadOnly" #ngSelectRef [formControlName]="field.name"
+                                    [items]="field.options" bindLabel="key" [compareWith]="compareFn"
+                                    [addTag]="field.addTag" placeholder="Select {{ field.label }}"
                                     [class.ng-invalid]="formGroup.get(field.name)?.invalid"
                                     [class.ng-touched]="formGroup.get(field.name)?.touched"
-                                    (clear)="field.clear?.(field.name)"
-                                    [searchFn]="customSearchFn"
+                                    (clear)="field.clear?.(field.name)" [searchFn]="customSearchFn"
                                     (open)="setMaxLength(ngSelectRef, field.maxLength || 100)">
                                 </ng-select>
 
@@ -75,38 +76,39 @@
 
                         <!-- Select -->
                         <ng-container *ngSwitchCase="'select'">
-                              <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label">{{ field.label }}</label>
                             <mat-form-field *ngSwitchCase="'select'" appearance="outline">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
-                                <mat-select  [formControlName]="field.name">
+                                <mat-select [formControlName]="field.name">
                                     <mat-option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label
                                         }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </ng-container>
-                       
+
 
                         <!-- Date Picker -->
                         <ng-container *ngSwitchCase="'date'">
                             <label class="form-label">{{ field.label }}</label>
                             <mat-form-field appearance="outline">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
-                                <input [readonly]="field.isReadOnly" matInput [matDatepicker]="picker" [formControlName]="field.name" />
+                                <input [readonly]="field.isReadOnly" matInput [matDatepicker]="picker"
+                                    [formControlName]="field.name" />
                                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                 <mat-datepicker #picker></mat-datepicker>
                             </mat-form-field>
                         </ng-container>
-                       
+
 
                         <!-- Checkbox -->
                         <ng-container *ngSwitchCase="'checkbox'">
-                             <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label">{{ field.label }}</label>
                             <div class="form-control-wrapper">
-                                 <!-- <label class="form-label">{{ field.label }}</label> -->
-                                <mat-checkbox  [formControlName]="field.name"></mat-checkbox>
+                                <!-- <label class="form-label">{{ field.label }}</label> -->
+                                <mat-checkbox [formControlName]="field.name"></mat-checkbox>
                             </div>
                         </ng-container>
-                       
+
 
                         <!-- Radio Group -->
                         <div *ngSwitchCase="'radio'" class="form-control-wrapper">
@@ -129,8 +131,9 @@
                             <mat-form-field appearance="outline" color="accent">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
                                 <textarea matInput [formControlName]="field.name" [readonly]="field.isReadOnly"
-                                    [attr.maxlength]="field.maxLength || null" [rows]="field.rows || 4" [placeholder]="field.placeholder || ''"
-                                    class="no-resize" appAppSentenceCase></textarea>
+                                    [attr.maxlength]="field.maxLength || null" [rows]="field.rows || 4"
+                                    [placeholder]="field.placeholder || ''" class="no-resize"
+                                    appAppSentenceCase></textarea>
                             </mat-form-field>
                         </div>
 

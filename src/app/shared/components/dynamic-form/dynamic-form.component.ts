@@ -94,4 +94,7 @@ export class DynamicFormComponent {
     const searchableText = `${item.key}`.toLowerCase();
     return searchWords.every(word => searchableText.includes(word));
   }
+  trackByName(index: number, field: any): string {
+    return field.name;
+  }
 }
