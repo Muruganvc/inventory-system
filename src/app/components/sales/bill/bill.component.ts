@@ -1,36 +1,31 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { filter, merge } from 'rxjs';
+import { Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-
-import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form.component';
-import { CustomTableComponent } from '../../shared/components/custom-table/custom-table.component';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { InvoiceComponent } from '../order-summary/invoice/invoice.component';
-import { SalesConfirmDialogComponent } from './sales-confirm-dialog/sales-confirm-dialog.component';
-
-import { ProductService } from '../../services/product.service';
-import { OrderService } from '../../services/order.service';
-import { CommonService } from '../../shared/services/common.service';
-
-import { ActionButtons } from '../../shared/common/ActionButton';
-import { KeyValuePair } from '../../shared/common/KeyValuePair';
-import { ProductEntry } from '../../models/ProductEntry';
-import { ProductsResponse } from '../../models/ProductsResponse';
-import { OrderCreateRequest } from '../../models/CustomerRequest';
-import { RouterOutlet } from '@angular/router';
+import { filter, merge } from 'rxjs';
+import { OrderCreateRequest } from '../../../models/CustomerRequest';
+import { ProductEntry } from '../../../models/ProductEntry';
+import { ProductsResponse } from '../../../models/ProductsResponse';
+import { OrderService } from '../../../services/order.service';
+import { ProductService } from '../../../services/product.service';
+import { ActionButtons } from '../../../shared/common/ActionButton';
+import { KeyValuePair } from '../../../shared/common/KeyValuePair';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { CommonService } from '../../../shared/services/common.service';
+import { InvoiceComponent } from '../../order-summary/invoice/invoice.component';
+import { SalesConfirmDialogComponent } from '../sales-confirm-dialog/sales-confirm-dialog.component';
+import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
+import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
 
 @Component({
-  selector: 'app-sales',
+  selector: 'app-bill',
   standalone: true,
-  // imports: [DynamicFormComponent, CustomTableComponent, InvoiceComponent],
-  imports: [RouterOutlet],
-  templateUrl: './sales.component.html',
-  styleUrl: './sales.component.scss'
+  imports: [DynamicFormComponent, CustomTableComponent, InvoiceComponent],
+  templateUrl: './bill.component.html',
+  styleUrl: './bill.component.scss'
 })
-export class SalesComponent implements OnInit {
-  private readonly productService = inject(ProductService);
+export class BillComponent {
+private readonly productService = inject(ProductService);
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
@@ -448,9 +443,6 @@ export class SalesComponent implements OnInit {
     this.productSales = [...this.productSales, newProduct];
     return true;
   }
-
-
-
 
   onEdit(entry: ProductEntry): void {
     this.productSales = this.productSales.filter(p => p.id !== entry.id);
