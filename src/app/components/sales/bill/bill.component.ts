@@ -201,6 +201,7 @@ private readonly productService = inject(ProductService);
           quantityControl.setValue(availableQty, { emitEvent: false });
           return;
         }
+        
         if (meter > 0) {
           totalAmountControl.setValue(price * meter, { emitEvent: false });
         } else {

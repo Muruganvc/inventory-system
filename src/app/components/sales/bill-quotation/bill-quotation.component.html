@@ -1,1 +1,11 @@
-<h2>Under Development, Release soon..</h2>
+<app-dynamic-form [isPopup]="true" [formGroup]="formGroup" [fields]="fields" [buttons]="actionButtons"
+    [title]="pageHeader"></app-dynamic-form>
+
+
+<app-custom-table [showHeader] ='showHeader' [actions]="tableActions" (actionClick)="onAction($event)" [data]="productSales" [title]="'Product List'" [addBtnTitle]="'Add Product'" [columns]="columns"
+    [showActions]="true">
+</app-custom-table>
+
+
+<app-invoice style="display: none;" #invoiceRef></app-invoice>
+<iframe #printFrame style="display: none;"></iframe>
