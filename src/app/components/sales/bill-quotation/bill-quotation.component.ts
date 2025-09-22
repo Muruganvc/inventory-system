@@ -274,6 +274,10 @@ export class BillQuotationComponent {
   }
 
   private handleConfirm(): void {
+    if (!this.productSales || this.productSales.length === 0) {
+      this.commonService.showWarning("Add products to cart");
+      return;
+    }
 
     const dialogRef = this.dialog.open(BillQuotationDialogComponent, {
       width: '95%',
