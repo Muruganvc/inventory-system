@@ -50,6 +50,8 @@ import { IncomeOutcomeSummaryReportComponent } from './components/dashboard/inco
 import { UserRoleMenuPermissionComponent } from './components/settings/user-role-menu-permission/user-role-menu-permission.component';
 import { CompanyExpiredNoticeComponent } from './components/company-expired-notice/company-expired-notice.component';
 import { HomeComponent } from './components/home/home.component';
+import { BillComponent } from './components/sales/bill/bill.component';
+import { BillQuotationComponent } from './components/sales/bill-quotation/bill-quotation.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -107,9 +109,16 @@ export const routes: Routes = [
           { path: 'sales-history', component: SalesHistoryComponent },
           { path: 'sales-reports', component: OrderReportsComponent }
         ]
+      },  
+      {
+        path: 'sales', component: SalesComponent,
+        children: [
+          { path: '', redirectTo: 'bill', pathMatch: 'full' },
+          { path: 'bill', component: BillComponent },
+          { path: 'quotation', component: BillQuotationComponent },
+        ]
       },
-
-      { path: 'sales', component: SalesComponent },
+      // { path: 'sales', component: SalesComponent },
       { path: 'data-backup', component: BackupComponent }
     ]
   },

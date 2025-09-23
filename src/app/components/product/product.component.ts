@@ -63,8 +63,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: new FormControl(null, Validators.required),
       salesPrice: new FormControl(null, Validators.required),
       landingPrice: new FormControl(null, Validators.required),
-      meter: new FormControl(null, Validators.required),
-      quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
+      // meter: new FormControl(null, Validators.required),
+      // quantity: new FormControl(null, [Validators.required, Validators.min(1)]),
+      meter: new FormControl(null),
+      quantity: new FormControl(null),
       availableQuantity: new FormControl({ value: null, disabled: true }),
       isActive: new FormControl(null)
     }, {
@@ -87,7 +89,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         isReadOnly: this.productResponse ? true : false
       },
       {
-        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true,
+        type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true,
         isReadOnly: this.productResponse ? true : false
       },
       {
@@ -95,10 +97,10 @@ export class ProductComponent implements OnInit, OnDestroy {
         isReadOnly: this.productResponse ? true : false
       },
       { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: false, isNumberOnly: false },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, isNumOnly: true, maxLength: 8, isNumberOnly: true },
-      { type: 'checkbox', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
   createNewProduct(term: string) {
@@ -203,8 +205,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       availableControl.setValue(newValue, { emitEvent: true });
     });
   }
- 
- 
+
+
   /** -------------------- ACTION HANDLERS -------------------- */
 
   private handleSave(params: any): void {
@@ -230,6 +232,17 @@ export class ProductComponent implements OnInit, OnDestroy {
       return;
     }
 
+
+    const meter = Number(this.formGroup.get('meter')?.value);
+    const quantity = Number(this.formGroup.get('quantity')?.value);
+
+    // If both are > 0 OR both are ≤ 0, warn the user
+    if ((meter > 0 && quantity > 0) || (meter <= 0 && quantity <= 0)) {
+      this.commonService.showWarning('Enter either meter or quantity.');
+      return;
+    }
+ 
+
     const request = this.buildProductRequest(params.form.value);
 
     this.productService.createProduct(request).subscribe({
@@ -250,11 +263,11 @@ export class ProductComponent implements OnInit, OnDestroy {
       mrp: params.form.value.mrp,
       salesPrice: params.form.value.salesPrice,
       landingPrice: params.form.value.landingPrice,
-      quantity: params.form.value.quantity,
+      quantity: params.form.value.quantity || 0,
       isActive: params.form.value.isActive,
       rowVersion: this.productResponse.rowVersion,
       productCategoryId: params.form.value.companyCategoryProduct.value,
-      meter: params.form.value.meter
+      meter: params.form.value.meter || 0
     };
     this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
       next: () => {
@@ -297,7 +310,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       landingPrice: Number(value.landingPrice) || 0,
       quantity: Number(value.quantity) || 0,
       isActive: !!value.isActive,
-      meter: value.meter
+      meter: value.meter || 0
     };
   }
 

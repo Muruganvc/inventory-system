@@ -7,7 +7,7 @@ import { InvoiceComponent } from "../invoice/invoice.component";
 @Component({
   selector: 'app-sales-history',
   standalone: true,
-  imports: [CustomTableComponent, InvoiceComponent],
+  imports: [CustomTableComponent],
   templateUrl: './sales-history.component.html',
   styleUrl: './sales-history.component.scss'
 })

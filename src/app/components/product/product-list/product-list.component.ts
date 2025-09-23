@@ -187,7 +187,8 @@ export class ProductListComponent implements OnInit {
   }
 
   editQty(product: ProductsResponse): void {
-    this.setColumnType('quantity', 'textbox');
+    const column = product.meter > 0 ? 'meter' : 'quantity';
+    this.setColumnType(column, 'textbox');
     this.products.forEach(p => (p.isEditing = false));
     product.isEditing = true;
     this.backupRow[product.productId] = { ...product };
@@ -213,14 +214,15 @@ export class ProductListComponent implements OnInit {
 
   save(product: ProductsResponse): void {
 
-    if (product.quantity == 0) {
-      this.commonService.showInfo('Enter available quantity.');
+    if (!Number(product.quantity) && !Number(product.meter)) {
+      this.commonService.showInfo('Enter available quantity or meter.');
       return;
     }
 
     const updateQty: UpdateProductQuantityPayload = {
       quantity: product.quantity,
-      rowVersion: product.rowVersion
+      rowVersion: product.rowVersion,
+      meter: product.meter
     }
 
     this.productService.updateProductQty(product.productId, updateQty).subscribe({

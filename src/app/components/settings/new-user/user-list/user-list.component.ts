@@ -65,7 +65,7 @@ export class UserListComponent implements OnInit {
                 key: 'isActive',
                 label: 'Active',
                 align: 'right',
-                type: 'checkbox',
+                type: 'toggle',
                 isHidden: false
               }
             ];

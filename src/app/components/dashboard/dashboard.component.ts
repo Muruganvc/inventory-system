@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.startAutoSlider();
     this.getProductSoldOut();
-    this.getAuditLogs();
+    // this.getAuditLogs();
   }
 
   ngOnDestroy(): void {

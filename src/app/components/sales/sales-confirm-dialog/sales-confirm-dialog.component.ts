@@ -74,7 +74,7 @@ export class SalesConfirmDialogComponent implements OnInit {
         this.customers = result;
         result.map(m => {
           this.customerDropDown.push({
-            key: m.mobileNo,
+            key: `${m.mobileNo} ${m.customerName}`,
             value: m.customerId
           });
         });
@@ -86,11 +86,13 @@ export class SalesConfirmDialogComponent implements OnInit {
 
   bindCustomerEvent = (): void => {
     const customerNameControl = this.userForm.get('mobileNo');
+
     if (!customerNameControl) return;
     merge(customerNameControl.valueChanges)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         const cust = this.customers.find(a => a.customerId == result.value);
+        // this.userForm.get('mobileNo')?.setValue(cust?.mobileNo, { emitEvent: false });
         this.userForm.get('customerName')?.setValue(cust?.customerName, { emitEvent: false });
         this.userForm.get('address')?.setValue(cust?.address, { emitEvent: false });
       });
@@ -211,13 +213,19 @@ export class SalesConfirmDialogComponent implements OnInit {
       {
         type: 'searchable-select', name: 'mobileNo', label: 'Mobile No.', colSpan: 6, maxLength: 10, options: [],
         addTag: true,
+        clear: () => {
+          const form = this.userForm;
+          form.get('mobileNo')?.reset();
+          form.get('customerName')?.reset();
+          form.get('address')?.reset();
+        }
       },
-      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, isNumOnly: true, maxLength: 50 },
+      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6,   maxLength: 50 },
       { type: 'input', name: 'address', label: 'Address', colSpan: 12 },
-      { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, isNumOnly: true, maxLength: 2 },
-      { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
-      { type: 'input', name: 'balanceAmount', label: 'Balance Amount %', colSpan: 4, isNumOnly: true, maxLength: 8 },
-      { type: 'checkbox', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
+      { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4,  maxLength: 2 },
+      { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4,   maxLength: 8 },
+      { type: 'input', name: 'balanceAmount', label: 'Balance Amount %', colSpan: 4, maxLength: 8 },
+      { type: 'toggle', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
       { type: 'input', name: 'gstNumber', label: 'Gst Number', colSpan: 8, maxLength: 15 },
     ];
   }

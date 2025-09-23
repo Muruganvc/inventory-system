@@ -39,7 +39,8 @@ export const ErrorInterceptor: HttpInterceptorFn = (req, next) => {
         }
         // Show error toast
         if (url !== '/home') {
-          toastr.error(message, 'Error');
+          // toastr.error(message, 'Error');
+          console.error(message);
         }
         console.error(error?.error?.Exeception | error?.error?.Detailed)
       }

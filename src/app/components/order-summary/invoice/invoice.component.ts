@@ -53,7 +53,7 @@ export class InvoiceComponent implements OnInit {
   qrCodePreview: string | ArrayBuffer | null = null;
 
   ngOnInit(): void {
-    this.getInvCompanyInfo();
+    // this.getInvCompanyInfo();
   }
 
   async getOrder(orderId: number): Promise<void> {

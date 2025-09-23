@@ -1,0 +1,57 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  grid-row: 20px;
+  min-width: 300px;
+  max-width: 600px;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+}
+
+.full-width {
+  width: 100%;
+//   padding-bottom: 10px;
+  padding-top: 5px;
+
+}
+
+
+.btn-submit {
+  background-color: #2196f3 !important; // Blue
+  color: #fff !important;
+
+  &:hover {
+    background-color: #1976d2 !important;
+  }
+}
+
+.btn-cancel {
+  background-color: #f44336 !important; // Red
+  color: #fff !important;
+
+  &:hover {
+    background-color: #d32f2f !important;
+  }
+}
+
+
+.form-scroll-container {
+  max-height: 80vh; /* or 100%, or any fixed height */
+  overflow-y: auto;
+  padding: 16px;
+  // margin-bottom: 5px;
+}
+
+.amount-summary-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  font-weight: 500;
+  padding: 15px;
+}
