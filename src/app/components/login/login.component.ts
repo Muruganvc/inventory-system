@@ -66,10 +66,10 @@ export class LoginComponent implements OnInit {
           this.commonService.showError("Invalid credentials");
           return;
         }
-        if (!user.invCompanyInfo?.isActive) {
-          this.router.navigate(['/company-expired']);
-          return;
-        }
+        // if (!user.invCompanyInfo?.isActive) {
+        //   this.router.navigate(['/company-expired']);
+        //   return;
+        // }
         this.commonService.setInvCompanyInfoData(user.invCompanyInfo);
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
