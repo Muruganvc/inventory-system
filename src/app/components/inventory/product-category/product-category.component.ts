@@ -77,7 +77,7 @@ export class ProductCategoryComponent {
         name: 'productCategoryName',
         label: 'Product Category Name',
         colSpan: 4,
-        maxLength: 20
+        maxLength: 20, icon:'fas fa-layer-group'
       },
       {
         type: 'toggle',

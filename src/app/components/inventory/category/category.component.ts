@@ -66,7 +66,7 @@ export class CategoryComponent implements OnInit {
         name: 'categoryName',
         label: 'Category Name',
         colSpan: 4,
-        maxLength: 20
+        maxLength: 20, icon :'fas fa-layer-group'
       },
       {
         type: 'toggle',

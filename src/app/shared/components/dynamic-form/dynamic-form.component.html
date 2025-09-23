@@ -19,13 +19,14 @@
                         <!-- Input -->
                         <ng-container *ngSwitchCase="'input'">
                             <label class="form-label">{{ field.label }}</label>
-                            <mat-form-field *ngSwitchCase="'input'" appearance="outline">
+                            <mat-form-field *ngSwitchCase="'input'" appearance="outline" class="fa-input">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
                                 <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name"
                                     [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null"
                                     appAppSentenceCase [ngClass]="{
                             'highlight-disabled': formGroup.get(field.name)?.disabled
                           }" />
+                                <i [ngClass]="field.icon" matSuffix style="margin-left: 8px;"></i>
                                 <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                                     {{ field.label }} is required
                                 </mat-error>
@@ -66,6 +67,10 @@
                                     (clear)="field.clear?.(field.name)" [searchFn]="customSearchFn"
                                     (open)="setMaxLength(ngSelectRef, field.maxLength || 100)">
                                 </ng-select>
+                                <!-- Icon next to select -->
+                                <i [ngClass]="field.icon"
+                                    style="margin-left: 8px; font-size: 18px; color: rgba(0, 0, 0, 0.54); cursor: pointer;"
+                                    title="Icon action"></i>
 
                                 <div class="mat-error force-error-style"
                                     *ngIf="formGroup.get(field.name)?.touched && formGroup.get(field.name)?.hasError('required')">
