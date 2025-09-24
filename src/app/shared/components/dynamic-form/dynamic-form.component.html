@@ -19,13 +19,14 @@
                         <!-- Input -->
                         <ng-container *ngSwitchCase="'input'">
                             <label class="form-label">{{ field.label }}</label>
-                            <mat-form-field *ngSwitchCase="'input'" appearance="outline">
+                            <mat-form-field *ngSwitchCase="'input'" appearance="outline"  class="fa-input">
                                 <!-- <mat-label>{{ field.label }}</mat-label> -->
                                 <input matInput [appNumberOnly]="field.isNumberOnly" [formControlName]="field.name"
                                     [readonly]="field.isReadOnly" [attr.maxlength]="field.maxLength || null"
                                     appAppSentenceCase [ngClass]="{
                             'highlight-disabled': formGroup.get(field.name)?.disabled
                           }" />
+                        <i [ngClass]="field.icon" matSuffix style="margin-left: 8px;"></i>
                                 <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                                     {{ field.label }} is required
                                 </mat-error>

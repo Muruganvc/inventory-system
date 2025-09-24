@@ -90,16 +90,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       },
       {
         type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true,
-        isReadOnly: this.productResponse ? true : false
+        isReadOnly: this.productResponse ? true : false, icon: 'fas fa-calculator'
       },
       {
         type: 'input', name: 'meter', label: 'Length(Meter)', colSpan: 2, maxLength: 8, isNumberOnly: true,
-        isReadOnly: this.productResponse ? true : false
+        isReadOnly: this.productResponse ? true : false, icon: 'fas fa-arrows-left-right'
       },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: false, isNumberOnly: false },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: false, isNumberOnly: false, icon: 'fas fa-calculator' },
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
       { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 2, isReadOnly: false, isHidden: IsProductActive }
     ];
   }
@@ -241,7 +241,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.commonService.showWarning('Enter either meter or quantity.');
       return;
     }
- 
+
 
     const request = this.buildProductRequest(params.form.value);
 

@@ -25,7 +25,7 @@ import { CustomTableComponent } from "../../../shared/components/custom-table/cu
   styleUrl: './bill.component.scss'
 })
 export class BillComponent {
-private readonly productService = inject(ProductService);
+  private readonly productService = inject(ProductService);
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
@@ -98,16 +98,16 @@ private readonly productService = inject(ProductService);
           this.formGroup.reset();
         }
       },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8 },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true },
-      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true,isHidden: true },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 2, maxLength: 15 },
-      { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, icon: 'fas fa-inr' },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true, icon: 'fas fa-calculator' },
+      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-calculator' },
+      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
+      { type: 'input', name: 'serialNo', label: 'Serial No', colSpan: 2, maxLength: 15, icon: 'fas fa-list-ol' },
+      { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true, icon: 'fas fa-inr' }
     ];
   }
 
@@ -201,7 +201,7 @@ private readonly productService = inject(ProductService);
           quantityControl.setValue(availableQty, { emitEvent: false });
           return;
         }
-        
+
         if (meter > 0) {
           totalAmountControl.setValue(price * meter, { emitEvent: false });
         } else {
@@ -216,13 +216,13 @@ private readonly productService = inject(ProductService);
       if (field.name === 'meter') {
         return { ...field, isHidden: product.meter <= 0 };
       }
-       if (field.name === 'availableMeter') {
+      if (field.name === 'availableMeter') {
         return { ...field, isHidden: product.meter <= 0 };
       }
       if (field.name === 'quantity') {
         return { ...field, isHidden: product.meter > 0 };
       }
-       if (field.name === 'availableQuantity') {
+      if (field.name === 'availableQuantity') {
         return { ...field, isHidden: product.meter > 0 };
       }
       return field;

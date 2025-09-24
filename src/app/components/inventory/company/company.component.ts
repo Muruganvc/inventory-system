@@ -62,9 +62,9 @@ export class CompanyComponent implements OnInit {
 
   private initFields(): void {
     this.fields = [
-      { type: 'input', name: 'companyName', label: 'Company Name', colSpan: 6, maxLength: 20 },
+      { type: 'input', name: 'companyName', label: 'Company Name', colSpan: 6, maxLength: 20, icon: 'fas fa-industry' },
       { type: 'toggle', name: 'isActive', label: 'Is Active', colSpan: 6 },
-      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12,isHidden: true }
+      { type: 'textarea', name: 'description', label: 'Description', colSpan: 12, isHidden: true }
     ];
   }
 
@@ -108,7 +108,7 @@ export class CompanyComponent implements OnInit {
   }
 
   private createCompany(): void {
-    if(this.formGroup.invalid) return;
+    if (this.formGroup.invalid) return;
     const formValue = this.formGroup.value;
 
     const createCommand: CompanyCreate = {
@@ -125,18 +125,18 @@ export class CompanyComponent implements OnInit {
         } else {
           this.commonService.showInfo('New Company not created.');
         }
-      } 
+      }
     });
   }
 
   private updateCompany(): void {
     const formValue = this.formGroup.value;
 
-    const updateCommand: CompanyUpdateCommand = { 
+    const updateCommand: CompanyUpdateCommand = {
       companyName: formValue.companyName,
       isActive: formValue.isActive,
       description: formValue.description,
-      rowVersion : this.selectedCompany.rowVersion
+      rowVersion: this.selectedCompany.rowVersion
     };
 
     this.companyService.updateCompany(this.selectedCompany.companyId, updateCommand).subscribe({
@@ -145,8 +145,8 @@ export class CompanyComponent implements OnInit {
           this.commonService.showSuccess('Successfully updated');
           this.formGroup.reset();
           this.router.navigate(['/inventory/company-list']);
-        }else{
-           this.commonService.showInfo('Selected company not updated.');
+        } else {
+          this.commonService.showInfo('Selected company not updated.');
         }
       }
     });

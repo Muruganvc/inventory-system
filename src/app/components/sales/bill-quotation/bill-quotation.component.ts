@@ -96,15 +96,15 @@ export class BillQuotationComponent {
           this.formGroup.reset();
         }
       },
-      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8 },
-      { type: 'input', name: 'salesPrice', label: 'Sales Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'landingPrice', label: 'Landing Price', colSpan: isAdmin ? 3 : 2 },
-      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true },
-      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true, isHidden: true },
-      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true },
-      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true },
-      { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true }
+      { type: 'input', name: 'mrp', label: 'MRP ₹', colSpan: 2, maxLength: 8, icon: 'fas fa-inr' },
+      { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
+      { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
+      { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true, icon: 'fas fa-calculator' },
+    { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
+      { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-calculator' },
+      { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
+      { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
+      { type: 'input', name: 'totalAmount', label: 'Total Amount ₹', colSpan: 2, isReadOnly: true, icon: 'fas fa-inr' }
     ];
   }
 

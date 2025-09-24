@@ -59,14 +59,15 @@ export class CategoryComponent implements OnInit {
         label: 'Company Name',
         colSpan: 4,
         options: [],
-        clear: () => {}
+        clear: () => { }
       },
       {
         type: 'input',
         name: 'categoryName',
         label: 'Category Name',
         colSpan: 4,
-        maxLength: 20
+        maxLength: 20,
+        icon: 'fas fa-layer-group'
       },
       {
         type: 'toggle',
@@ -184,7 +185,7 @@ export class CategoryComponent implements OnInit {
       categoryName: formValue.categoryName,
       isActive: formValue.isActive,
       description: formValue.description,
-      rowVersion : this.selectedCategory.rowVersion
+      rowVersion: this.selectedCategory.rowVersion
     };
 
     this.companyService.updateCategory(this.selectedCategory.categoryId, request).subscribe({
