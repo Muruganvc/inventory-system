@@ -20,13 +20,13 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
     });
 
     return next(authReq).pipe(
-        tap(() => {
-            commonService.sharedInvCompanyInfoData$.pipe(take(1)).subscribe(result => {
-                if (!result?.isActive) {
-                    router.navigate(['/company-expired']);
-                }
-            });
-        }),
+        // tap(() => {
+        //     commonService.sharedInvCompanyInfoData$.pipe(take(1)).subscribe(result => {
+        //         if (!result?.isActive) {
+        //             router.navigate(['/company-expired']);
+        //         }
+        //     });
+        // }),
         catchError((error: HttpErrorResponse) => {
             if (error.status === 0) {  // Use 401 if it's for auth, 0 is usually network failure
                 console.warn('Token expired or connection issue. Attempting to refresh...');
