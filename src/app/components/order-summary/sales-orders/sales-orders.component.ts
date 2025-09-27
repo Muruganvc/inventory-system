@@ -21,6 +21,8 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_DATE_FORMATS } from '../../../shared/services/CUSTOM_DATE_FORMATS';
 import { DateAdapter } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../shared/services/CustomDateAdapter';
+import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-sales-orders',
   standalone: true,
@@ -43,7 +45,7 @@ export class SalesOrdersComponent implements OnInit {
 
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
-
+  private readonly dialog = inject(MatDialog);
   private readonly dateAdapter = inject(DateAdapter<Date>);
 
   startDate: Date | null = null;
@@ -88,7 +90,21 @@ export class SalesOrdersComponent implements OnInit {
       color: 'green',
       tooltip: 'Print',
       action: 'print',
-      condition: (row: any) => !row.isEditing
+      condition: (row: any) => true
+    },
+    {
+      iconClass: 'fas fa-credit-card',
+      color: 'red',
+      tooltip: 'Payement',
+      action: 'payement',
+      condition: (row: any) => true
+    },
+    {
+      iconClass: 'fas fa-eye',
+      color: 'green',
+      tooltip: 'Payment History',
+      action: 'paymentHistory',
+      condition: (row: any) => true
     }
   ];
 
@@ -105,6 +121,8 @@ export class SalesOrdersComponent implements OnInit {
     const { row, action } = event;
     if (action === 'print') {
       this.onPrint(row);
+    } else if (action === 'payement') {
+      this.payment(row);
     }
   }
 
@@ -142,6 +160,29 @@ export class SalesOrdersComponent implements OnInit {
     this.startDate = null;
     this.endDate = null;
     this.filteredCustomerOrderList = [...this.customerOrderList]; // restore full list
+  }
+
+  private payment = (value: CustomerOrderList): void => {
+    const dialogRef = this.dialog.open(PaymentDialogComponent, {
+      width: '95%',
+      maxWidth: '600px',
+      // height: '500px',
+      disableClose: true,
+      panelClass: 'no-radius-dialog',
+      data: {
+        customerName: value.customerName,
+        mobileNo: value.phone,
+        currentAmount: value.balanceAmount
+      }
+    });
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      // if (!result) return;
+      // this.onPrint(result); return;
+      alert('Under developing...');
+    });
+
   }
 
 }

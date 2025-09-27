@@ -138,6 +138,14 @@
                             </mat-form-field>
                         </div>
 
+                        <div *ngSwitchCase="'display'" class="form-control-wrapper">
+                            <label class="form-label">{{ field.label }}</label>
+                            <div class="form-value">
+                                {{ form.get(field.name)?.value }}
+                            </div>
+                        </div>
+
+
                     </ng-container>
                 </div>
             </ng-container>
