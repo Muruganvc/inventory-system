@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 import { ApiService } from '../shared/services/api.service';
-import { DatabaseBackupResponse } from '../shared/common/DatabaseBackupResponse';
+import { BackupResponse } from '../models/Backup';
 
 @Injectable({
   providedIn: 'root',
@@ -10,16 +10,6 @@ import { DatabaseBackupResponse } from '../shared/common/DatabaseBackupResponse'
 export class BackupService {
   private readonly api = inject(ApiService);
 
-  createBackup(userName: string): Observable<DatabaseBackupResponse[]> {
-    return this.api
-      .post<{ userName: string }, DatabaseBackupResponse[]>(
-        `database-backup?userName=${encodeURIComponent(userName)}`,
-        { userName }
-      )
-      .pipe(
-        map(res => this.api.handleResult(res))
-      );
-  }
 
 
   createBackupNew(): Observable<Blob> {
@@ -29,9 +19,9 @@ export class BackupService {
       );
   }
 
-  getBackUp(): Observable<DatabaseBackupResponse[]> {
+  getBackUp(): Observable<BackupResponse[]> {
     return this.api
-      .get<DatabaseBackupResponse[]>('backup')
+      .get<BackupResponse[]>('backup')
       .pipe(
         map(res => this.api.handleResult(res))
       );

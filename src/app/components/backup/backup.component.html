@@ -1,5 +1,12 @@
-<div class="export-btn-container">
+<!-- <div class="export-btn-container">
     <button mat-flat-button class="btn-export-excel" (click)="createBack()">
         <i class="menu-icon bi bi-file-earmark-excel"></i> Create Database Backup
     </button>
-</div>
+</div> -->
+
+
+<app-custom-table [data]="backup" [title]="'Data Backup Details'" [addBtnTitle]="'Data Backup Details'"
+    [columns]="columns"  [showActions]="false" 
+    [buttons]='buttons' (buttonClicked)="onButtonClicked($event)">
+</app-custom-table>
+ 
