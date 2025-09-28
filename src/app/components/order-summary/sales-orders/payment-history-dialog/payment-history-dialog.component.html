@@ -1,11 +1,69 @@
-<div mat-dialog-title style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
-    <span style="font-size: 1.25rem; font-weight: 600;">Payment Details History</span>
+<h2 mat-dialog-title>Payment Details History</h2>
 
-    <button mat-icon-button [mat-dialog-close] aria-label="Close dialog">
-        <i class="fas fa-times" style="color: red; font-size: 1.2rem;"></i>
-    </button>
-</div>
+<mat-dialog-content>
 
-<app-custom-table [data]="paymentHistory" [IsShowSearch]="false" [title]="'Payment Details History'" [columns]="columns"
-    [showActions]="false">
-</app-custom-table>
+  <!-- Desktop Table -->
+  <div *ngIf="!isMobile" class="table-responsive">
+    <mat-table [dataSource]="paymentHistory" class="mat-elevation-z8">
+      <ng-container matColumnDef="customerName">
+        <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.customerName }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="finalAmount">
+        <mat-header-cell class="cell" *matHeaderCellDef>Final Amount</mat-header-cell>
+        <mat-cell  class="cell" *matCellDef="let row">₹{{ row.finalAmount }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amountPaid">
+        <mat-header-cell class="cell" *matHeaderCellDef>Amount Paid</mat-header-cell>
+        <mat-cell class="cell"*matCellDef="let row">₹{{ row.amountPaid }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="balanceRemainingToPay">
+        <mat-header-cell class="cell" *matHeaderCellDef>Balance Amount</mat-header-cell>
+        <mat-cell class="cell" *matCellDef="let row">₹{{ row.balanceRemainingToPay}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentAt">
+        <mat-header-cell class="cell" *matHeaderCellDef>Payment At</mat-header-cell>
+        <mat-cell class="cell" *matCellDef="let row">{{ row.paymentAt | date :'dd-MM-yyyy' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentMethod">
+        <mat-header-cell *matHeaderCellDef>Payment Method</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.paymentMethod }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="transactionRefNo">
+        <mat-header-cell *matHeaderCellDef>Transaction Ref No</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.transactionRefNo }}</mat-cell>
+      </ng-container>
+
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+    </mat-table>
+  </div>
+
+  <!-- Mobile Card Layout -->
+  <div *ngIf="isMobile" class="card-list">
+    <mat-card *ngFor="let row of paymentHistory" class="payment-card" [ngStyle]="{ 'background-color': row.cardColor }">
+      <mat-card-content>
+        <div><strong>Company:</strong> {{ row.customerName }}</div>
+        <div><strong>Amount Paid:</strong> ₹{{ row.finalAmount }}</div>
+        <div><strong>Balance To Pay:</strong> ₹{{ row.amountPaid }}</div>
+        <div><strong>Payment At:</strong> {{ row.paymentAt | date }}</div>
+        <div><strong>Method:</strong> {{ row.paymentMethod }}</div>
+        <div><strong>Ref No:</strong> {{ row.transactionRefNo || '-' }}</div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

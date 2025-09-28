@@ -9,7 +9,6 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-
   </div>
 
   <div class="right-column">
@@ -18,13 +17,12 @@
     </button>
   </div>
 
-   <div class="right-column">
+  <div class="right-column">
     <button mat-flat-button class="btn-reset" (click)="resetFilter()">
       <i class="fas fa-undo"></i>&nbsp;Reset
     </button>
   </div>
 </div>
-
 
 
 <app-custom-table [data]="filteredCustomerOrderList" [title]="'Customer Orders'" [addBtnTitle]="''" [columns]="columns"

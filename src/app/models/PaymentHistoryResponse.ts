@@ -9,4 +9,5 @@ export interface PaymentHistoryResponse extends TableRow {
     paymentMethod: string;
     transactionRefNo: string;
     userName: string;
+    cardColor: string;
 }

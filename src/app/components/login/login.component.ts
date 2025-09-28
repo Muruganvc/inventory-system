@@ -14,6 +14,7 @@ import { CommonService } from '../../shared/services/common.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { ConfigService } from '../../shared/services/config.service';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-login',
@@ -73,6 +74,29 @@ export class LoginComponent implements OnInit {
         this.commonService.setInvCompanyInfoData(user.invCompanyInfo);
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
+
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          width: '100%',
+          maxWidth: '400px',
+          disableClose: true,
+          data: {
+            title: 'Payment',
+            okBtn: {
+              title: 'Yes, Confirm',
+              isHiden: true
+            },
+            cancel: {
+              title: 'Cancel',
+              isHiden: true
+            },
+            message: 'Do you want to see payment pending details..'
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.router.navigate(['order-summary/sales-orders']);
+          }
+        });
       }
     });
   }
@@ -83,5 +107,4 @@ export class LoginComponent implements OnInit {
       disableClose: true,
     }).afterClosed().subscribe();
   }
-
 }

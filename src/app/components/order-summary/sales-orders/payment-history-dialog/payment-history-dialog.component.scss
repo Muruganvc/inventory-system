@@ -1,0 +1,42 @@
+.table-responsive {
+  overflow-x: auto;
+}
+
+.payment-card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid #eee;
+  box-shadow: 1px 1px 6px rgba(0,0,0,0.05);
+}
+
+.payment-card div {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+ 
+.mat-mdc-row,
+.mdc-data-table__content {
+  height: 40px !important;
+
+}
+ 
+.mat-mdc-header-row {
+  background: linear-gradient(to right, #81c784, #ef9a9a) !important;
+  height: 40px;
+}
+
+.mat-mdc-header-cell {
+  background: transparent !important;  
+  box-shadow: none !important;
+  border-bottom: 1px solid #ccc;
+  color: white;  
+}
+  
+.cell1 {
+  width: 80px; /* Adjust width as needed */
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

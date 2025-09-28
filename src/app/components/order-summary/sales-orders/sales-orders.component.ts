@@ -157,7 +157,7 @@ export class SalesOrdersComponent implements OnInit {
     this.filteredCustomerOrderList = this.customerOrderList.filter(order => {
       const orderDate = new Date(order.orderDate);
       return orderDate >= start && orderDate <= end;
-    });
+    }); 
   }
 
   resetFilter(): void {
@@ -215,5 +215,9 @@ export class SalesOrdersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
     });
+  }
+
+  getTotalFinalAmount(): number {
+    return this.filteredCustomerOrderList.reduce((total, item) => total + (item.finalAmount || 0), 0);
   }
 }
