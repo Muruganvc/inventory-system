@@ -99,6 +99,8 @@ export class CustomTableComponent<T extends TableRow> implements OnChanges {
     this.buttonClicked.emit(action);
   }
 
+  @Input() IsShowSearch = true;
+
   @Input() filterActions: { iconClass: string; action: string, label: string }[] = [];
   @Output() filterActionClick = new EventEmitter<{ action: string }>();
 

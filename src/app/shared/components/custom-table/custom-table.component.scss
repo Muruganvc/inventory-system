@@ -338,6 +338,7 @@
   justify-content: space-between;
   align-items: center;
   // margin-bottom: 10px;
+  padding-top: 16px !important;
 }
 
 .search-box-container {
@@ -375,7 +376,7 @@
 
 /* Page Header */
 .page-header {
-  padding: 16px 0 8px;
+  padding: 8px 0 8px;
   background-color: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
@@ -417,3 +418,4 @@
     width: 100%;
   }
 }
+ 

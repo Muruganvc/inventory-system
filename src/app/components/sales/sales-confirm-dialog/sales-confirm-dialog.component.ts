@@ -56,6 +56,8 @@ export class SalesConfirmDialogComponent implements OnInit {
       balanceAmount: new FormControl({ value: data.netTotal, disabled: true }),
       isGst: new FormControl(null),
       gstNumber: new FormControl(null),
+      paymentMethod: new FormControl(null),
+      transactionRefNo: new FormControl(null),
     });
   }
   ngOnInit(): void {
@@ -220,11 +222,19 @@ export class SalesConfirmDialogComponent implements OnInit {
           form.get('address')?.reset();
         }
       },
-      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6,   maxLength: 50 },
+      { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, maxLength: 50 },
       { type: 'input', name: 'address', label: 'Address', colSpan: 12 },
-      { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4,  maxLength: 2 },
-      { type: 'input', name: 'givenAmount', label: 'Given Amount %', colSpan: 4,   maxLength: 8 },
-      { type: 'input', name: 'balanceAmount', label: 'Balance Amount %', colSpan: 4, maxLength: 8 },
+      {
+        type: 'searchable-select', name: 'paymentMethod', label: 'Payment Type ', colSpan: 6,
+        options: [{ key: 'Cash Payments', value: 1 }, { key: 'Cheque Payments', value: 2 }, { key: 'Online Payments', value: 3 }],
+        clear: (fieldName: string) => {
+
+        }
+      },
+      { type: 'input', name: 'transactionRefNo', label: 'Transaction Ref No', colSpan: 6 },
+      { type: 'input', name: 'disCountPercent', label: 'Discount Percent %', colSpan: 4, maxLength: 2 },
+      { type: 'input', name: 'givenAmount', label: 'Amount Paid', colSpan: 4, maxLength: 8 },
+      { type: 'display', name: 'balanceAmount', label: 'Balance Amount', colSpan: 4, maxLength: 8 },
       { type: 'toggle', name: 'isGst', label: 'Is Gst', colSpan: 4, isReadOnly: true },
       { type: 'input', name: 'gstNumber', label: 'Gst Number', colSpan: 8, maxLength: 15 },
     ];

@@ -1,19 +1,21 @@
 <ng-container *ngIf="showHeader">
-  <div class="page-header">
-    <ng-container *ngIf="!!addBtnTitle()">
-      <div class="button-container">
-      <h2 class="page-title">{{ title() }}({{ dataSource.filteredData.length }}) </h2>
-        <button *ngFor="let button of buttons" mat-flat-button (click)="onButtonClick(button.action)"
-          [ngClass]="button.class" matTooltip="{{ button.tooltip }}">
+  <div class="page-header" *ngIf="addBtnTitle()">
+    <div class="button-container">
+      <h2 class="page-title">
+        {{ title() }} ({{ dataSource.filteredData.length }})
+      </h2>
+
+      <ng-container *ngFor="let button of buttons">
+        <button mat-flat-button (click)="onButtonClick(button.action)" [ngClass]="button.class"
+          [matTooltip]="button.tooltip">
           <i [ngClass]="button.icon" style="font-size: 18px;"></i>
           &nbsp; {{ button.label }}
         </button>
-
-      </div>
-    </ng-container>
+      </ng-container>
+    </div>
   </div>
 
-  <div class="search-filter-container">
+  <div class="search-filter-container" *ngIf="IsShowSearch">
     <div class="search-box-container" [ngStyle]="{
          'width': filterActions.length === 0 ? '100%' : 'auto',
          'margin-right': filterActions.length === 0 ? '0' : '10px' 
@@ -38,7 +40,7 @@
 
 </ng-container>
 
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z6">
   <!-- Desktop/tablet view -->
   <div *ngIf="!isMobile; else mobileView" class="table-scroll">
     <table mat-table [dataSource]="dataSource" class="full-width-table" matSort>

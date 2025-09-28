@@ -1,6 +1,6 @@
 import { TableRow } from "../shared/components/custom-table/custom-table.component";
 
-export interface CustomerOrderList  extends TableRow {
+export interface CustomerOrderList extends TableRow {
     orderId: number;
     customerName: string;
     phone: string;
@@ -9,4 +9,5 @@ export interface CustomerOrderList  extends TableRow {
     totalAmount: number;
     finalAmount: number;
     balanceAmount: number;
+    customerId: number;
 }

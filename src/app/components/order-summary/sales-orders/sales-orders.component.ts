@@ -23,6 +23,8 @@ import { DateAdapter } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../shared/services/CustomDateAdapter';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { paymentHistoryRequest } from '../../../models/paymentHistoryRequest';
+import { PaymentHistoryDialogComponent } from './payment-history-dialog/payment-history-dialog.component';
 @Component({
   selector: 'app-sales-orders',
   standalone: true,
@@ -69,10 +71,9 @@ export class SalesOrdersComponent implements OnInit {
     }
   }[] = [
       { key: 'customerName', label: 'Customer', align: 'left', isHidden: false },
-      { key: 'address', label: 'Address', align: 'left', isHidden: false },
       { key: 'phone', label: 'Phone', align: 'left', isHidden: false },
+      { key: 'address', label: 'Address', align: 'left', isHidden: false },
       { key: 'orderDate', label: 'Order Date', align: 'center', isHidden: false, pipe: 'date' },
-      { key: 'totalAmount', label: 'Total ₹', align: 'center', isHidden: false },
       {
         key: 'finalAmount', label: 'Final ₹', align: 'right', isHidden: false
       },
@@ -97,7 +98,7 @@ export class SalesOrdersComponent implements OnInit {
       color: 'red',
       tooltip: 'Payement',
       action: 'payement',
-      condition: (row: any) => true
+      condition: (row: any) => row.balanceAmount !== 0
     },
     {
       iconClass: 'fas fa-eye',
@@ -123,6 +124,9 @@ export class SalesOrdersComponent implements OnInit {
       this.onPrint(row);
     } else if (action === 'payement') {
       this.payment(row);
+    }
+    else if (action === 'paymentHistory') {
+      this.paymentHistory(row);
     }
   }
 
@@ -178,11 +182,38 @@ export class SalesOrdersComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe(result => {
-      // if (!result) return;
-      // this.onPrint(result); return;
-      alert('Under developing...');
+      if (!result) return;
+      let paymentHistrory: paymentHistoryRequest = {
+        orderId: value.orderId,
+        customerId: value.customerId,
+        amountPaid: result.amountPaid,
+        paymentMethod: result.paymentMethod,
+        transactionRefNo: result.transactionRefNo,
+        balanceRemainingToPay: result.balanceRemainingToPay
+      };
+
+      this.orderService.createPaymentHistory(paymentHistrory).subscribe({
+        next: result => {
+          if (result) {
+            this.getOrderSummary();
+            this.commonService.showSuccess("Payment successfully created.");
+          }
+        }
+      });
     });
-
   }
-
+  private paymentHistory = (value: CustomerOrderList): void => {
+    const dialogRef = this.dialog.open(PaymentHistoryDialogComponent, {
+      width: '95%',
+      maxWidth: '1000px',
+      // height: '500px',
+      disableClose: true,
+      panelClass: 'no-radius-dialog',
+      data: {
+        orderId: value.orderId
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
 }

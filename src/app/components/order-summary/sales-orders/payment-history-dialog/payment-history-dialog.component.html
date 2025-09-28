@@ -1,0 +1,11 @@
+<div mat-dialog-title style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+    <span style="font-size: 1.25rem; font-weight: 600;">Payment Details History</span>
+
+    <button mat-icon-button [mat-dialog-close] aria-label="Close dialog">
+        <i class="fas fa-times" style="color: red; font-size: 1.2rem;"></i>
+    </button>
+</div>
+
+<app-custom-table [data]="paymentHistory" [IsShowSearch]="false" [title]="'Payment Details History'" [columns]="columns"
+    [showActions]="false">
+</app-custom-table>

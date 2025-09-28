@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActionButtons } from '../../../../shared/common/ActionButton';
 import { DynamicFormComponent } from "../../../../shared/components/dynamic-form/dynamic-form.component";
-import { map, pairwise, startWith } from 'rxjs';
+import { map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-payment-dialog',
@@ -26,8 +26,10 @@ export class PaymentDialogComponent implements OnInit {
       customerName: [data.customerName],
       mobileNo: [data.mobileNo],
       amount: [data.currentAmount],
-      payment: [null, Validators.required],
-      balanceAmount: [1000]
+      amountPaid: [null, Validators.required],
+      balanceRemainingToPay: [null],
+      paymentMethod: [null, Validators.required],
+      transactionRefNo: [null]
     });
   }
 
@@ -42,8 +44,16 @@ export class PaymentDialogComponent implements OnInit {
       { type: 'input', name: 'customerName', label: 'Customer Name', colSpan: 6, maxLength: 50, isReadOnly: true },
       { type: 'input', name: 'mobileNo', label: 'Mobile No', colSpan: 6, maxLength: 10, isReadOnly: true },
       { type: 'input', name: 'amount', label: 'Amount', colSpan: 6, isReadOnly: true },
-      { type: 'input', name: 'payment', label: 'Payment', colSpan: 6 },
-      { type: 'display', name: 'balanceAmount', label: 'Balance Amount:', colSpan: 12, isReadOnly: true },
+      { type: 'input', name: 'amountPaid', label: 'Payment', colSpan: 6 },
+      {
+        type: 'searchable-select', name: 'paymentMethod', label: 'Payment Type ', colSpan: 6,
+        options: [{ key: 'Cash Payments', value: 1 }, { key: 'Cheque Payments', value: 2 }, { key: 'Online Payments', value: 3 }],
+        clear: (fieldName: string) => {
+
+        }
+      },
+      { type: 'input', name: 'transactionRefNo', label: 'Transaction Ref No', colSpan: 6 },
+      { type: 'display', name: 'balanceRemainingToPay', label: 'Balance Amount:', colSpan: 12, isReadOnly: true },
     ];
   }
 
@@ -78,22 +88,20 @@ export class PaymentDialogComponent implements OnInit {
     if (params.form.invalid) {
       return;
     }
-
-
-
-    const customer = {
-      address: formValue.address,
-      customerName: formValue.customerName,
-      phone: formValue.mobileNo ?? ''
+    const payment = {
+      amountPaid: Number(formValue.amountPaid),
+      balanceRemainingToPay: Number(formValue.balanceRemainingToPay),
+      paymentMethod: formValue.paymentMethod.key,
+      transactionRefNo: formValue.transactionRefNo
     };
 
-    this.dialogRef.close(customer);
+    this.dialogRef.close(payment);
   }
 
   private bindPaymentChange(): void {
-    const paymentControl = this.userForm.get('payment');
+    const paymentControl = this.userForm.get('amountPaid');
     const amountControl = this.userForm.get('amount');
-    const balanceControl = this.userForm.get('balanceAmount');
+    const balanceControl = this.userForm.get('balanceRemainingToPay');
 
     paymentControl?.valueChanges.pipe(
       startWith(paymentControl.value || 0),
