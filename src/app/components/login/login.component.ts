@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/company-expired']);
           return;
         }
-        this.commonService.setInvCompanyInfoData(user.invCompanyInfo);
+        this.commonService.setInventoryCompanyInfo(user.invCompanyInfo);
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
 

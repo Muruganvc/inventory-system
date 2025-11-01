@@ -150,11 +150,11 @@ export class CommonService {
   }
 
 
-  private readonly invCompanyDataSubject = new BehaviorSubject<GetInventoryCompanyInfo | null>(null);
-  readonly sharedInvCompanyInfoData$ = this.invCompanyDataSubject.asObservable();
-  setInvCompanyInfoData(data: GetInventoryCompanyInfo | undefined): void {
-    this.invCompanyDataSubject.next(data ?? null); // Assuming you use null as fallback
-  }
+  // private readonly invCompanyDataSubject = new BehaviorSubject<GetInventoryCompanyInfo | null>(null);
+  // readonly sharedInvCompanyInfoData$ = this.invCompanyDataSubject.asObservable();
+  // setInvCompanyInfoData(data: GetInventoryCompanyInfo | undefined): void {
+  //   this.invCompanyDataSubject.next(data ?? null); // Assuming you use null as fallback
+  // }
 
   sortByKey<T>(
     array: T[],

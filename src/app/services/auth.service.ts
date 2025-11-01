@@ -37,7 +37,7 @@ export class AuthService {
             this.setRefreshToken(response.refreshToken);
           }
           if(response.invCompanyInfo){
-            this.commonService.setInvCompanyInfoData(response.invCompanyInfo);
+            this.commonService.setInventoryCompanyInfo(response.invCompanyInfo);
           }
         })
       );
