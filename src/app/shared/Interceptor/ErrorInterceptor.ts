@@ -34,30 +34,31 @@ export const ErrorInterceptor: HttpInterceptorFn = (
           let message = 'Something went wrong.';
           const url = router.url;
 
-          if (error?.error?.error) {
-            message = error.error.error;
-          } else if (error?.error?.Exeception) {
-            message = error.error.Exeception;
+          if (error?.error) {
+            message = error.error;
+          } else if (error?.Exeception) {
+            message = error.Exeception;
           } else if (error?.Exeception) {
             message = error.Exeception;
           }
 
-          if (error?.error?.StatusCode === 500) {
-            message = error.error.Message;
+          if (error?.StatusCode === 500) {
+            message = error.Message;
           }
 
-          if (error?.error?.StatusCode === 401) {
+          if (error?.StatusCode === 401) {
             message = 'Session Expired, Please re-login';
-            toastr.error(message, 'Error');
-            auth.logout();
+            // toastr.error(message, 'Error');
+            // auth.logout();
+            
           }
 
           if (url !== '/home') {
-            toastr.error(message, 'Error');
+            // toastr.error(message, 'Error');
           }
 
           console.error(
-            error?.error?.Exeception || error?.error?.Detailed || message
+            error?.Exeception || error?.Detailed || message
           );
         }
 
