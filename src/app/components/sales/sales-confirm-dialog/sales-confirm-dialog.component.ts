@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -13,7 +13,7 @@ import { UserService } from '../../../services/user.service';
 import { Customer } from '../../../models/Customer';
 import { KeyValuePair } from '../../../shared/common/KeyValuePair';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, merge, startWith } from 'rxjs';
+import { filter, merge, startWith, Subject, takeUntil } from 'rxjs';
 import { CustomerRequest, OrderItemRequest } from '../../../models/CustomerRequest';
 import { ProductEntry } from '../../../models/ProductEntry';
 import { CommonService } from '../../../shared/services/common.service';
@@ -28,8 +28,9 @@ import { CommonService } from '../../../shared/services/common.service';
   templateUrl: './sales-confirm-dialog.component.html',
   styleUrl: './sales-confirm-dialog.component.scss'
 })
-export class SalesConfirmDialogComponent implements OnInit {
+export class SalesConfirmDialogComponent implements OnInit, OnDestroy {
   private readonly commonService = inject(CommonService);
+  private destroy$ = new Subject<void>();
   userForm: FormGroup;
   pageHeader: 'Customer Information';
   fields: any[] = [];
@@ -71,7 +72,7 @@ export class SalesConfirmDialogComponent implements OnInit {
   }
 
   private getCustomers = (): void => {
-    this.userService.getCustomers().subscribe({
+    this.userService.getCustomers().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.customers = result;
         result.map(m => {
@@ -310,5 +311,9 @@ export class SalesConfirmDialogComponent implements OnInit {
       discountTaxAmount: +discountTaxAmount.toFixed(2),
       finalAmount: +finalAmount.toFixed(2)
     };
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

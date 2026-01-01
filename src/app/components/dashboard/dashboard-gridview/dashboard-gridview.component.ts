@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ProductQuantities } from '../../../models/ProductQuantities';
 import { DashboardService } from '../../../services/dashboard.service';
 import { AdvancedFilterDialogComponent } from './advanced-filter-dialog/advanced-filter-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-gridview',
@@ -28,10 +29,11 @@ import { AdvancedFilterDialogComponent } from './advanced-filter-dialog/advanced
   templateUrl: './dashboard-gridview.component.html',
   styleUrl: './dashboard-gridview.component.scss'
 })
-export class DashboardGridviewComponent implements OnInit {
+export class DashboardGridviewComponent implements OnInit, OnDestroy {
   searchText: string = '';
   productList: ProductQuantities[] = [];
-  allProducts: ProductQuantities[] = [];
+  allProducts: ProductQuantities[] = [];  
+  private destroy$ = new Subject<void>();
 
   private readonly dashBoardService = inject(DashboardService);
   private readonly dialog = inject(MatDialog);
@@ -49,7 +51,7 @@ export class DashboardGridviewComponent implements OnInit {
   }
 
   getProductsList(): void {
-    this.dashBoardService.getProductQuantity().subscribe({
+    this.dashBoardService.getProductQuantity().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         let colorIndex = 0;
         this.allProducts = result.map(item => ({
@@ -127,6 +129,10 @@ export class DashboardGridviewComponent implements OnInit {
         );
       });
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

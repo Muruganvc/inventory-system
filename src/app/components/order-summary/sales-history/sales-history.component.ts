@@ -1,8 +1,9 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OrderListReponse } from '../../../models/OrderList';
 import { OrderService } from '../../../services/order.service';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
 import { InvoiceComponent } from "../invoice/invoice.component";
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-sales-history',
@@ -11,9 +12,9 @@ import { InvoiceComponent } from "../invoice/invoice.component";
   templateUrl: './sales-history.component.html',
   styleUrl: './sales-history.component.scss'
 })
-export class SalesHistoryComponent {
-salesOrderList: OrderListReponse[] = [];
-
+export class SalesHistoryComponent implements OnInit, OnDestroy {
+  salesOrderList: OrderListReponse[] = [];
+  private destroy$ = new Subject<void>();
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
 
@@ -34,11 +35,11 @@ salesOrderList: OrderListReponse[] = [];
       condition: (row: any) => boolean;
     }
   }[] = [
-    { key: 'customerName', label: 'Customer', align: 'left', isHidden: false },
+      { key: 'customerName', label: 'Customer', align: 'left', isHidden: false },
       { key: 'address', label: 'Address', align: 'left', isHidden: false },
       { key: 'phone', label: 'Phone', align: 'left', isHidden: false },
       { key: 'fullProductName', label: 'Prod. Name', align: 'left', isHidden: false },
-       { key: 'orderDate', label: 'Order Date', align: 'center', isHidden: false, pipe: 'date' },
+      { key: 'orderDate', label: 'Order Date', align: 'center', isHidden: false, pipe: 'date' },
       { key: 'quantity', label: 'Quantity', align: 'center', isHidden: false },
       { key: 'unitPrice', label: 'Unit ₹', align: 'right', isHidden: false },
       { key: 'discountPercent', label: 'Discount %', align: 'right', isHidden: false },
@@ -59,7 +60,7 @@ salesOrderList: OrderListReponse[] = [];
     ];
 
   getOrderSummary = (): void => {
-    this.orderService.getOrderSummaries(1).subscribe({
+    this.orderService.getOrderSummaries(1).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.salesOrderList = result
       }
@@ -203,5 +204,8 @@ tfoot {
       frame.contentWindow?.print();
     }, 500);
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

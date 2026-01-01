@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { ActionButtons } from '../../../shared/common/ActionButton';
 import { KeyValuePair } from '../../../shared/common/KeyValuePair';
 import { CommonService } from '../../../shared/services/common.service';
 import { ProductService } from '../../../services/product.service';
-import { filter } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 import { ProductCategoryCreateCommand } from '../../../models/ProductCategoryCreateCommand';
 import { ProductCategoryUpdateRequest } from '../../../models/ProductCategoryUpdateRequest';
 import { GetProductCategoryQueryResponse } from '../../../models/GetProductCategoryQueryResponse';
@@ -19,7 +19,7 @@ import { GetProductCategoryQueryResponse } from '../../../models/GetProductCateg
   templateUrl: './product-category.component.html',
   styleUrl: './product-category.component.scss'
 })
-export class ProductCategoryComponent {
+export class ProductCategoryComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
@@ -29,7 +29,7 @@ export class ProductCategoryComponent {
   private readonly router = inject(Router);
   private readonly commonService = inject(CommonService);
   private readonly companyService = inject(CompanyService);
-
+  private destroy$ = new Subject<void>();
   ngOnInit(): void {
     this.selectedProductCategory = history.state.data;
     this.initForm();
@@ -153,7 +153,7 @@ export class ProductCategoryComponent {
   }
 
   private loadAllCompanies(): void {
-    this.companyService.getCompanies(false).subscribe({
+    this.companyService.getCompanies(false).pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         const options: KeyValuePair[] = res.map(company => ({
           key: company.companyName,
@@ -247,5 +247,9 @@ export class ProductCategoryComponent {
         }
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

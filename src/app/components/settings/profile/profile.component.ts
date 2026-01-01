@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,7 @@ import { ActionButtons } from '../../../shared/common/ActionButton';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 import { CommonService } from '../../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -29,7 +30,8 @@ import { CommonService } from '../../../shared/services/common.service';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
@@ -62,7 +64,7 @@ export class ProfileComponent implements OnInit {
 
   private loadUser(): void {
     const userId = +this.authService.getUserId();
-    this.userService.getUser(userId).subscribe({
+    this.userService.getUser(userId).pipe(takeUntil(this.destroy$)).subscribe({
       next: user => {
         if (user) {
           this.formGroup.patchValue({
@@ -162,5 +164,9 @@ export class ProfileComponent implements OnInit {
         isHidden: false
       }
     ];
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { OrderService } from '../../../../services/order.service';
 import { PaymentHistoryResponse } from '../../../../models/PaymentHistoryResponse';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-payment-history-dialog',
@@ -18,7 +19,7 @@ import { PaymentHistoryResponse } from '../../../../models/PaymentHistoryRespons
   templateUrl: './payment-history-dialog.component.html',
   styleUrl: './payment-history-dialog.component.scss'
 })
-export class PaymentHistoryDialogComponent implements OnInit {
+export class PaymentHistoryDialogComponent implements OnInit, OnDestroy {
   isMobile = false;
   displayedColumns: string[] = ['customerName', 'finalAmount', 'amountPaid', 'balanceRemainingToPay', 'paymentAt', 'paymentMethod', 'transactionRefNo'];
   paymentHistory: PaymentHistoryResponse[] = [];
@@ -27,14 +28,14 @@ export class PaymentHistoryDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private breakpointObserver: BreakpointObserver
   ) { }
- 
 
+  private destroy$ = new Subject<void>();
   ngOnInit() {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isMobile = result.matches;
     });
 
-    this.orderService.getPaymentHistory(this.data.orderId).subscribe({
+    this.orderService.getPaymentHistory(this.data.orderId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.paymentHistory = res.map(item => ({
           ...item,
@@ -61,5 +62,9 @@ export class PaymentHistoryDialogComponent implements OnInit {
     ];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

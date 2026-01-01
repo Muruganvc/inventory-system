@@ -17,6 +17,7 @@ import { CompanyGroup } from '../../models/ProductSummary';
 import { AuditLog } from '../../models/AuditLog';
 import { IncomeOutcomeSummaryReportComponent } from "./income-outcome-summary-report/income-outcome-summary-report.component";
 import { AuthService } from '../../services/auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,6 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly dashBoardService = inject(DashboardService);
   private readonly authService = inject(AuthService);
   private autoSlideInterval: any;
+  private destroy$ = new Subject<void>();
 
   currentCompanyIndex = 0;
   productSoldOut: TotalProductQueryResponse;
@@ -105,6 +107,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopAutoSlider();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   nextCompany(): void {
@@ -142,13 +146,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getProductSoldOut(): void {
-    this.dashBoardService.getProductSoldOut().subscribe({
+    this.dashBoardService.getProductSoldOut().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => (this.productSoldOut = result)
     });
   }
 
   getAuditLogs(): void {
-    this.dashBoardService.getAuditLogs().subscribe({
+    this.dashBoardService.getAuditLogs().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => (this.auditLog = result)
     });
   }

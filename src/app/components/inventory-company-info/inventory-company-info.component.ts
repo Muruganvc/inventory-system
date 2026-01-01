@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -16,6 +16,7 @@ import { CommonService } from '../../shared/services/common.service';
 import { DynamicFormComponent } from '../../shared/components/dynamic-form/dynamic-form.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ActionButtons } from '../../shared/common/ActionButton';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-inventory-company-info',
@@ -31,7 +32,7 @@ import { ActionButtons } from '../../shared/common/ActionButton';
     MatInputModule
   ]
 })
-export class InventoryCompanyInfoComponent implements OnInit {
+export class InventoryCompanyInfoComponent implements OnInit, OnDestroy {
   title = 'Inventory Company Info';
   formGroup!: FormGroup;
   fields: any[] = [];
@@ -39,7 +40,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   invCompanyInfoId: number = 0;
-
+  private destroy$ = new Subject<void>();
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
@@ -134,11 +135,8 @@ export class InventoryCompanyInfoComponent implements OnInit {
     }
   }
 
- 
-
-
   private loadCompanyInfo(): void {
-    this.userService.getInventoryCompanyInfo(1).subscribe({
+    this.userService.getInventoryCompanyInfo(1).pipe(takeUntil(this.destroy$)).subscribe({
       next: info => {
         if (info) {
           this.formGroup.patchValue({
@@ -202,7 +200,7 @@ export class InventoryCompanyInfoComponent implements OnInit {
       ? this.userService.createInventoryCompanyInfo(formData)
       : this.userService.updateInventoryCompanyInfo(this.invCompanyInfoId, formData);
 
-    request$.subscribe({
+    request$.pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.commonService.showSuccess('Successfully updated');
@@ -230,5 +228,9 @@ export class InventoryCompanyInfoComponent implements OnInit {
         window.location.reload();
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

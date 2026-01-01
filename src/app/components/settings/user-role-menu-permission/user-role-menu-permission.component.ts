@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Role } from '../../../models/Role';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-role-menu-permission',
@@ -22,7 +23,7 @@ import { Role } from '../../../models/Role';
 export class UserRoleMenuPermissionComponent {
   private readonly userService = inject(UserService);
   private readonly commonService = inject(CommonService);
-
+  private destroy$ = new Subject<void>();
   screenHeight: number = window.innerHeight;
   users: {
     id: number,
@@ -34,7 +35,7 @@ export class UserRoleMenuPermissionComponent {
 
   ngOnInit(): void {
     this.getUsers();
-    this.userService.getRoles().subscribe({
+    this.userService.getRoles().pipe(takeUntil(this.destroy$)).subscribe({
       next: (role: Role[]) => {
         this.roles = role;
       }
@@ -43,7 +44,7 @@ export class UserRoleMenuPermissionComponent {
 
 
   getUsers = (): void => {
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (!!result) {
           this.users = result.map(a => ({
@@ -70,7 +71,7 @@ export class UserRoleMenuPermissionComponent {
       return;
     }
 
-    this.userService.addOrRemoveUserRole(this.selectedUserId, row.roleId).subscribe({
+    this.userService.addOrRemoveUserRole(this.selectedUserId, row.roleId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result: boolean) => {
         if (result) {
           this.commonService.showSuccess("Role updated successfully.");
@@ -94,7 +95,7 @@ export class UserRoleMenuPermissionComponent {
       return;
     }
     const userId = event.id;
-    this.userService.getUserRoles(userId).subscribe({
+    this.userService.getUserRoles(userId).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         const userRoles = result.filter(r => r.userId === userId);
         const userRoleIds = userRoles.map(r => r.roleId);
@@ -108,5 +109,8 @@ export class UserRoleMenuPermissionComponent {
     });
   };
 
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductQuantities } from '../../../models/ProductQuantities';
 import { DashboardService } from '../../../services/dashboard.service';
@@ -12,6 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdvancedFilterDialogComponent } from './advanced-filter-dialog/advanced-filter-dialog.component';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-product-available-qauntity',
   standalone: true,
@@ -27,14 +28,14 @@ import * as ExcelJS from 'exceljs';
   templateUrl: './product-available-qauntity.component.html',
   styleUrl: './product-available-qauntity.component.scss'
 })
-export class ProductAvailableQauntityComponent {
+export class ProductAvailableQauntityComponent implements OnInit, OnDestroy {
   searchText: string = '';
   productList: ProductQuantities[] = [];
   allProducts: ProductQuantities[] = [];
 
   private readonly dashBoardService = inject(DashboardService);
   private readonly dialog = inject(MatDialog);
-
+  private destroy$ = new Subject<void>();
   private readonly dynamicColors: string[] = [
     '#5bc0de', '#4caf50', '#3f51b5', '#ff9800', '#9c27b0',
     '#009688', '#c2185b', '#00bcd4', '#8bc34a', '#ffc107',
@@ -46,9 +47,13 @@ export class ProductAvailableQauntityComponent {
   ngOnInit(): void {
     this.getProductsList();
   }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   getProductsList(): void {
-    this.dashBoardService.getProductQuantity().subscribe({
+    this.dashBoardService.getProductQuantity().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         let colorIndex = 0;
         this.allProducts = result.map(item => ({
@@ -137,7 +142,7 @@ export class ProductAvailableQauntityComponent {
       { header: 'Company Name', key: 'companyName', width: 25 },
       { header: 'Category Name', key: 'categoryName', width: 25 },
       { header: 'Product Category', key: 'productCategoryName', width: 25 },
-      { header: 'Available Quantity', key: 'quantity', width: 18 } 
+      { header: 'Available Quantity', key: 'quantity', width: 18 }
     ];
 
     // Add data rows

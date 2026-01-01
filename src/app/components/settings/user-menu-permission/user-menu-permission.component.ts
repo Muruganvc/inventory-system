@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem } from '../../../shared/common/MenuItem';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { GetMenuItemPermissionQueryResponse } from '../../../models/GetMenuItemPermissionQueryResponse';
 import { CommonService } from '../../../shared/services/common.service';
 import { MatButtonModule } from '@angular/material/button';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-user-menu-permission',
   standalone: true,
@@ -18,11 +19,11 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './user-menu-permission.component.html',
   styleUrl: './user-menu-permission.component.scss'
 })
-export class UserMenuPermissionComponent {
+export class UserMenuPermissionComponent implements OnInit, OnDestroy {
 
   private readonly userService = inject(UserService);
   private readonly commonService = inject(CommonService);
-
+  private destroy$ = new Subject<void>();
   screenHeight: number = window.innerHeight;
   users: {
     id: number,
@@ -36,7 +37,7 @@ export class UserMenuPermissionComponent {
 
   ngOnInit(): void {
     this.getUsers();
-    this.userService.getUserMenus().subscribe({
+    this.userService.getUserMenus().pipe(takeUntil(this.destroy$)).subscribe({
       next: (menu: MenuItem[]) => {
         this.flatMenu = [];
         this.originalMenu = menu;
@@ -49,7 +50,7 @@ export class UserMenuPermissionComponent {
 
 
   getUsers = (): void => {
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (!!result) {
           this.users = result.map(a => ({
@@ -92,7 +93,7 @@ export class UserMenuPermissionComponent {
       return;
     }
 
-    this.userService.getUserMenuPermission(event.id).subscribe({
+    this.userService.getUserMenuPermission(event.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: permissionResult => {
         this.flatMenu = [];
         this.flattenMenu(this.originalMenu, permissionResult);
@@ -109,7 +110,7 @@ export class UserMenuPermissionComponent {
       return;
     }
 
-    this.userService.addOrRemoveUserMenuItem(userId, menuItem.id).subscribe({
+    this.userService.addOrRemoveUserMenuItem(userId, menuItem.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (isUpdated) => {
         if (isUpdated) {
           this.commonService.showSuccess("User menu access updated successfully.");
@@ -120,5 +121,8 @@ export class UserMenuPermissionComponent {
       }
     });
   };
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

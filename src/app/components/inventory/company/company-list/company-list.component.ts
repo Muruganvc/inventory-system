@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomTableComponent } from '../../../../shared/components/custom-table/custom-table.component';
 import { CompanyService } from '../../../../services/company.service';
@@ -6,6 +6,7 @@ import { AuthService } from '../../../../services/auth.service';
 import { GetCompanyQueryResponse } from '../../../../models/GetCompanyQueryResponse';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-company-list',
@@ -14,10 +15,10 @@ import { CommonService, ExcelColumn } from '../../../../shared/services/common.s
   templateUrl: './company-list.component.html',
   styleUrl: './company-list.component.scss',
 })
-export class CompanyListComponent implements OnInit {
+export class CompanyListComponent implements OnInit, OnDestroy {
   companies: GetCompanyQueryResponse[] = [];
   allCompanies: GetCompanyQueryResponse[] = [];
-
+  private destroy$ = new Subject<void>();
   // Injected services
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
@@ -48,7 +49,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   private loadCompanies(): void {
-    this.companyService.getCompanies(true).subscribe({
+    this.companyService.getCompanies(true).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {
         this.companies = result;
         this.allCompanies = result;
@@ -162,5 +163,9 @@ export class CompanyListComponent implements OnInit {
         break;
     }
     this.companies = filteredcompanies;
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

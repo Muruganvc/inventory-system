@@ -1,10 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
 import { ActionButtons } from '../../../shared/common/ActionButton';
 import { UserService } from '../../../services/user.service';
 import { CommonService } from '../../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-forget-password',
@@ -13,8 +14,8 @@ import { CommonService } from '../../../shared/services/common.service';
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })
-export class ForgetPasswordComponent implements OnInit {
-
+export class ForgetPasswordComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -40,8 +41,8 @@ export class ForgetPasswordComponent implements OnInit {
   actionButtons: ActionButtons[] = [];
   initFields = (): void => {
     this.fields = [
-      { type: 'input', name: 'userName', label: 'User Name', colSpan: 12,   maxLength: 50 },
-      { type: 'input', name: 'mobileNo', label: 'Mobile No.', colSpan: 12,   maxLength: 10 }
+      { type: 'input', name: 'userName', label: 'User Name', colSpan: 12, maxLength: 50 },
+      { type: 'input', name: 'mobileNo', label: 'Mobile No.', colSpan: 12, maxLength: 10 }
     ];
   }
 
@@ -85,7 +86,7 @@ export class ForgetPasswordComponent implements OnInit {
       this.commonService.showError("Invalid Username");
       return;
     }
-    this.userService.forgetPassword(userName, mobileNo).subscribe({
+    this.userService.forgetPassword(userName, mobileNo).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {
         if (result) {
           this.commonService.showSuccess("Password has been changed. Please contact the support team.");
@@ -99,5 +100,8 @@ export class ForgetPasswordComponent implements OnInit {
   handleCancel = (): void => {
     this.dialogRef.close(this.userForm.value);
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { signal } from '@angular/core';
@@ -8,6 +8,7 @@ import { MenuItem } from '../../shared/common/MenuItem';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-custom-menu',
@@ -16,7 +17,7 @@ import { CommonService } from '../../shared/services/common.service';
   templateUrl: './custom-menu.component.html',
   styleUrl: './custom-menu.component.scss'
 })
-export class CustomMenuComponent implements OnInit {
+export class CustomMenuComponent implements OnInit, OnDestroy {
 
   fullName: string = '';
   role: string = '';
@@ -26,6 +27,7 @@ export class CustomMenuComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly commonService = inject(CommonService);
+  private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.setUserDetails();
@@ -40,7 +42,7 @@ export class CustomMenuComponent implements OnInit {
 
   private loadMenus(): void {
     const userId = this.authService.getUserId();
-    this.userService.getUserMenu(+userId).subscribe({
+    this.userService.getUserMenu(+userId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (items) => this.menuItems.set(items),
       error: (err) => console.error('Failed to load menus', err)
     });
@@ -50,5 +52,9 @@ export class CustomMenuComponent implements OnInit {
     this.commonService.sharedProfileImageData$.subscribe(value => {
       this.imagePreview = value;
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

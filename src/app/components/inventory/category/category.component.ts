@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -12,6 +12,7 @@ import { CompanyService } from '../../../services/company.service';
 import { GetCategoryQueryResponse } from '../../../models/GetCategoryQueryResponse';
 import { CategoryCreateRequest } from '../../../models/CategoryCreateRequest';
 import { CategoryUpdateRequest } from '../../../models/CategoryUpdateRequest';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-category',
@@ -20,12 +21,12 @@ import { CategoryUpdateRequest } from '../../../models/CategoryUpdateRequest';
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss'
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
   selectedCategory!: GetCategoryQueryResponse;
-
+  private destroy$ = new Subject<void>();
   private readonly router = inject(Router);
   private readonly commonService = inject(CommonService);
   private readonly companyService = inject(CompanyService);
@@ -137,7 +138,7 @@ export class CategoryComponent implements OnInit {
   }
 
   private loadAllCompanies(): void {
-    this.companyService.getCompanies(false).subscribe({
+    this.companyService.getCompanies(false).pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         const options: KeyValuePair[] = res.map(company => ({
           key: company.companyName,
@@ -165,7 +166,7 @@ export class CategoryComponent implements OnInit {
       description: formValue.description
     };
 
-    this.companyService.createCategory(request).subscribe({
+    this.companyService.createCategory(request).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result > 0) {
           this.commonService.showSuccess('New Category created.');
@@ -188,7 +189,7 @@ export class CategoryComponent implements OnInit {
       rowVersion: this.selectedCategory.rowVersion
     };
 
-    this.companyService.updateCategory(this.selectedCategory.categoryId, request).subscribe({
+    this.companyService.updateCategory(this.selectedCategory.categoryId, request).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.commonService.showSuccess('Successfully updated');
@@ -199,5 +200,9 @@ export class CategoryComponent implements OnInit {
         }
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { CUSTOM_DATE_FORMATS } from '../../../shared/services/CUSTOM_DATE_FORMAT
 import { CustomDateAdapter } from '../../../shared/services/CustomDateAdapter';
 import * as FileSaver from 'file-saver';
 import * as ExcelJS from 'exceljs';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-income-outcome-summary-report',
   standalone: true,
@@ -35,11 +36,12 @@ import * as ExcelJS from 'exceljs';
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' }
   ]
 })
-export class IncomeOutcomeSummaryReportComponent implements OnInit {
+export class IncomeOutcomeSummaryReportComponent implements OnInit, OnDestroy {
   products: IncomeOrOutcomeSummaryReportQueryResponse[] = [];
 
   startDate: Date | null = null;
   endDate: Date | null = null;
+  private destroy$ = new Subject<void>();
 
   private readonly dashboardService = inject(DashboardService);
 
@@ -54,9 +56,13 @@ export class IncomeOutcomeSummaryReportComponent implements OnInit {
   ngOnInit(): void {
     this.loadReport();
   }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   private loadReport(): void {
-    this.dashboardService.getIncomeOutcomeSummaryReport().subscribe({
+    this.dashboardService.getIncomeOutcomeSummaryReport().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.products = result ?? [];
       }
@@ -70,7 +76,7 @@ export class IncomeOutcomeSummaryReportComponent implements OnInit {
     const to = new Date(this.endDate);
     to.setHours(23, 59, 59, 999); // Include full end day
 
-    this.dashboardService.getIncomeOutcomeSummaryReport(from, to).subscribe({
+    this.dashboardService.getIncomeOutcomeSummaryReport(from, to).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.products = result ?? [];
       }

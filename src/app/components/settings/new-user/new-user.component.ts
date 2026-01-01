@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -8,7 +8,8 @@ import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
 
 import { ActionButtons } from '../../../shared/common/ActionButton';
-import { NewUserRequest } from '../../../models/NewUserRequest'; 
+import { NewUserRequest } from '../../../models/NewUserRequest';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-new-user',
@@ -17,16 +18,16 @@ import { NewUserRequest } from '../../../models/NewUserRequest';
   templateUrl: './new-user.component.html',
   styleUrl: './new-user.component.scss',
 })
-export class NewUserComponent implements OnInit {
+export class NewUserComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
   private readonly userService = inject(UserService);
-
+  private destroy$ = new Subject<void>();
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
-  pageHeader = 'New User'; 
+  pageHeader = 'New User';
 
   ngOnInit(): void {
     this.initForm();
@@ -99,7 +100,7 @@ export class NewUserComponent implements OnInit {
   }
 
   private handleSave(form: any): void {
-    if(form.form.invalid) return;
+    if (form.form.invalid) return;
     const value = form.form.value;
     const newUser: NewUserRequest = {
       email: value.email,
@@ -110,7 +111,7 @@ export class NewUserComponent implements OnInit {
       mobileNo: value.mobileNo,
     };
 
-    this.userService.createNewUser(newUser).subscribe({
+    this.userService.createNewUser(newUser).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.commonService.showSuccess('New User Created.');
@@ -126,5 +127,9 @@ export class NewUserComponent implements OnInit {
 
   private handleBack(): void {
     this.router.navigate(['/setting/user-list']);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

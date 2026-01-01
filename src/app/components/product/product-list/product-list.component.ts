@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -12,6 +12,7 @@ import { CustomTableComponent } from '../../../shared/components/custom-table/cu
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -20,7 +21,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
 
@@ -29,6 +30,7 @@ export class ProductListComponent implements OnInit {
   tableActions: any[] = [];
   backupRow: { [id: string]: ProductsResponse } = {};
   role: boolean = true;
+  private destroy$ = new Subject<void>();
 
   columns: {
     key: string; label: string; align: 'left' | 'center' | 'right', type?: string, isHidden: boolean, isEditable?: boolean
@@ -138,7 +140,8 @@ export class ProductListComponent implements OnInit {
   }
 
   getProducts(): void {
-    this.productService.getProducts('product').subscribe({
+    this.productService.getProducts('product')
+    .pipe(takeUntil(this.destroy$)) .subscribe({
       next: (result) => {
         result.forEach(a => {
           a.id = a.productId;
@@ -225,7 +228,7 @@ export class ProductListComponent implements OnInit {
       meter: product.meter
     }
 
-    this.productService.updateProductQty(product.productId, updateQty).subscribe({
+    this.productService.updateProductQty(product.productId, updateQty).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.getProducts();
@@ -297,7 +300,7 @@ export class ProductListComponent implements OnInit {
     var rowVersion: RowVersion = {
       rowVersion: event.row.rowVersion
     }
-    this.productService.setActiveProduct(event.row.productId ?? 0, rowVersion).subscribe({
+    this.productService.setActiveProduct(event.row.productId ?? 0, rowVersion).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.getProducts();
@@ -365,5 +368,9 @@ export class ProductListComponent implements OnInit {
     this.products = isChecked
       ? this.allProducts.filter(product => product.isActive === isChecked)
       : [...this.allProducts]; // Make a copy when unchecked to restore the original
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete(); // <-- prevent memory leaks
   }
 }

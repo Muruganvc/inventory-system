@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DynamicFormComponent } from '../../../shared/components/dynamic-form/dynamic-form.component';
@@ -12,6 +12,7 @@ import { CompanyService } from '../../../services/company.service';
 import { CompanyCreate } from '../../../models/CompanyCreate';
 import { CompanyUpdateCommand } from '../../../models/CompanyUpdateCommand';
 import { GetCompanyQueryResponse } from '../../../models/GetCompanyQueryResponse';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-company',
@@ -20,11 +21,11 @@ import { GetCompanyQueryResponse } from '../../../models/GetCompanyQueryResponse
   templateUrl: './company.component.html',
   styleUrl: './company.component.scss'
 })
-export class CompanyComponent implements OnInit {
+export class CompanyComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
-
+  private destroy$ = new Subject<void>();
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
@@ -117,7 +118,7 @@ export class CompanyComponent implements OnInit {
       description: formValue.description
     };
 
-    this.companyService.createCompany(createCommand).subscribe({
+    this.companyService.createCompany(createCommand).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result > 0) {
           this.commonService.showSuccess('New Company created.');
@@ -139,7 +140,7 @@ export class CompanyComponent implements OnInit {
       rowVersion: this.selectedCompany.rowVersion
     };
 
-    this.companyService.updateCompany(this.selectedCompany.companyId, updateCommand).subscribe({
+    this.companyService.updateCompany(this.selectedCompany.companyId, updateCommand).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.commonService.showSuccess('Successfully updated');
@@ -150,5 +151,9 @@ export class CompanyComponent implements OnInit {
         }
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from "../../../../shared/components/custom-table/custom-table.component";
 import { GetProductCategoryQueryResponse } from '../../../../models/GetProductCategoryQueryResponse';
 import { CompanyService } from '../../../../services/company.service';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-product-category-list',
@@ -14,15 +15,16 @@ import { CommonService, ExcelColumn } from '../../../../shared/services/common.s
   templateUrl: './product-category-list.component.html',
   styleUrl: './product-category-list.component.scss'
 })
-export class ProductCategoryListComponent implements OnInit {
+export class ProductCategoryListComponent implements OnInit, OnDestroy {
   productCategories: GetProductCategoryQueryResponse[] = [];
   allProductCategories: GetProductCategoryQueryResponse[] = [];
   private readonly companyService = inject(CompanyService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
+  private destroy$ = new Subject<void>();
   ngOnInit(): void {
-    this.companyService.getProductCategories(true).subscribe({
+    this.companyService.getProductCategories(true).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (!!result) {
           this.productCategories = result.map(a => ({
@@ -73,7 +75,7 @@ export class ProductCategoryListComponent implements OnInit {
       state: { data: productCategory }
     });
   }
- 
+
 
   exportToExcel = (): void => {
     const columns: ExcelColumn<GetProductCategoryQueryResponse>[] = [
@@ -109,15 +111,15 @@ export class ProductCategoryListComponent implements OnInit {
       label: 'Excel Export',
       icon: 'fas fa-file-excel',
       tooltip: 'Excel Export',
-      action: 'excelExport', 
-      class :'excel-button'
+      action: 'excelExport',
+      class: 'excel-button'
     },
     {
       label: 'Add Product Category',
       icon: 'fas fa-circle-plus',
       tooltip: 'Add Product Category',
       action: 'addProductCategory',
-      class :'add-new-item-button'
+      class: 'add-new-item-button'
     }
   ];
 
@@ -182,5 +184,8 @@ export class ProductCategoryListComponent implements OnInit {
     }
     this.productCategories = filteredCategories;
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

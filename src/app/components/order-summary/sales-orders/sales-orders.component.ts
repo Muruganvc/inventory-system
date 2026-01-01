@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   inject,
+  OnDestroy,
   OnInit,
   ViewChild
 } from '@angular/core';
@@ -25,6 +26,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
 import { MatDialog } from '@angular/material/dialog';
 import { paymentHistoryRequest } from '../../../models/paymentHistoryRequest';
 import { PaymentHistoryDialogComponent } from './payment-history-dialog/payment-history-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-sales-orders',
   standalone: true,
@@ -37,11 +39,11 @@ import { PaymentHistoryDialogComponent } from './payment-history-dialog/payment-
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' }
   ]
 })
-export class SalesOrdersComponent implements OnInit {
+export class SalesOrdersComponent implements OnInit, OnDestroy {
   customerOrderList: CustomerOrderList[] = [];
   filteredCustomerOrderList: CustomerOrderList[] = [];
   isPrint: boolean;
-
+  private destroy$ = new Subject<void>();
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
 
@@ -110,7 +112,7 @@ export class SalesOrdersComponent implements OnInit {
   ];
 
   getOrderSummary(): void {
-    this.orderService.getCustomerOrders().subscribe({
+    this.orderService.getCustomerOrders().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         this.customerOrderList = result;
         this.filteredCustomerOrderList = [...result]; // default view
@@ -157,7 +159,7 @@ export class SalesOrdersComponent implements OnInit {
     this.filteredCustomerOrderList = this.customerOrderList.filter(order => {
       const orderDate = new Date(order.orderDate);
       return orderDate >= start && orderDate <= end;
-    }); 
+    });
   }
 
   resetFilter(): void {
@@ -192,7 +194,7 @@ export class SalesOrdersComponent implements OnInit {
         balanceRemainingToPay: result.balanceRemainingToPay
       };
 
-      this.orderService.createPaymentHistory(paymentHistrory).subscribe({
+      this.orderService.createPaymentHistory(paymentHistrory).pipe(takeUntil(this.destroy$)).subscribe({
         next: result => {
           if (result) {
             this.getOrderSummary();
@@ -219,5 +221,9 @@ export class SalesOrdersComponent implements OnInit {
 
   getTotalFinalAmount(): number {
     return this.filteredCustomerOrderList.reduce((total, item) => total + (item.finalAmount || 0), 0);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

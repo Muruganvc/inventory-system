@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,7 @@ import { ConfigService } from '../../shared/services/config.service';
 import { UserService } from '../../services/user.service';
 import { CommonService } from '../../shared/services/common.service';
 import { GetInventoryCompanyInfo } from '../../models/GetInventoryCompanyInfo';
-import { filter } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -24,12 +24,13 @@ import { filter } from 'rxjs';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   // readonly isMobile = signal(true);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly commonService = inject(CommonService);
+  private destroy$ = new Subject<void>();
 
   companyName: string = '';
   isMobileDevice = false;
@@ -42,7 +43,7 @@ export class LayoutComponent implements OnInit {
 
   dashBoardView: string = 'Product Availability';
 
-  invCompanyInfo : GetInventoryCompanyInfo;
+  invCompanyInfo: GetInventoryCompanyInfo;
 
   isAdmin = (): boolean => {
     return this.authService.hasRole(["ADMIN"])
@@ -69,10 +70,10 @@ export class LayoutComponent implements OnInit {
     this.loadUser();
     this.loadCompanyInfo();
   }
- 
+
 
   private loadCompanyInfo(): void {
-    this.commonService.getInventoryCompanyInfo().subscribe({
+    this.commonService.getInventoryCompanyInfo().pipe(takeUntil(this.destroy$)).subscribe({
       next: info => {
         if (info) {
           this.invCompanyInfo = info
@@ -182,9 +183,9 @@ export class LayoutComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;
 
   private loadUser(): void {
-     this.commonService.setProfileImageData('')
+    this.commonService.setProfileImageData('')
     const userId = +this.authService.getUserId();
-    this.userService.getUser(userId).subscribe({
+    this.userService.getUser(userId).pipe(takeUntil(this.destroy$)).subscribe({
       next: user => {
         if (user.profileImageBase64) {
           this.imagePreview = user.profileImageBase64;
@@ -192,5 +193,9 @@ export class LayoutComponent implements OnInit {
         }
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

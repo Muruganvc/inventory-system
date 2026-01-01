@@ -1,9 +1,9 @@
-import { Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ProductEntry } from '../../../models/ProductEntry';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, merge } from 'rxjs';
+import { filter, merge, Subject, takeUntil } from 'rxjs';
 import { ProductsResponse } from '../../../models/ProductsResponse';
 import { OrderService } from '../../../services/order.service';
 import { ProductService } from '../../../services/product.service';
@@ -23,13 +23,13 @@ import { BillQuotationDialogComponent } from './bill-quotation-dialog/bill-quota
   templateUrl: './bill-quotation.component.html',
   styleUrl: './bill-quotation.component.scss'
 })
-export class BillQuotationComponent {
+export class BillQuotationComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
-
+  private destroy$ = new Subject<void>();
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
 
@@ -100,7 +100,7 @@ export class BillQuotationComponent {
       { type: 'input', name: 'salesPrice', label: 'Sales Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
       { type: 'input', name: 'landingPrice', label: 'Landing Price ₹', colSpan: isAdmin ? 3 : 2, icon: 'fas fa-inr' },
       { type: 'input', name: 'availableQuantity', label: 'Avail.Qty', colSpan: 2, isReadOnly: true, icon: 'fas fa-calculator' },
-    { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
+      { type: 'input', name: 'availableMeter', label: 'Avail.Meter', colSpan: 2, isReadOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
       { type: 'input', name: 'quantity', label: 'Quantity', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-calculator' },
       { type: 'input', name: 'meter', label: 'Meter', colSpan: 2, maxLength: 8, isNumberOnly: true, isHidden: true, icon: 'fas fa-arrows-left-right' },
       { type: 'input', name: 'price', label: 'Price ₹', colSpan: 2, maxLength: 8, isNumberOnly: true, icon: 'fas fa-inr' },
@@ -139,7 +139,7 @@ export class BillQuotationComponent {
   }
 
   private getProducts(): void {
-    this.productService.getProducts('sales').subscribe(res => {
+    this.productService.getProducts('sales').pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.products = res;
 
       this.productsList = res.map(p => ({
@@ -509,5 +509,8 @@ export class BillQuotationComponent {
       document.body.removeChild(iframe);
     }, 1000);
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

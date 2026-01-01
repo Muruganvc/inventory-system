@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonService } from '../../../../shared/services/common.service';
 import { CustomTableComponent } from "../../../../shared/components/custom-table/custom-table.component";
 import { UserService } from '../../../../services/user.service';
 import { UserListResponse } from '../../../../models/UserListResponse';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
@@ -13,11 +14,11 @@ import { UserListResponse } from '../../../../models/UserListResponse';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getUsers();
   }
-
+  private destroy$ = new Subject<void>();
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
@@ -50,7 +51,7 @@ export class UserListComponent implements OnInit {
   }
 
   getUsers = (): void => {
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (!!result) {
           this.users = result;
@@ -76,7 +77,7 @@ export class UserListComponent implements OnInit {
   }
 
   handleFieldChange(event: { row: UserListResponse; key: string; value: any }) {
-    this.userService.setActiveUser(event.row.userId ?? 0, event.value).subscribe({
+    this.userService.setActiveUser(event.row.userId ?? 0, event.value).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.getUsers();
@@ -84,5 +85,9 @@ export class UserListComponent implements OnInit {
         }
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

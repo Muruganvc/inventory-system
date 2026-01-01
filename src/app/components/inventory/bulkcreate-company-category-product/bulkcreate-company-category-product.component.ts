@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from "../../../shared/components/custom-table/custom-table.component";
 import * as XLSX from 'xlsx';
 import { BulkUpload } from '../../../models/BulkUpload';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../services/product.service';
 import { CommonService } from '../../../shared/services/common.service';
+import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-bulkcreate-company-category-product',
   standalone: true,
@@ -12,12 +13,12 @@ import { CommonService } from '../../../shared/services/common.service';
   templateUrl: './bulkcreate-company-category-product.component.html',
   styleUrl: './bulkcreate-company-category-product.component.scss'
 })
-export class BulkcreateCompanyCategoryProductComponent {
+export class BulkcreateCompanyCategoryProductComponent implements OnDestroy {
 
   bulkCompnay: BulkUpload[] = [];
   tableHeaders: string[] = [];
   selectedFileName: string | null = null;
-
+  private destroy$ = new Subject<void>();
   private readonly productService = inject(ProductService);
   private readonly commonService = inject(CommonService);
 
@@ -39,7 +40,7 @@ export class BulkcreateCompanyCategoryProductComponent {
   }
   newOpen(a: any) {
 
-    
+
   }
 
 
@@ -57,8 +58,8 @@ export class BulkcreateCompanyCategoryProductComponent {
   onButtonClicked(_: string) {
     if (this.bulkCompnay.length == 0) {
       this.commonService.showInfo("Please upload file to save."); return;
-    } 
-    this.productService.bulkCreateCompany(this.bulkCompnay).subscribe({
+    }
+    this.productService.bulkCreateCompany(this.bulkCompnay).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result) {
           this.commonService.showSuccess("All Products created.");
@@ -153,5 +154,9 @@ export class BulkcreateCompanyCategoryProductComponent {
     this.selectedFileName = '';
     this.bulkCompnay = [];
     this.tableHeaders = [];
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

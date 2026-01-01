@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { ConfigService } from '../../shared/services/config.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -32,12 +33,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   private readonly auth = inject(AuthService);
   private readonly commonService = inject(CommonService);
   private readonly dialog = inject(MatDialog);
-
+  private destroy$ = new Subject<void>();
   companyName: string = '';
 
   constructor(private fb: FormBuilder, private router: Router, private configService: ConfigService) {
@@ -61,7 +62,7 @@ export class LoginComponent implements OnInit {
       password: password,
       userName: username
     }
-    this.auth.login(loginRequest).subscribe({
+    this.auth.login(loginRequest).pipe(takeUntil(this.destroy$)).subscribe({
       next: (user) => {
         if (user == null) {
           this.commonService.showError("Invalid credentials");
@@ -106,5 +107,9 @@ export class LoginComponent implements OnInit {
       maxWidth: '400px',
       disableClose: true,
     }).afterClosed().subscribe();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

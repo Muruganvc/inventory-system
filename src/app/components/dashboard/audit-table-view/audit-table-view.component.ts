@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuditLog } from '../../../models/AuditLog';
 import { DashboardService } from '../../../services/dashboard.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-audit-table-view',
@@ -20,11 +21,12 @@ export class AuditTableViewComponent implements OnInit {
   selectedTable: string = '';
   selectedAction: string = '';
   changedByFilter: string = '';
+  private destroy$ = new Subject<void>();
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    this.dashboardService.getAuditLogs().subscribe({
+    this.dashboardService.getAuditLogs().pipe(takeUntil(this.destroy$)).subscribe({
       next: (logs) => {
         this.auditLogs = logs || [];
         this.filteredAuditLogs = [...this.auditLogs];
@@ -73,4 +75,8 @@ export class AuditTableViewComponent implements OnInit {
     )
   ).map(String);
 }
+ ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActionButtons } from '../../../../shared/common/ActionButton';
 import { DynamicFormComponent } from "../../../../shared/components/dynamic-form/dynamic-form.component";
-import { map, startWith } from 'rxjs';
+import { map, startWith, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-payment-dialog',
@@ -12,11 +12,11 @@ import { map, startWith } from 'rxjs';
   templateUrl: './payment-dialog.component.html',
   styleUrls: ['./payment-dialog.component.scss']
 })
-export class PaymentDialogComponent implements OnInit {
+export class PaymentDialogComponent implements OnInit, OnDestroy {
   userForm: FormGroup;
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
-
+  private destroy$ = new Subject<void>();
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
@@ -118,5 +118,8 @@ export class PaymentDialogComponent implements OnInit {
       balanceControl?.setValue(balance >= 0 ? balance : 0);
     });
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

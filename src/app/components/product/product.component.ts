@@ -8,7 +8,7 @@ import { UpdateProductRequest } from '../../models/UpdateProductRequest';
 import { ProductsResponse } from '../../models/ProductsResponse';
 import { KeyValuePair } from '../../shared/common/KeyValuePair';
 import { ActionButtons } from '../../shared/common/ActionButton';
-import { map, pairwise, startWith } from 'rxjs';
+import { map, pairwise, startWith, Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../shared/services/common.service';
 import { CommonModule } from '@angular/common';
@@ -34,7 +34,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   submitBtntitle = 'Submit';
   pageHeader = 'New Product';
   productResponse: ProductsResponse;
-
+  private destroy$ = new Subject<void>();
   ngOnInit(): void {
     this.initForm();
     this.productResponse = history.state.data;
@@ -52,7 +52,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.bindQuantityChange();
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   /** -------------------- INIT -------------------- */
 
@@ -167,7 +170,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   /** -------------------- DATA LOADERS -------------------- */
 
   private loadCompanyCategoryProduct = (): void => {
-    this.companyService.getCompanyCategoryProduct(true).subscribe({
+    this.companyService.getCompanyCategoryProduct(true).pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         const options: KeyValuePair[] = res.map(item => ({
           key: `${item.companyName} ${item.categoryName} ${item.productCategoryName}`,
@@ -245,7 +248,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
     const request = this.buildProductRequest(params.form.value);
 
-    this.productService.createProduct(request).subscribe({
+    this.productService.createProduct(request).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {
         if (result === 0) {
           this.commonService.showWarning('Product already exists.');
@@ -269,7 +272,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       productCategoryId: params.form.value.companyCategoryProduct.value,
       meter: params.form.value.meter || 0
     };
-    this.productService.updateProduct(Number(params.form.value.product.value), update).subscribe({
+    this.productService.updateProduct(Number(params.form.value.product.value), update).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.commonService.showSuccess('Product updated.');
         this.resetForm();

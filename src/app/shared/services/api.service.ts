@@ -75,7 +75,6 @@ export class ApiService {
    */
   private handleError<T>(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Something went wrong.';
-    let statusCode = error.status;
 
     // Check if the error is a 401 Unauthorized error
     if (error.status === 401) {
@@ -90,7 +89,7 @@ export class ApiService {
     }
 
     // Throwing the error using throwError
-    return throwError(() => new Error(errorMessage));  // Propagate the error
+    return throwError(() => error);
   }
 
 
@@ -119,24 +118,30 @@ export class ApiService {
     body?: TRequest,
     params?: ApiParams,
     headers?: ApiHeaders,
-    isFormData?: boolean
+    isFormData: boolean = false
   ): Observable<Result<TResponse>> {
     return this.http
-      .post<Result<TResponse>>(`${this.config.baseUrl}${url}`, body ?? {}, {
-        headers: this.createHeaders(headers, isFormData),
-        params: this.createParams(params),
-        withCredentials: true,
-      })
+      .post<Result<TResponse>>(
+        `${this.config.baseUrl}${url}`,
+        isFormData ? body ?? null : body ?? {}, // Send null for FormData if undefined
+        {
+          headers: this.createHeaders(headers, isFormData),
+          params: this.createParams(params),
+          withCredentials: true,
+        }
+      )
       .pipe(catchError(this.handleError));
   }
 
+
   downloadSqlFile(url: string): Observable<Blob> {
-    return this.http.post<Blob>(`${this.config.baseUrl}${url}`, {}, {
-      responseType: 'blob' as 'json',  // Set the responseType to 'blob' to handle binary data
-      withCredentials: true  // Include credentials (e.g., cookies or authorization headers) in the request
+    return this.http.post(`${this.config.baseUrl}${url}`, null, {
+      responseType: 'blob',   // Properly handle binary response
+      withCredentials: true
     })
-      .pipe(catchError(this.handleError));  // Handle errors using the handleError method
+      .pipe(catchError(this.handleError));
   }
+
   /**
    * HTTP PUT request
    */

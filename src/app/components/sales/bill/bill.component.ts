@@ -1,8 +1,8 @@
-import { Component, DestroyRef, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, merge } from 'rxjs';
+import { filter, merge, Subject, takeUntil } from 'rxjs';
 import { OrderCreateRequest } from '../../../models/CustomerRequest';
 import { ProductEntry } from '../../../models/ProductEntry';
 import { ProductsResponse } from '../../../models/ProductsResponse';
@@ -24,7 +24,7 @@ import { CustomTableComponent } from "../../../shared/components/custom-table/cu
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.scss'
 })
-export class BillComponent {
+export class BillComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly orderService = inject(OrderService);
   private readonly commonService = inject(CommonService);
@@ -33,7 +33,7 @@ export class BillComponent {
 
   @ViewChild('printFrame', { static: true }) printFrame!: ElementRef;
   @ViewChild(InvoiceComponent) invoiceComponent!: InvoiceComponent;
-
+  private destroy$ = new Subject<void>();
   isPrint = false;
   formGroup!: FormGroup;
 
@@ -142,7 +142,7 @@ export class BillComponent {
   }
 
   private getProducts(): void {
-    this.productService.getProducts('sales').subscribe(res => {
+    this.productService.getProducts('sales').pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.products = res;
 
       this.productsList = res.map(p => ({
@@ -320,7 +320,7 @@ export class BillComponent {
         isGst: !!result.isGst
       };
 
-      this.orderService.createOrder(request).subscribe(response => {
+      this.orderService.createOrder(request).pipe(takeUntil(this.destroy$)).subscribe(response => {
         if (response > 0) {
           const printDialog = this.dialog.open(ConfirmDialogComponent, {
             width: '100%',
@@ -464,5 +464,9 @@ export class BillComponent {
   async onPrint(orderId: number): Promise<void> {
     this.isPrint = true;
     await this.commonService.onPrint(orderId, this.invoiceComponent, this.printFrame);
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

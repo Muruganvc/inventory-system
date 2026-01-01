@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UpdateUserRequest } from '../../../models/UpdateUserRequest';
@@ -8,6 +8,7 @@ import { ActionButtons } from '../../../shared/common/ActionButton';
 import { CommonService } from '../../../shared/services/common.service';
 import { DynamicFormComponent } from "../../../shared/components/dynamic-form/dynamic-form.component";
 import { ChangePasswordRequest } from '../../../models/ChangePasswordRequest';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-password-change',
@@ -16,8 +17,9 @@ import { ChangePasswordRequest } from '../../../models/ChangePasswordRequest';
   templateUrl: './password-change.component.html',
   styleUrl: './password-change.component.scss'
 })
-export class PasswordChangeComponent {
+export class PasswordChangeComponent implements OnInit, OnDestroy {
   formGroup!: FormGroup;
+  private destroy$ = new Subject<void>();
   fields: any[] = [];
   actionButtons: ActionButtons[] = [];
   private readonly authService = inject(AuthService);
@@ -55,7 +57,7 @@ export class PasswordChangeComponent {
       currentPassword: currentPassword,
     };
 
-    this.userService.updatePassword(Number(userId), userUpdate).subscribe({
+    this.userService.updatePassword(Number(userId), userUpdate).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {
         if (result) {
           this.commonService.showSuccess("Password changed successfully.");
@@ -103,5 +105,9 @@ export class PasswordChangeComponent {
         isHidden: false
       }
     ];
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

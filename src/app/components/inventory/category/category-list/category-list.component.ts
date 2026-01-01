@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CustomTableComponent } from "../../../../shared/components/custom-table/custom-table.component";
 import { Router } from '@angular/router';
 import { GetCategoryQueryResponse } from '../../../../models/GetCategoryQueryResponse';
@@ -6,6 +6,7 @@ import { CompanyService } from '../../../../services/company.service';
 import { AuthService } from '../../../../services/auth.service';
 import { CommonService, ExcelColumn } from '../../../../shared/services/common.service';
 import { MatButtonModule } from '@angular/material/button';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-category-list',
@@ -14,15 +15,16 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss'
 })
-export class CategoryListComponent implements OnInit {
+export class CategoryListComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
   private readonly authService = inject(AuthService);
   private readonly commonService = inject(CommonService);
+  private destroy$ = new Subject<void>();
   categories: GetCategoryQueryResponse[] = [];
   allCategories: GetCategoryQueryResponse[] = [];
   ngOnInit(): void {
-    this.companyService.getCategories(true).subscribe({
+    this.companyService.getCategories(true).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result && Array.isArray(result)) {
           this.categories = result.map(a => ({
@@ -178,5 +180,8 @@ export class CategoryListComponent implements OnInit {
     }
     this.categories = filteredCategories;
   }
-
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }
