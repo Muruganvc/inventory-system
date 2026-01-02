@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private watchIdleTimeout(): void {
     this.idleService.onIdle().subscribe(() => {
-      this.authService.logout('/login', false);
+      this.authService.logout();
     });
   }
 

@@ -82,7 +82,7 @@ export class SalesOrdersComponent implements OnInit, OnDestroy {
       {
         key: 'balanceAmount', label: 'Balance ₹', align: 'right', isHidden: false, highLight: {
           class: 'error',
-          condition: row => row.balanceAmount > 100
+          condition: row => row.balanceAmount > 10
         }
       }
     ];
@@ -114,7 +114,7 @@ export class SalesOrdersComponent implements OnInit, OnDestroy {
   getOrderSummary(): void {
     this.orderService.getCustomerOrders().pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
-        this.customerOrderList = result;
+        this.customerOrderList = result.sort((a, b) => b.balanceAmount - a.balanceAmount);
         this.filteredCustomerOrderList = [...result]; // default view
       }
     });
