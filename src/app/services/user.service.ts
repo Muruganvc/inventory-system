@@ -144,4 +144,11 @@ export class UserService {
       .pipe(map(res => this.api.handleResult(res)));
   }
 
+
+  updateUserSession = (userId: number): Observable<boolean> => {
+    return this.api
+      .put<null, boolean>(`user/${userId}/session`, null)
+      .pipe(map(res => this.api.handleResult(res)));
+  };
+
 }

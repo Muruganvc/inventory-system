@@ -5,6 +5,7 @@ export interface UserListResponse extends TableRow {
   userName: string;
   email: string;
   firstName: string;
-  lastName?: string;   
-  isActive: boolean;  
+  lastName?: string;
+  isActive: boolean;
+  isSessionActive: boolean;
 }

@@ -66,7 +66,14 @@ export class UserListComponent implements OnInit, OnDestroy {
                 key: 'isActive',
                 label: 'Active',
                 align: 'right',
-                type: 'toggle',
+                type: 'checkbox',
+                isHidden: false
+              },
+              {
+                key: 'isSessionActive',
+                label: 'Session Active',
+                align: 'right',
+                type: 'checkbox',
                 isHidden: false
               }
             ];
@@ -77,14 +84,25 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   handleFieldChange(event: { row: UserListResponse; key: string; value: any }) {
-    this.userService.setActiveUser(event.row.userId ?? 0, event.value).pipe(takeUntil(this.destroy$)).subscribe({
-      next: result => {
-        if (result) {
-          this.getUsers();
-          this.commonService.showSuccess("Updated.");
+    if (event.key === "isActive") {
+      this.userService.setActiveUser(event.row.userId ?? 0, event.value).pipe(takeUntil(this.destroy$)).subscribe({
+        next: result => {
+          if (result) {
+            this.getUsers();
+            this.commonService.showSuccess("Updated.");
+          }
         }
-      }
-    });
+      });
+    } else if (event.key === "isSessionActive") {
+      this.userService.updateUserSession(event.row.userId ?? 0).pipe(takeUntil(this.destroy$)).subscribe({
+        next: result => {
+          if (result) {
+            this.getUsers();
+            this.commonService.showSuccess("Updated.");
+          }
+        }
+      });
+    }
   }
   ngOnDestroy(): void {
     this.destroy$.next();
