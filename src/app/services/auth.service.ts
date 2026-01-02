@@ -75,7 +75,7 @@ export class AuthService {
   async refreshToken(): Promise<{ token: string; refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      this.logout('', true);
+      this.logout('/login', true);
       throw new Error('No refresh token available');
     }
 
@@ -104,7 +104,7 @@ export class AuthService {
   refreshTokenOld(): Observable<{ token: string, refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      this.logout('', true);
+      this.logout('/login', true);
       return new Observable();
     }
 

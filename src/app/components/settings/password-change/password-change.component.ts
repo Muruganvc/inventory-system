@@ -61,7 +61,7 @@ export class PasswordChangeComponent implements OnInit, OnDestroy {
       next: (result) => {
         if (result) {
           this.commonService.showSuccess("Password changed successfully.");
-          this.authService.logout();
+          this.authService.logout('/login',true);
         } else {
           this.commonService.showError("Failed to update password.");
         }

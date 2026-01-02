@@ -58,7 +58,7 @@ async function getValidToken(authService: AuthService, router: Router): Promise<
         return tokens.token;
       } catch (err) {
         console.error('Refresh token failed', err);
-        authService.logout('', true);
+        authService.logout('/login', true);
         router.navigate(['/login']);
         return null;
       } finally {
