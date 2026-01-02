@@ -36,7 +36,7 @@ export class AuthService {
             this.setToken(response.token);
             this.setRefreshToken(response.refreshToken);
           }
-          if(response.invCompanyInfo){
+          if (response.invCompanyInfo) {
             this.commonService.setInventoryCompanyInfo(response.invCompanyInfo);
           }
         })
@@ -44,10 +44,14 @@ export class AuthService {
   }
 
   logout(redirectTo: string = '/login'): void {
-    this.removeToken();
-    localStorage.clear();
-    this.router.navigate([redirectTo]);
-    location.reload;
+    this.api.put<null, boolean>(`user/${+this.getUserId()}/session`, null).subscribe(result => {
+      if (result) {
+        this.removeToken();
+        localStorage.clear();
+        this.router.navigate([redirectTo]);
+        location.reload;
+      }
+    })
   }
 
   getToken(): string | null {

@@ -76,28 +76,28 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate(['/dashboard']);
         this.commonService.showSuccess('Login successful!');
 
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-          width: '100%',
-          maxWidth: '400px',
-          disableClose: true,
-          data: {
-            title: 'Payment',
-            okBtn: {
-              title: 'Yes, Confirm',
-              isHiden: true
-            },
-            cancel: {
-              title: 'Cancel',
-              isHiden: true
-            },
-            message: 'Do you want to see payment pending details..'
-          }
-        });
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            this.router.navigate(['order-summary/sales-orders']);
-          }
-        });
+        // const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        //   width: '100%',
+        //   maxWidth: '400px',
+        //   disableClose: true,
+        //   data: {
+        //     title: 'Payment',
+        //     okBtn: {
+        //       title: 'Yes, Confirm',
+        //       isHiden: true
+        //     },
+        //     cancel: {
+        //       title: 'Cancel',
+        //       isHiden: true
+        //     },
+        //     message: 'Do you want to see payment pending details..'
+        //   }
+        // });
+        // dialogRef.afterClosed().subscribe(result => {
+        //   if (result) {
+        //     this.router.navigate(['order-summary/sales-orders']);
+        //   }
+        // });
       }
     });
   }
