@@ -43,15 +43,24 @@ export class AuthService {
       );
   }
 
-  logout(redirectTo: string = '/login'): void {
-    this.api.put<null, boolean>(`user/${+this.getUserId()}/session`, null).subscribe(result => {
-      if (result) {
-        this.removeToken();
-        localStorage.clear();
-        this.router.navigate([redirectTo]);
-        location.reload;
-      }
-    })
+  logout(redirectTo: string = '/login', isLogOut: boolean = false): void {
+
+    if (isLogOut) {
+      this.api.put<null, boolean>(`user/${+this.getUserId()}/session`, null).subscribe(result => {
+        if (result) {
+          this.removeToken();
+          localStorage.clear();
+          this.router.navigate([redirectTo]);
+          location.reload;
+        }
+      })
+    } else {
+      this.removeToken();
+      localStorage.clear();
+      this.router.navigate([redirectTo]);
+      location.reload;
+    }
+
   }
 
   getToken(): string | null {
@@ -66,7 +75,7 @@ export class AuthService {
   async refreshToken(): Promise<{ token: string; refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      this.logout();
+      this.logout('', true);
       throw new Error('No refresh token available');
     }
 
@@ -95,7 +104,7 @@ export class AuthService {
   refreshTokenOld(): Observable<{ token: string, refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      this.logout();
+      this.logout('', true);
       return new Observable();
     }
 

@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   companyName: string = '';
 
   constructor(private fb: FormBuilder, private router: Router, private configService: ConfigService) {
-    this.auth.logout();
+    this.auth.logout('', false);
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
